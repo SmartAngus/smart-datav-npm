@@ -1,10 +1,15 @@
 import React from 'react'
 
-import { ExampleComponent } from 'smart-datav-npm'
+import { DataVEditor } from 'smart-datav-npm'
+import 'antd/dist/antd.css'
 import 'smart-datav-npm/dist/index.css'
 
 const App = () => {
-  return <ExampleComponent text="Create React Library Example 😄" />
+  return (
+    <div>
+      <DataVEditor/>
+    </div>
+    )
 }
 
 export default App

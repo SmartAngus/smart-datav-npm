@@ -13,16 +13,21 @@ npm install --save smart-datav-npm
 ## Usage
 
 ```tsx
-import React, { Component } from 'react'
+import React from 'react'
 
-import MyComponent from 'smart-datav-npm'
+import { DataVEditor } from 'smart-datav-npm'
+import 'antd/dist/antd.css'
 import 'smart-datav-npm/dist/index.css'
 
-class Example extends Component {
-  render() {
-    return <MyComponent />
-  }
+const App = () => {
+  return (
+    <div>
+      <DataVEditor/>
+    </div>
+    )
 }
+
+export default App
 ```
 
 ## License

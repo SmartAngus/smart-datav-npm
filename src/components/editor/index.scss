@@ -1,0 +1,92 @@
+:global{
+  .editor-demo {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    background-color: #f3f3f3;
+  }
+
+  .editor-operation {
+    width: 100%;
+    display: flex;
+    background:#f5f5f5;
+    >div{
+      width: 100%;
+    }
+  }
+
+  .editor-container {
+    display: flex;
+    justify-content: flex-start;
+    background: #fff;
+    height: 860px;
+
+    .editor-nodePanel {
+      width: 228px;
+    }
+
+    .editor-canvas {
+      width: 100%;
+      overflow: scroll;
+      position: relative;
+      .canvas-container-content {
+        width: 100%;
+        height: 100%;
+        cursor: -webkit-grab;
+        // transform: translate(1034px, 516px);
+
+        .editor-view {
+          transform-origin: 0px 0px;
+
+          .editor-view-content {
+            position: absolute;
+          }
+
+          .editor-view-svg {
+            overflow: visible;
+          }
+        }
+      }
+    }
+
+
+    .editor-property {
+      width: 300px;
+      min-width: 300px;
+    }
+  }
+
+  .controls-title {
+    width: 100%;
+    line-height: 24px;
+    margin: 3px auto 0;
+    text-align: center;
+    font-size: 13px;
+    color: #465258;
+    -moz-transition: all 0.4s;
+    -webkit-transition: all 0.4s;
+    transition: all 0.4s;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .screen>div{
+    border: none;
+    overflow: hidden;
+  }
+  .screen--bak{
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjA1IiBoZWlnaHQ9IjIwNSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjIwNSIgaGVpZ2h0PSIyMDUiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPjxwYXRoIGQ9Ik0gMCA0MSBMIDIwNSA0MSBNIDQxIDAgTCA0MSAyMDUgTSAwIDgyIEwgMjA1IDgyIE0gODIgMCBMIDgyIDIwNSBNIDAgMTIzIEwgMjA1IDEyMyBNIDEyMyAwIEwgMTIzIDIwNSBNIDAgMTY0IEwgMjA1IDE2NCBNIDE2NCAwIEwgMTY0IDIwNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzMwMDFBIiBvcGFjaXR5PSIwLjIiIHN0cm9rZS13aWR0aD0iMSIvPjxwYXRoIGQ9Ik0gMjA1IDAgTCAwIDAgMCAyMDUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzMzMDAxQSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+);
+    background-position: -56px -151px;
+  }
+
+  .svg-caves{
+    left: 0px;
+    top: 0px;
+    display: block;
+    width: 3427px;
+    height: 1800px;
+    position: absolute;
+    background: rgb(230, 230, 230);
+  }
+}

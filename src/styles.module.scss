@@ -1,5 +1,6 @@
 /* add css module styles here (optional) */
-
+@import "./components/MyDemo/style/MyDemo.module.scss";
+@import "./components/ExampleComponent/style/ExampleComponent.module.scss";
 .test {
   margin: 2em;
   padding: 0.5em;
