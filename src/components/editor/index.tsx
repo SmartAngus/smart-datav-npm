@@ -17,7 +17,19 @@ import "./index.scss";
 const { useState, useRef, useEffect,useContext } = React;
 
 
-export default function DataVEditor(props) {
+
+class DataVEditorProps{
+  // 数据保存到本地后的回掉的是
+  onEditorSaveCb?:(data:any)=>void;
+  // 背景图片上传路径
+  uploadBgUrl?:string;
+  // 预设背景图片 图片访问路径
+  preinstallBgImages:[string,string,string];
+}
+
+
+export default function DataVEditor(props:DataVEditorProps) {
+    const { onEditorSaveCb } = props
     const [screenScale, changeScreenScale] = useState(100);
     const [dragSelectable, setDragSelectable] = useState(false);
     const [keyPressing, setKeyPressing] = useState(false);
@@ -379,7 +391,13 @@ export default function DataVEditor(props) {
     /** 保存 */
     const handleSave = async () => {
         const data = await handleSaveData();
-
+        const editorData = {
+          nodes,
+          links,
+          groups,
+          editorConfig:canvasProps
+        }
+        onEditorSaveCb && onEditorSaveCb(editorData)
         if (data) {
             message.success("保存成功");
         } else {

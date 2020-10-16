@@ -216,18 +216,14 @@ export function EditorNode(props: EditorNodeProps) {
   /**双击组件*/
 
     // 动态渲染组件
-  const newNode = _.cloneDeep(currentNode)
-  delete newNode.ref;
+  // const newNode = _.cloneDeep(currentNode)
+  // delete newNode.ref;
   const dynamicLoadComp=useMemo(()=>{
-    // const OtherComponent = loadable(() => import(`../components/charts/${currentNode.chart.component}`));
-    // return (
-    //     <OtherComponent node={newNode} updateNodes={updateNodes}/>
-    // )
-    if (currentNode.chart.component=='TimeComp') return <TimeComp node={newNode} updateNodes={updateNodes}></TimeComp>
-    if (currentNode.chart.component=='TextComp') return <TextComp node={newNode} updateNodes={updateNodes}></TextComp>
-    if (currentNode.chart.component=='LineComp') return <LineComp node={newNode} updateNodes={updateNodes}></LineComp>
-    if (currentNode.chart.component=='CircleComp') return <CircleComp node={newNode} updateNodes={updateNodes}></CircleComp>
-    if (currentNode.chart.component=='CapsuleChart') return <CapsuleChart node={newNode} updateNodes={updateNodes}></CapsuleChart>
+    if (currentNode.chart?.component=='TimeComp') return <TimeComp node={currentNode} updateNodes={updateNodes}></TimeComp>
+    if (currentNode.chart?.component=='TextComp') return <TextComp node={currentNode} updateNodes={updateNodes}></TextComp>
+    if (currentNode.chart?.component=='LineComp') return <LineComp node={currentNode} updateNodes={updateNodes}></LineComp>
+    if (currentNode.chart?.component=='CircleComp') return <CircleComp node={currentNode} updateNodes={updateNodes}></CircleComp>
+    if (currentNode.chart?.component=='CapsuleChart') return <CapsuleChart node={currentNode} updateNodes={updateNodes}></CapsuleChart>
   },[currentNode.chart?.format,currentNode.chart?.stroke,currentNode.width])// 只有时间控件和直线才会重新加载
 
   return (

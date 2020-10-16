@@ -5,9 +5,12 @@ import 'antd/dist/antd.css'
 import 'smart-datav-npm/dist/index.css'
 
 const App = () => {
+  const handleSaveEditorData = (data:any)=>{
+    console.log(data)
+  }
   return (
     <div>
-      <DataVEditor/>
+      <DataVEditor onEditorSaveCb={handleSaveEditorData}/>
     </div>
     )
 }
