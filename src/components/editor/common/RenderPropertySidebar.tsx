@@ -6,12 +6,12 @@ import ColorsPicker from './ColorsPicker'
 import "../components/NodePanel.scss";
 import "./RenderPropertySidebar.scss"
 import {Group, Link,Node} from "../constants/defines";
-// import preImage1 from '../../../assets/images/pre-image1.jpg'
-// import preImage2 from '../../../assets/images/pre-image2.png'
-// import preImage3 from '../../../assets/images/pre-image3.jpg'
+import preImage1 from "../../../assets/images/pre_bg_img1.jpg";
+import preImage2 from "../../../assets/images/pre_bg_img2.jpg";
+import preImage3 from "../../../assets/images/pre_bg_img3.jpg";
 import UploadBgImg from "../components/uploadBgImg/UploadBgImg";
-import LeftJustifying,{GridBackgroundSVG} from "../icons/editorIcons";
-import {getHexColor} from '../utils/calc'
+import {GridBackgroundSVG} from "../icons/editorIcons";
+import { UploadFile } from 'antd/es/upload/interface'
 
 
 const { TabPane } = Tabs
@@ -63,10 +63,11 @@ const timeFormats = [
     {key:'LT',name:'hh:mm(24h)'},
 ]
 const preImages = [
-    {key:1,img:""},
-    {key:2,img:""},
-    {key:3,img:""},
+    {key:1,img:preImage1},
+    {key:2,img:preImage2},
+    {key:3,img:preImage3},
 ]
+console.log(preImages)
 // 箭头类型
 const arrowTypes =[
     {key:0,value:'none',name:'无'},
@@ -169,6 +170,33 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
         }
         setCanvasProps(canvasProps)
         autoSaveSettingInfo(canvasProps,nodes,groups,links)
+    }
+    // 当上传背景图片时
+    const handleSetUploadImage = (file:UploadFile)=>{
+      // canvasProps.backgroundImage=`url(${file.url})`;
+      // canvasProps.backgroundImageKey=null;
+      canvasProps.uploadBackgroundImage.show=true;
+      canvasProps.uploadBackgroundImage.name=file.name
+      canvasProps.uploadBackgroundImage.url=file.url
+      setCanvasProps(canvasProps)
+      autoSaveSettingInfo(canvasProps,nodes,groups,links)
+        console.log("handleSetUploadImage==",file)
+    }
+    // 当删除图片时
+    const handleRemoveFile = (file:UploadFile)=>{
+
+    }
+    // 当改变背景图片时
+    const handleChangeBgImg = ()=>{
+      canvasProps.uploadBackgroundImage.show=!canvasProps.uploadBackgroundImage.show;
+      if(canvasProps.uploadBackgroundImage.show){
+        canvasProps.backgroundImageKey = null;
+        canvasProps.backgroundImage= `url(${canvasProps.uploadBackgroundImage.url})`
+      }else{
+        canvasProps.backgroundImage = null;
+      }
+      setCanvasProps(canvasProps)
+      autoSaveSettingInfo(canvasProps,nodes,groups,links)
     }
     // 是否显示网格
     const handleChangeGrid=(e)=>{
@@ -426,7 +454,17 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                         <div className="components-box">
                             <ul>
                                 <li style={{display:'flex'}}>背景颜色：<ColorsPicker  onSetColor={handleSetBgColor}/></li>
-                                <li style={{display:'flex'}}>背景图片：<UploadBgImg/></li>
+                                <li style={{display:'flex'}}>
+                                  背景图片：<UploadBgImg onUploadComplete={handleSetUploadImage} onRemoveFile={handleRemoveFile}/>
+                                </li>
+                              <li>
+                                <div  className="pre-mini-img" onClick={()=>handleChangeBgImg()}>
+                                  <img src={canvasProps.uploadBackgroundImage?.url} alt="" style={{width:192,height:108}}/>
+                                  {canvasProps.uploadBackgroundImage.show===true?<Button
+                                    className="pre-img-selected-icon"
+                                    size="small" type="primary" shape="circle" icon="check" />:''}
+                                </div>
+                              </li>
                                 <li>
                                     <p style={{textAlign:'left'}}>预设图片：</p>
                                     <div className="preinstall-bg-img">

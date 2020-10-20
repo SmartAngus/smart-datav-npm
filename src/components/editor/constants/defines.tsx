@@ -71,7 +71,7 @@ export class Stroke {// 直线控件有的属性
   y1?:number;
   x2?:number;
   y2?:number;
-  transformOrigin?:'left'|'center'|'right'
+  transformOrigin?:'left'|'center'|'right'|string
 
 }
 // 定义echarts表
@@ -145,7 +145,7 @@ export class NodePanel {
   disabled!: boolean;
 }
 
-export type LINK_POSITION = "left" | "right" | "top" | "bottom";
+export type LINK_POSITION = "left" | "right" | "top" | "bottom"|string;
 
 export interface Link {
   /** 连线的唯一id, source+CONNECTOR+target的形式 */
@@ -214,14 +214,14 @@ export class BaseCompStyle {
   height?:string;
   fontFamily?:string;
   fontSize?:number
-  textAlign?:'left'|'center'|'right';
-  verticalAlign?:'top'|'middle'|'bottom'|'sub'|'super';
+  textAlign?:'left'|'center'|'right'|string;
+  verticalAlign?:'top'|'middle'|'bottom'|'sub'|'super'|string;
   fontWeight?:number;
   textDecoration?:string;
   backgroundColor?:string;
   opacity?:number;
   borderSize?:number;
-  borderStyle?:'solid'|'dotted';
+  borderStyle?:'solid'|'dotted'|string;
   borderWidth?:number;
   borderColor?:string;
   color?:string;

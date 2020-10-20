@@ -213,17 +213,20 @@ export function EditorNode(props: EditorNodeProps) {
     },
     [interactive, onClick, currentNode]
   );
-  /**双击组件*/
-
     // 动态渲染组件
   // const newNode = _.cloneDeep(currentNode)
   // delete newNode.ref;
   const dynamicLoadComp=useMemo(()=>{
-    if (currentNode.chart?.component=='TimeComp') return <TimeComp node={currentNode} updateNodes={updateNodes}></TimeComp>
-    if (currentNode.chart?.component=='TextComp') return <TextComp node={currentNode} updateNodes={updateNodes}></TextComp>
-    if (currentNode.chart?.component=='LineComp') return <LineComp node={currentNode} updateNodes={updateNodes}></LineComp>
-    if (currentNode.chart?.component=='CircleComp') return <CircleComp node={currentNode} updateNodes={updateNodes}></CircleComp>
-    if (currentNode.chart?.component=='CapsuleChart') return <CapsuleChart node={currentNode} updateNodes={updateNodes}></CapsuleChart>
+    if (currentNode.chart?.component=='TimeComp')
+      return <TimeComp node={currentNode} updateNodes={updateNodes}></TimeComp>
+    if (currentNode.chart?.component=='TextComp')
+      return <TextComp node={currentNode} interactive={interactive} updateNodes={updateNodes}></TextComp>
+    if (currentNode.chart?.component=='LineComp')
+      return <LineComp node={currentNode} updateNodes={updateNodes}></LineComp>
+    if (currentNode.chart?.component=='CircleComp')
+      return <CircleComp node={currentNode} updateNodes={updateNodes}></CircleComp>
+    if (currentNode.chart?.component=='CapsuleChart')
+      return <CapsuleChart node={currentNode} updateNodes={updateNodes}></CapsuleChart>
   },[currentNode.chart?.format,currentNode.chart?.stroke,currentNode.width])// 只有时间控件和直线才会重新加载
 
   return (
@@ -241,10 +244,11 @@ export function EditorNode(props: EditorNodeProps) {
       currTrans={currTrans}
       ref={nodeRef}
       isSelected={isSelected}
-      onClick={handleClickNode}
-      onDoubleClick={onContextEditable}
-      onResize={onResize}
-      onChangeZIndex={onChangeZIndex}
+      interactive={interactive}
+      onClick={interactive ? handleClickNode:null}
+      onDoubleClick={interactive ? onContextEditable:null}
+      onResize={interactive ? onResize:null}
+      onChangeZIndex={interactive ? onChangeZIndex:null}
       onContextMenu={interactive ? onContextMenu : null}
     >
       {currentNode.chart==undefined?(

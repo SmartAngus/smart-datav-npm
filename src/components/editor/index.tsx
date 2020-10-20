@@ -2,17 +2,18 @@
 import * as React from "react";
 import * as _ from "lodash";
 import * as uuid from "uuid";
-import { message } from "antd";
+import { message,Modal } from "antd";
 import { Toolbar, NodePanel, DragSelector } from "./components";
 import CanvasContent from "./common/CanvasContent";
 import { useEditorStore, useKeyPress, useEventListener } from "./hooks";
 import { ShapeProps } from "./utils/useDragSelect";
 import { pointInPoly } from "./utils/layout";
-import { GROUP_PADDING, Node, Group} from "./constants/defines";
+import { GROUP_PADDING, Node, Group, Link } from './constants/defines'
 import RenderPropertySidebar from "./common/RenderPropertySidebar";
 
 
 import "./index.scss";
+import DataVPreview from '../preview'
 
 const { useState, useRef, useEffect,useContext } = React;
 
@@ -22,17 +23,37 @@ class DataVEditorProps{
   // 数据保存到本地后的回掉的是
   onEditorSaveCb?:(data:any)=>void;
   // 背景图片上传路径
-  uploadBgUrl?:string;
+  uploadBgBaseUrl?:string;
   // 预设背景图片 图片访问路径
-  preinstallBgImages:[string,string,string];
+  preinstallBgImages?:[string,string,string];
+  // 面板数据和配置
+  editorData?: {
+    nodes: Node[],
+    groups: Group[],
+    links: Link[],
+    editorConfig: any;
+  };
+  // 自定义预览按钮的功能
+  onPreview?:(editorData:any)=>void;
+  // 当点击退出按钮时
+  onPoweroff?:(isSave:boolean)=>void;
+  /** 间隔几分钟保存数据 */
+  autoSaveInterval?:number;
+  // 额外的配置按钮，所有操作均由调用者控制
+  extraSetting?:React.ReactNode;
+
 }
 
 
 export default function DataVEditor(props:DataVEditorProps) {
-    const { onEditorSaveCb } = props
+    const { onEditorSaveCb,editorData,onPreview,onPoweroff,autoSaveInterval } = props
+    console.log("DataVEditor Init",editorData)
+
     const [screenScale, changeScreenScale] = useState(100);
     const [dragSelectable, setDragSelectable] = useState(false);
     const [keyPressing, setKeyPressing] = useState(false);
+    const [isShowPreviewModel, setIsShowPreviewModel] = useState(false)
+    const [isSave,setIsSave] = useState(false)
     const {
         nodes,
         links,
@@ -73,8 +94,58 @@ export default function DataVEditor(props:DataVEditorProps) {
     const canvasRef = useRef({
         getWrappedInstance: () => Object
     } as any);
+    // 第一次加载，如果后端有数据，就加载后端的数据
+    useEffect(()=>{
+      const initData = ()=>{
+        const isQuaiTime = setInterval(()=>{
+          const localEditorData = {
+            nodes,
+            links,
+            groups,
+            editorConfig: canvasProps
+          }
+          const isEqual = _.isEqualWith(localEditorData.nodes,editorData.nodes,(objValue, othValue ,key, object, other, stack)=>{
+            return true;
+          })
+          console.log(localEditorData)
+          console.log(editorData)
+          console.log("isEqual===",isEqual)
+        },1000*60*10000)
+        console.log("initData",editorData)
+        if (editorData&&editorData!=null&&editorData!=undefined){// 有数据就初始化
+          const newNodes = (editorData?.nodes || []).map(item => {
+            return {
+              ...item,
+              ref: React.createRef()
+            };
+          });
+          setNodes(newNodes);
+          setGroups(editorData.groups)
+          setLinks(editorData.links)
+          setCanvasProps(editorData.editorConfig)
+        }
+      };
+      const timer = setTimeout(()=>{
+        initData();
+      },200)
+      return ()=>{
+        clearTimeout(timer)
+      }
+    },[editorData])
+    // 设置每五分钟保存一次数据
+    useEffect(()=>{
+      const timer = setTimeout( ()=>{
+        const saveDiv = document.getElementById("toolbarBtnSave")
+        saveDiv.click()
+      },1000*60*(autoSaveInterval||1))
+      return ()=>{
+        clearTimeout(timer)
+      }
+    },[])
 
     const canvasInstance = canvasRef.current;
+
+    // 初始化的时候，将后端传过来的数据赋值给前端
 
 
     /** 删除组件 */
@@ -331,12 +402,18 @@ export default function DataVEditor(props:DataVEditorProps) {
 
     // 预览
     const handlePreview = () => {
-            var a = document.createElement("a");
-            a.setAttribute("href", '/editor/preview');
-            a.setAttribute("target", "_blank");
-            a.setAttribute("id", "camnpr");
-            document.body.appendChild(a);
-            a.click();
+        // 编辑器内默认的预览按钮,在内打开一个全屏的弹出窗口
+      if(onPreview){
+        const localEditorData = {
+          nodes,
+          links,
+          groups,
+          editorConfig:canvasProps
+        }
+        onPreview(localEditorData)
+      }else{
+        setIsShowPreviewModel(!isShowPreviewModel)
+      }
     }
 
     /** 处理DragSelector 关闭事件 */
@@ -404,6 +481,11 @@ export default function DataVEditor(props:DataVEditorProps) {
             message.error("保存失败");
         }
     };
+    /** 退出，要检查是否已经保存 */
+    const handlePoweroff = ()=>{
+      console.log("点击了退出按钮")
+      onPoweroff&&onPoweroff(isSave)
+    }
     /** 保存历史 */
     const handleSaveHistory =async () => {
          await handleSaveHistoryData()
@@ -617,7 +699,8 @@ export default function DataVEditor(props:DataVEditorProps) {
                     "rightJustify",
                     "topJustify",
                     "verticallyJustify",
-                    "bottomJustify"
+                    "bottomJustify",
+                    "poweroff"
                 ]}
                 onCopy={handleCopy}
                 onPaste={handlePaste}
@@ -625,6 +708,7 @@ export default function DataVEditor(props:DataVEditorProps) {
                 onShear={handleShear}
                 onDragSelect={handleDragSelect}
                 onSave={handleSave}
+                onPoweroff={handlePoweroff}
                 onLayout={canvasInstance && canvasInstance.layout}
                 onAdapt={canvasInstance && canvasInstance.handleShowAll}
                 onGroup={handleGroup}
@@ -649,6 +733,29 @@ export default function DataVEditor(props:DataVEditorProps) {
             <NodePanel onDrag={setDragNode} />
         </div>
     );
+    // 渲染本地预览框
+  const renderPreviewModel = ()=>{
+    const localEditorData = {
+      nodes,
+      links,
+      groups,
+      editorConfig: canvasProps
+    }
+    return (
+      <Modal
+        title="预览"
+        className="preview-modal"
+        visible={isShowPreviewModel}
+        onOk={handlePreview}
+        onCancel={handlePreview}
+        okText="确认"
+        cancelText="取消"
+      >
+        <DataVPreview editorData={localEditorData}/>
+      </Modal>
+    )
+  }
+
 
     /** 渲染中间画布区 */
     const renderCanvas = (
@@ -697,22 +804,25 @@ export default function DataVEditor(props:DataVEditorProps) {
         </div>
     );
     return (
-        <div className="editor-demo" ref={screenRef}>
+        <React.Fragment>
+          <div className="editor-demo" ref={screenRef}>
             <div className="editor-operation">{renderOperation}</div>
             <div className="editor-container">
-                {renderNodePanel}
-                {renderCanvas}
-                <RenderPropertySidebar
-                    selectedNodes={selectedNodes}
-                    canvasProps={canvasProps}
-                    setCanvasProps={setCanvasProps}
-                    nodes={nodes}
-                    groups={groups}
-                    links={links}
-                    updateNodes={updateNodes}
-                    setDragNode={setDragNode}
-                    autoSaveSettingInfo={handleAutoSaveSettingInfo} />
+              {renderNodePanel}
+              {renderCanvas}
+              <RenderPropertySidebar
+                selectedNodes={selectedNodes}
+                canvasProps={canvasProps}
+                setCanvasProps={setCanvasProps}
+                nodes={nodes}
+                groups={groups}
+                links={links}
+                updateNodes={updateNodes}
+                setDragNode={setDragNode}
+                autoSaveSettingInfo={handleAutoSaveSettingInfo} />
             </div>
-        </div>
+          </div>
+          {isShowPreviewModel&&renderPreviewModel()}
+        </React.Fragment>
     );
 }

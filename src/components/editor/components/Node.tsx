@@ -41,6 +41,9 @@ class NodeProps {
   /** 外部画布属性 */
   currTrans?: any;
 
+  // 区分预览还是编辑
+  interactive?:boolean;
+
   /** 是否被点击 */
   isSelected: boolean;
 
@@ -95,6 +98,7 @@ const Node = React.forwardRef((props: NodeProps, ref: any) => {
     zIndex,
     type,
     style,
+    interactive,
   } = props;
 
   const [showSelector, setShowSelector] = useState(false);
@@ -231,10 +235,10 @@ const Node = React.forwardRef((props: NodeProps, ref: any) => {
   );
 
   useEffect(() => {
-    onResize(resizeWidth, resizeHeight, resizeX, resizeY,rotateDeg,stroke);
+    onResize && onResize(resizeWidth, resizeHeight, resizeX, resizeY,rotateDeg,stroke);
   }, [resizeWidth, resizeHeight, resizeX, resizeY,rotateDeg,stroke]);
   useEffect(()=>{
-    onChangeZIndex(zIndex)
+    onChangeZIndex && onChangeZIndex(zIndex)
   },[zIndex])
 
   return (
@@ -256,7 +260,7 @@ const Node = React.forwardRef((props: NodeProps, ref: any) => {
       onMouseLeave={() => setShowSelector(false)}
       onContextMenu={handleContextMenu}
     >
-      {((isSelected || showSelector)&&notLine) && renderNodeSelector}
+      {((interactive!==false)&&(isSelected || showSelector)&&notLine) && renderNodeSelector}
       {isSelected && renderResize}
       {React.cloneElement(children as React.ReactElement<any>, {
         ref: containerRef

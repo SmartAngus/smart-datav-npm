@@ -42,7 +42,8 @@ export type ToolbarType =
   | "rightJustify"
   | "topJustify"
   | "verticallyJustify"
-  | "bottomJustify";
+  | "bottomJustify"
+  | "poweroff";
 
 export class ToolbarProps {
   /** 适应画布 */
@@ -102,6 +103,8 @@ export class ToolbarProps {
 
   onBottomJustify?:()=>void;
 
+  onPoweroff?:()=>void;
+
   /** 处理全屏 */
   // handleFullScreen?: () => void;
   /** Toolbar选项 */
@@ -137,9 +140,13 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
     onRightJustify,
     onTopJustify,
     onVerticallyJustify,
-    onBottomJustify
+    onBottomJustify,
+    onPoweroff
   } = props;
   const scale = String(Math.round(screenScale));
+
+  /** 是否退出 */
+  const isPowerOff = items.includes("poweroff")
 
   /** 是否保存 */
   const isSave = items.includes("save");
@@ -240,6 +247,15 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
 
     return (
       <React.Fragment>
+        {isPowerOff && (
+            <div className="toolbar-btn "  onClick={onPoweroff} >
+              <Tooltip title="退出">
+                <Icon type="poweroff"/>
+                <span className="toolbar-btn-text">退出</span>
+              </Tooltip>
+            </div>
+          )
+        }
         {isZoom && (
           <React.Fragment>
             <div className="toolbar-btn" onClick={handleResize.bind(null, true)}>
@@ -258,7 +274,7 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
         )}
         <div className="btn-separator"></div>
         {isSave && (
-          <div className="toolbar-btn"  onClick={onSave} >
+          <div className="toolbar-btn toolbar-btn-save" id="toolbarBtnSave"  onClick={onSave} >
             <Tooltip title="保存">
               <Icon type="save"/>
               <span className="toolbar-btn-text">保存</span>

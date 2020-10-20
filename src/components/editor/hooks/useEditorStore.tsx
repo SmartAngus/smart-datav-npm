@@ -10,6 +10,11 @@ const canvasConfig = {
   backgroundColor: "#f0f2f5",
   backgroundImage: null,
   backgroundImageKey: null,
+  uploadBackgroundImage:{
+    name:'',
+    show:false,
+    url:null
+  },
   grid: {show: true, size: 10, color: "#662b2b",url:null},
   height: 768,
   password: null,

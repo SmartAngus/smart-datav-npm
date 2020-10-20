@@ -1,61 +1,93 @@
 import React from "react"
 import { Upload, Button, Icon } from 'antd';
 import * as _ from 'lodash'
-
-class UploadBgImg extends React.Component {
+import axios from "axios"
+import { UploadFile } from 'antd/es/upload/interface'
+interface UploadBgImgProps {
+  onUploadComplete?: (file:UploadFile)=>void;
+  onRemoveFile?:(file:UploadFile)=>void
+}
+class UploadBgImg extends React.Component<UploadBgImgProps> {
+  state = {
+    fileList: [],
+    uploading: false,
+    timer:null
+  };
   constructor(props) {
     super(props);
-    this.state = {
-      action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-      onChange: this.handleChange,
-      handleRemove: this.handleRemove,
-      fileList: [
-        {
-          uid: '3',
-          type: 'png',
-          size: 12345,
-          name: 'zzz.png',
-          response: 'Server Error 500', // custom error message to show
-          url: 'http://www.baidu.com/zzz.png'
-        }
-      ]
-    };
+  }
+  componentWillUnmount(): void {
+    // 清除定时器
+    clearTimeout(this.state.timer)
   }
 
-    handleChange = info => {
-      let fileList = [...info.fileList];
+  handleRemove = (file)=>{
+    console.log("aaaa")
+    this.setState({fileList:[]})
+  }
+  // 手动上传文件
+  handleUpload = ()=>{
+    const formData = new FormData()
+    formData.append("file",this.state.fileList[0])
+    formData.append("mappingId","23233")
+    formData.append("mappingType","107")
+    const instance = axios.create({
+      baseURL:'http://192.168.3.42:50010',
+      timeout:10000000,
+      maxContentLength:1000000000
+    })
+    instance.post("/api/file/file/uploadReturnPath",formData,{
+      method:'POST',
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'token':'development_of_special_token_by_star_quest',
+        'Content-Type':'multipart/form-data'
+      }
+    }).then((res)=>{
+      const { onUploadComplete } = this.props;
+      const file = this.state.fileList[0];
+      file.url = res.data.data[0]
+      this.setState({fileList:[file]})
+      onUploadComplete&&onUploadComplete(file)
+    })
+  }
 
-      // 1. Limit the number of uploaded files
-      // Only to show two recent uploaded files, and old ones will be replaced by the new
-      fileList = fileList.slice(-1);
-
-      // 2. Read from response and show file link
-      fileList = fileList.map(file => {
-        if (file.response) {
-          // Component will show file.url as link
-          file.url = file.response.url;
-        }
-        return file;
-      });
-
-      this.setState({ fileList });
-    };
-    handleRemove = (file)=>{
-      console.log("aaaa")
-      this.setState({fileList:[]})
+  uploadProps = {
+    handleRemove: this.handleRemove,
+    multiple: false,
+    beforeUpload: file => {
+      this.setState(state => ({
+        fileList: [...this.state.fileList, file],
+      }));
+      return false;
+    },
+    onChange:info=>{
+      const timer = setTimeout(this.handleUpload,500);
+      this.setState({timer:timer})
     }
+  };
 
 
-
-    render() {
-        return (
-            <Upload {...this.state} >
-                <Button>
-                    <Icon type="upload" /> 上传图片
-                </Button>
-            </Upload>
-        );
-    }
+  render() {
+      return (
+        <React.Fragment>
+          <Upload {...this.uploadProps} >
+            <Button>
+              <Icon type="upload" /> 上传图片
+            </Button>
+          </Upload>
+          {/*<Button*/}
+          {/*  type="primary"*/}
+          {/*  onClick={this.handleUpload}*/}
+          {/*  disabled={this.state.fileList.length === 0}*/}
+          {/*  loading={this.state.uploading}*/}
+          {/*  style={{ marginTop: 16 }}*/}
+          {/*>*/}
+          {/*  {this.state.uploading ? 'Uploading' : 'Start Upload'}*/}
+          {/*</Button>*/}
+        </React.Fragment>
+      );
+  }
 }
 
 export default UploadBgImg;

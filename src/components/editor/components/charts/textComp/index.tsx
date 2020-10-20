@@ -11,11 +11,12 @@ import { useClickAway } from "../../../hooks/useClickAway";
 
 class TextCompProps{
     node?:Node;
-    updateNodes?:(node:Node)=>void
+    updateNodes?:(node:Node)=>void;
+    interactive?:boolean;
 }
 
 const TextComp:React.FC<TextCompProps> = (props,ref) =>{
-    const {node,updateNodes} = props
+    const {node,updateNodes,interactive} = props
     const [showEditable,setShowEditable] = useState(false)
     const editableRef = useRef(null)
     console.log(node)
@@ -35,16 +36,14 @@ const TextComp:React.FC<TextCompProps> = (props,ref) =>{
 
     // 绑定双击事件
     useEffect(()=>{
+      if(interactive!==false){
         editableRef.current.addEventListener("dblclick",handleDoubleClick)
         editableRef.current.addEventListener("keyup",handleChangeEditableText)
-        //editableRef.current.addEventListener('mousemove',handleSelectText)
-        // 加上会有问题，组件会变少
-        //window.addEventListener('click',handleSaveEditData)
-        return ()=>{
-            editableRef.current.removeEventListener("dblclick",handleDoubleClick)
-            editableRef.current.removeEventListener("keyup",handleChangeEditableText)
-            //window.removeEventListener('click',handleSaveEditData)
-        }
+      }
+      return ()=>{
+          editableRef.current.removeEventListener("dblclick",handleDoubleClick)
+          editableRef.current.removeEventListener("keyup",handleChangeEditableText)
+      }
     })
     const handleSelectText=(event:any)=>{
         event.stopPropagation()
