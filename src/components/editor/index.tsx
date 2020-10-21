@@ -8,7 +8,15 @@ import CanvasContent from "./common/CanvasContent";
 import { useEditorStore, useKeyPress, useEventListener } from "./hooks";
 import { ShapeProps } from "./utils/useDragSelect";
 import { pointInPoly } from "./utils/layout";
-import { GROUP_PADDING, Node, Group, Link } from './constants/defines'
+import {
+  GROUP_PADDING,
+  Node,
+  Group,
+  Link,
+  IndustrialImageProps,
+  ImageProps,
+  DataVEditorProps
+} from './constants/defines'
 import RenderPropertySidebar from "./common/RenderPropertySidebar";
 
 
@@ -19,34 +27,19 @@ const { useState, useRef, useEffect,useContext } = React;
 
 
 
-class DataVEditorProps{
-  // 数据保存到本地后的回掉的是
-  onEditorSaveCb?:(data:any)=>void;
-  // 背景图片上传路径
-  uploadBgBaseUrl?:string;
-  // 预设背景图片 图片访问路径
-  preinstallBgImages?:[string,string,string];
-  // 面板数据和配置
-  editorData?: {
-    nodes: Node[],
-    groups: Group[],
-    links: Link[],
-    editorConfig: any;
-  };
-  // 自定义预览按钮的功能
-  onPreview?:(editorData:any)=>void;
-  // 当点击退出按钮时
-  onPoweroff?:(isSave:boolean)=>void;
-  /** 间隔几分钟保存数据 */
-  autoSaveInterval?:number;
-  // 额外的配置按钮，所有操作均由调用者控制
-  extraSetting?:React.ReactNode;
-
-}
 
 
 export default function DataVEditor(props:DataVEditorProps) {
-    const { onEditorSaveCb,editorData,onPreview,onPoweroff,autoSaveInterval } = props
+    const {
+      onEditorSaveCb,
+      editorData,
+      onPreview,
+      onPoweroff,
+      autoSaveInterval,
+      industrialLibrary,
+      selfIndustrialLibrary,
+      uploadConfig
+    } = props
     console.log("DataVEditor Init",editorData)
 
     const [screenScale, changeScreenScale] = useState(100);
@@ -127,7 +120,7 @@ export default function DataVEditor(props:DataVEditorProps) {
       };
       const timer = setTimeout(()=>{
         initData();
-      },200)
+      },2000)
       return ()=>{
         clearTimeout(timer)
       }
@@ -730,7 +723,7 @@ export default function DataVEditor(props:DataVEditorProps) {
     /** 渲染节点选择区 */
     const renderNodePanel = (
         <div className="editor-nodePanel">
-            <NodePanel onDrag={setDragNode} />
+            <NodePanel onDrag={setDragNode} industrialLibrary={industrialLibrary} selfIndustrialLibrary={selfIndustrialLibrary} />
         </div>
     );
     // 渲染本地预览框

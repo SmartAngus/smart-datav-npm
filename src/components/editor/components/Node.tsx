@@ -26,6 +26,8 @@ class NodeProps {
   width: number;
 
   height: number;
+  // 图片组件路径
+  url:string;
 
   /** 点击节点 */
   onClick?: (event) => void;
@@ -99,6 +101,7 @@ const Node = React.forwardRef((props: NodeProps, ref: any) => {
     type,
     style,
     interactive,
+    url,
   } = props;
 
   const [showSelector, setShowSelector] = useState(false);

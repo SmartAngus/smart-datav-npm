@@ -56,6 +56,25 @@ export enum ComponentType {
   /** 自定义 */
   self = 'self'
 }
+// 工业图片属性
+export class ImageProps{
+  name!:string;// 非空断言，且不能重复
+  url!:string;
+  width?:number;
+  height?:number;
+  type?:string;
+  rotate?:number;
+  key!:string
+}
+// 工业图库属性
+export interface IndustrialImageProps {
+  // 分类类型
+  type?:string;
+  // 分类标题
+  name?:string;
+  // 图片路径
+  images?:ImageProps[]
+}
 
 export const ComponentMap: Record<ComponentType, string> = {
   [ComponentType.common]: "通用",
@@ -71,7 +90,7 @@ export class Stroke {// 直线控件有的属性
   y1?:number;
   x2?:number;
   y2?:number;
-  transformOrigin?:'left'|'center'|'right'|string
+  transformOrigin?:'left'|'center'|'right'|undefined
 
 }
 // 定义echarts表
@@ -131,6 +150,8 @@ export class Node {
 
   /**定义旋转*/
   rotate?:number;
+  /** 图片组件才有的URL属性 */
+  url?:string
 }
 
 export class NodePanel {
@@ -145,7 +166,7 @@ export class NodePanel {
   disabled!: boolean;
 }
 
-export type LINK_POSITION = "left" | "right" | "top" | "bottom"|string;
+export type LINK_POSITION = "left" | "right" | "top" | "bottom"|undefined;
 
 export interface Link {
   /** 连线的唯一id, source+CONNECTOR+target的形式 */
@@ -214,14 +235,14 @@ export class BaseCompStyle {
   height?:string;
   fontFamily?:string;
   fontSize?:number
-  textAlign?:'left'|'center'|'right'|string;
-  verticalAlign?:'top'|'middle'|'bottom'|'sub'|'super'|string;
+  textAlign?:'left'|'center'|'right'|undefined;
+  verticalAlign?:'top'|'middle'|'bottom'|'sub'|'super'|undefined;
   fontWeight?:number;
   textDecoration?:string;
   backgroundColor?:string;
   opacity?:number;
   borderSize?:number;
-  borderStyle?:'solid'|'dotted'|string;
+  borderStyle?:'solid'|'dotted'|undefined;
   borderWidth?:number;
   borderColor?:string;
   color?:string;
@@ -500,3 +521,41 @@ export enum OperateType {
   delete = "delete"
 }
 
+
+export class DataVEditorProps{
+  // 数据保存到本地后的回掉的是
+  onEditorSaveCb?:(data:any)=>void;
+  // 用户自定义图库
+  selfIndustrialLibrary:ImageProps[];
+  // 预设背景图片 图片访问路径
+  preinstallBgImages?:[string,string,string];
+  // 面板数据和配置
+  editorData?: {
+    nodes: Node[],
+    groups: Group[],
+    links: Link[],
+    editorConfig: any;
+  };
+  // 自定义预览按钮的功能
+  onPreview?:(editorData:any)=>void;
+  // 当点击退出按钮时
+  onPoweroff?:(isSave:boolean)=>void;
+  /** 间隔几分钟保存数据 */
+  autoSaveInterval?:number;
+  // 额外的配置按钮，所有操作均由调用者控制
+  extraSetting?:React.ReactNode;
+  // 预设工业图库
+  industrialLibrary?:IndustrialImageProps[];
+  // 图片上传配置
+  uploadConfig?:uploadConfigProps;
+}
+export class uploadConfigProps{
+  /**基本路径*/
+  baseURL!:string;
+  /**文件上传路径*/
+  url!:string;
+  /**请求token*/
+  token!:string;
+  /**需要传递的额外数据*/
+  data?:object;
+}

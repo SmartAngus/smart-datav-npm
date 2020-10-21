@@ -765,7 +765,7 @@ export default class CanvasContent extends React.Component<
 
     if (dragNode) {
       // 新添加了chart属性
-      const { key, name, type, width, height,chart,zIndex,style,rotate } = dragNode;
+      const { key, name, type, width, height,chart,zIndex,style,rotate,url } = dragNode;
       console.log(style)
 
       const newNode = {
@@ -778,6 +778,7 @@ export default class CanvasContent extends React.Component<
         zIndex,
         style,
         rotate,
+        url,
         x: (screenX - x) / k - NODE_WIDTH / 2,
         y: (screenY - y) / k - NODE_HEIGHT / 2,
         id: uuid.v4(),

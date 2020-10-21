@@ -19,6 +19,7 @@ import CircleComp from '../components/charts/circleComp'
 import LineComp from '../components/charts/lineComp'
 import TextComp from '../components/charts/textComp'
 import TimeComp from '../components/charts/timeComp'
+import ImageComp from '../components/charts/imageComp'
 
 const { useState, useRef, useMemo, useCallback,useEffect,useLayoutEffect } = React;
 // const CapsuleChart = loadable(() => import('../components/charts/capsuleChart'));
@@ -112,6 +113,7 @@ export function EditorNode(props: EditorNodeProps) {
   const [menuShow, setMenuShow] = useState(false);
   const [menuPos, setMenuPos] = useState({ left: 0, top: 0 });
   const [editableShow,setEditableShow]=useState(false)
+  const [nodeType,setNodeType]=useState("base")
 
   useClickAway(
     () => {
@@ -227,6 +229,8 @@ export function EditorNode(props: EditorNodeProps) {
       return <CircleComp node={currentNode} updateNodes={updateNodes}></CircleComp>
     if (currentNode.chart?.component=='CapsuleChart')
       return <CapsuleChart node={currentNode} updateNodes={updateNodes}></CapsuleChart>
+    if (currentNode.type=='image')
+      return <ImageComp node={currentNode} updateNodes={updateNodes}></ImageComp>
   },[currentNode.chart?.format,currentNode.chart?.stroke,currentNode.width])// 只有时间控件和直线才会重新加载
 
   return (
@@ -237,6 +241,7 @@ export function EditorNode(props: EditorNodeProps) {
       width={currentNode.width}
       height={currentNode.height}
       chart={currentNode.chart}
+      url={currentNode.url}
       style={currentNode.style}
       rotate={currentNode.rotate}
       zIndex={currentNode.zIndex}
@@ -251,7 +256,7 @@ export function EditorNode(props: EditorNodeProps) {
       onChangeZIndex={interactive ? onChangeZIndex:null}
       onContextMenu={interactive ? onContextMenu : null}
     >
-      {currentNode.chart==undefined?(
+      {currentNode.chart==undefined&&currentNode.url==undefined?(
         <div className="editorNode" ref={editorNodeRef}>
           <div className={borderClass} style={ {
             ...currentNode.style,

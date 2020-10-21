@@ -76,15 +76,6 @@ class UploadBgImg extends React.Component<UploadBgImgProps> {
               <Icon type="upload" /> 上传图片
             </Button>
           </Upload>
-          {/*<Button*/}
-          {/*  type="primary"*/}
-          {/*  onClick={this.handleUpload}*/}
-          {/*  disabled={this.state.fileList.length === 0}*/}
-          {/*  loading={this.state.uploading}*/}
-          {/*  style={{ marginTop: 16 }}*/}
-          {/*>*/}
-          {/*  {this.state.uploading ? 'Uploading' : 'Start Upload'}*/}
-          {/*</Button>*/}
         </React.Fragment>
       );
   }

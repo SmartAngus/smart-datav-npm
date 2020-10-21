@@ -8,6 +8,37 @@ import { Modal } from 'antd'
 
 const App = () => {
   const [editorData,setEditorData] = useState(undefined)
+  const industrialLibrary = [
+    {
+      type:'mk',
+      name:'灯光',
+      images:[
+        {name:"1",url:"https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",width:100,height:100,type:'image',key:'1'},
+        {name:"2",url:"https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",width:100,height:100,type:'image',key:'2'},
+      ]
+    },
+    {
+      type:'mj',
+      name:'管道',
+      images:[
+        {name:"3",url:"https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",width:100,height:100,type:'image',key:'3'},
+        {name:"4",url:"https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",width:100,height:100,type:'image',key:'4'},
+      ]
+    }
+  ]
+  const selfIndustrialLibrary = [
+    {name:"9",url:"https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",width:100,height:100,type:'image',key:'8'},
+    {name:"10",url:"https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",width:100,height:100,type:'image',key:'9'},
+  ]
+  const uploadConfig = {
+    baseURL:"http://192.168.3.42:50010",
+    token:"development_of_special_token_by_star_quest",
+    url:"/api/file/file/uploadReturnPath",
+    data:{
+      mappingId:"23233",
+      mappingType:"106"
+    }
+  }
   useEffect( ()=>{
     // 获取数据
     const formData = new FormData()
@@ -83,7 +114,15 @@ const App = () => {
   }
   return (
     <React.Fragment>
-      <DataVEditor onEditorSaveCb={handleSaveEditorData} editorData={editorData} onPreview={handlePreview} extraSetting={renderExtraModel}/>
+      <DataVEditor
+        onEditorSaveCb={handleSaveEditorData}
+        editorData={editorData}
+        onPreview={handlePreview}
+        extraSetting={renderExtraModel}
+        selfIndustrialLibrary={selfIndustrialLibrary}
+        industrialLibrary={industrialLibrary}
+        uploadConfig={uploadConfig}
+      />
       {/*<DataVPreview editorData={editorData}/>*/}
     </React.Fragment>
   )
