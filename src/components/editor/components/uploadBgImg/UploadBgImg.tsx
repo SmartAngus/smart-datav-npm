@@ -1,11 +1,12 @@
 import React from "react"
 import { Upload, Button, Icon } from 'antd';
-import * as _ from 'lodash'
 import axios from "axios"
 import { UploadFile } from 'antd/es/upload/interface'
+import { UploadURIProps } from '../../constants/defines'
 interface UploadBgImgProps {
   onUploadComplete?: (file:UploadFile)=>void;
-  onRemoveFile?:(file:UploadFile)=>void
+  onRemoveFile?:(file:UploadFile)=>void;
+  uploadConfig?:UploadURIProps
 }
 class UploadBgImg extends React.Component<UploadBgImgProps> {
   state = {
@@ -27,20 +28,24 @@ class UploadBgImg extends React.Component<UploadBgImgProps> {
   }
   // 手动上传文件
   handleUpload = ()=>{
+    const { uploadConfig } = this.props
     const formData = new FormData()
     formData.append("file",this.state.fileList[0])
-    formData.append("mappingId","23233")
-    formData.append("mappingType","107")
+    for(let k in uploadConfig.data){
+      formData.append(k,uploadConfig.data[k])
+    }
+    // formData.append("mappingId","23233")
+    // formData.append("mappingType","107")
     const instance = axios.create({
-      baseURL:'http://192.168.3.42:50010',
+      baseURL:uploadConfig.baseURL,
       timeout:10000000,
       maxContentLength:1000000000
     })
-    instance.post("/api/file/file/uploadReturnPath",formData,{
+    instance.post(uploadConfig.url,formData,{
       method:'POST',
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
-        'token':'development_of_special_token_by_star_quest',
+        'token':uploadConfig.token,
         'Content-Type':'multipart/form-data'
       }
     }).then((res)=>{
@@ -55,6 +60,7 @@ class UploadBgImg extends React.Component<UploadBgImgProps> {
   uploadProps = {
     handleRemove: this.handleRemove,
     multiple: false,
+    showUploadList:false,
     beforeUpload: file => {
       this.setState(state => ({
         fileList: [...this.state.fileList, file],

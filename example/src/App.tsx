@@ -8,6 +8,11 @@ import { Modal } from 'antd'
 
 const App = () => {
   const [editorData,setEditorData] = useState(undefined)
+  const preInstallBgImages = [
+    {key:1,img:''},
+    {key:2,img:''},
+    {key:3,img:''}
+  ]
   const industrialLibrary = [
     {
       type:'mk',
@@ -32,11 +37,23 @@ const App = () => {
   ]
   const uploadConfig = {
     baseURL:"http://192.168.3.42:50010",
-    token:"development_of_special_token_by_star_quest",
-    url:"/api/file/file/uploadReturnPath",
-    data:{
-      mappingId:"23233",
-      mappingType:"106"
+    self:{
+      baseURL:"http://192.168.3.42:50010",
+      token:"development_of_special_token_by_star_quest",
+      url:"/api/file/file/uploadReturnPath",
+      data:{
+        mappingId:"ooip6ffe388d487db754b885b8aa65b9",
+        mappingType:"106"
+      }
+    },
+    preInstall:{
+      baseURL:"http://192.168.3.42:50010",
+      token:"development_of_special_token_by_star_quest",
+      url:"/api/file/file/uploadReturnPath",
+      data:{
+        mappingId:"ooip6ffe388d487db754b885b8aa65b9",
+        mappingType:"107"
+      }
     }
   }
   useEffect( ()=>{
@@ -48,7 +65,8 @@ const App = () => {
       baseURL:'http://192.168.3.42:50010',
       timeout:10000000,
       maxContentLength:1000000000
-    })
+    });
+    // 获取面板数据
     instance.get("/api/applications/newBoard/detail",{
       method:'get',
       headers: {
@@ -67,8 +85,35 @@ const App = () => {
           setEditorData(getEditorData)
         }
       }
-
       console.log(JSON.parse(decodeURIComponent(escape(window.atob(res.data.data.property)))))
+    })
+    // 获取获取当前租户下 上传的背景图片
+    instance.post("/api/applications/custom/component/componentList",{mappingType:"107"},{
+      method:'post',
+      headers: {
+        'token':'development_of_special_token_by_star_quest',
+        'Content-Type':'application/json'
+      }
+    }).then((res)=>{
+      console.log("背景图片=",res)
+    })
+    // 获取获取当前租户下 指定自定义组件图片列表
+    instance.post("/api/applications/custom/component/componentList",{mappingType:"106"},{
+      method:'post',
+      headers: {
+        'token':'development_of_special_token_by_star_quest',
+        'Content-Type':'application/json'
+      }
+    }).then((res)=>{
+      console.log("组件图片列表=",res);
+      (res.data.data||[]).map((image:any)=>{
+        const newImg = {
+          ...image,
+          width:100,height:100,type:'image',key:image.id
+        }
+        selfIndustrialLibrary.push(newImg)
+        return null;
+      })
     })
   },[])
   // 保存数据到数据库
@@ -117,11 +162,11 @@ const App = () => {
       <DataVEditor
         onEditorSaveCb={handleSaveEditorData}
         editorData={editorData}
-        onPreview={handlePreview}
         extraSetting={renderExtraModel}
         selfIndustrialLibrary={selfIndustrialLibrary}
         industrialLibrary={industrialLibrary}
         uploadConfig={uploadConfig}
+        preInstallBgImages={preInstallBgImages}
       />
       {/*<DataVPreview editorData={editorData}/>*/}
     </React.Fragment>

@@ -38,7 +38,8 @@ export default function DataVEditor(props:DataVEditorProps) {
       autoSaveInterval,
       industrialLibrary,
       selfIndustrialLibrary,
-      uploadConfig
+      uploadConfig,
+      preInstallBgImages
     } = props
     console.log("DataVEditor Init",editorData)
 
@@ -723,7 +724,11 @@ export default function DataVEditor(props:DataVEditorProps) {
     /** 渲染节点选择区 */
     const renderNodePanel = (
         <div className="editor-nodePanel">
-            <NodePanel onDrag={setDragNode} industrialLibrary={industrialLibrary} selfIndustrialLibrary={selfIndustrialLibrary} />
+            <NodePanel
+              onDrag={setDragNode}
+              industrialLibrary={industrialLibrary}
+              selfIndustrialLibrary={selfIndustrialLibrary}
+              config={uploadConfig.self} />
         </div>
     );
     // 渲染本地预览框
@@ -812,7 +817,10 @@ export default function DataVEditor(props:DataVEditorProps) {
                 links={links}
                 updateNodes={updateNodes}
                 setDragNode={setDragNode}
-                autoSaveSettingInfo={handleAutoSaveSettingInfo} />
+                autoSaveSettingInfo={handleAutoSaveSettingInfo}
+                config={uploadConfig.preInstall}
+                preInstallBgImages={preInstallBgImages}
+              />
             </div>
           </div>
           {isShowPreviewModel&&renderPreviewModel()}

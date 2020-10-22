@@ -521,6 +521,10 @@ export enum OperateType {
   delete = "delete"
 }
 
+export class BgImagesProps{
+  key:number;
+  img:any;
+}
 
 export class DataVEditorProps{
   // 数据保存到本地后的回掉的是
@@ -528,7 +532,7 @@ export class DataVEditorProps{
   // 用户自定义图库
   selfIndustrialLibrary:ImageProps[];
   // 预设背景图片 图片访问路径
-  preinstallBgImages?:[string,string,string];
+  preInstallBgImages?:BgImagesProps[];
   // 面板数据和配置
   editorData?: {
     nodes: Node[],
@@ -552,10 +556,15 @@ export class DataVEditorProps{
 export class uploadConfigProps{
   /**基本路径*/
   baseURL!:string;
-  /**文件上传路径*/
+  /**自定义组件文件上传路径*/
+  self!:UploadURIProps;
+  preInstall!:UploadURIProps;
+}
+export class UploadURIProps{
+  baseURL!:string;
   url!:string;
   /**请求token*/
   token!:string;
-  /**需要传递的额外数据*/
+  /**需要传递的额外数据,json对象，智能嵌套一层*/
   data?:object;
 }

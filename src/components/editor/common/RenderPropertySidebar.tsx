@@ -5,10 +5,7 @@ import * as _ from 'lodash'
 import ColorsPicker from './ColorsPicker'
 import "../components/NodePanel.scss";
 import "./RenderPropertySidebar.scss"
-import {Group, Link,Node} from "../constants/defines";
-import preImage1 from "../../../assets/images/pre_bg_img1.jpg";
-import preImage2 from "../../../assets/images/pre_bg_img2.jpg";
-import preImage3 from "../../../assets/images/pre_bg_img3.jpg";
+import { BgImagesProps, Group, Link, Node, UploadURIProps } from '../constants/defines'
 import UploadBgImg from "../components/uploadBgImg/UploadBgImg";
 import {GridBackgroundSVG} from "../icons/editorIcons";
 import { UploadFile } from 'antd/es/upload/interface'
@@ -32,6 +29,8 @@ export class OptionsProperty  {
     canvasProps?:any;
     autoSaveSettingInfo?:(canvasProps:any,nodes:Node[],groups:Group[],links:Link[])=>void;
     setDragNode?:(node:Node)=>void;
+    config?:UploadURIProps;
+    preInstallBgImages?:BgImagesProps[];
 }
 // 定义页面尺寸
 const pageSizes = [
@@ -62,12 +61,6 @@ const timeFormats = [
     {key:'LTS',name:'hh:mm:ss'},
     {key:'LT',name:'hh:mm(24h)'},
 ]
-const preImages = [
-    {key:1,img:preImage1},
-    {key:2,img:preImage2},
-    {key:3,img:preImage3},
-]
-console.log(preImages)
 // 箭头类型
 const arrowTypes =[
     {key:0,value:'none',name:'无'},
@@ -84,7 +77,7 @@ const lineTypes = [
 
 const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
     const sidebarRef = useRef(null)
-    const {selectedNodes,nodes,groups,links,updateNodes,canvasProps,setCanvasProps,autoSaveSettingInfo} = props;
+    const {selectedNodes,nodes,groups,links,updateNodes,canvasProps,setCanvasProps,autoSaveSettingInfo,config,preInstallBgImages} = props;
     const [isSelf,setIsSelf] = useState(false)
 
     const [gridSize,setGridSize]=useState(10)
@@ -455,7 +448,10 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                             <ul>
                                 <li style={{display:'flex'}}>背景颜色：<ColorsPicker  onSetColor={handleSetBgColor}/></li>
                                 <li style={{display:'flex'}}>
-                                  背景图片：<UploadBgImg onUploadComplete={handleSetUploadImage} onRemoveFile={handleRemoveFile}/>
+                                  背景图片：<UploadBgImg
+                                  onUploadComplete={handleSetUploadImage}
+                                  onRemoveFile={handleRemoveFile}
+                                  uploadConfig={config}/>
                                 </li>
                               <li>
                                 <div  className="pre-mini-img" onClick={()=>handleChangeBgImg()}>
@@ -468,9 +464,9 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                                 <li>
                                     <p style={{textAlign:'left'}}>预设图片：</p>
                                     <div className="preinstall-bg-img">
-                                        {preImages.map((image,key)=>{
+                                        {(preInstallBgImages||[]).map((image)=>{
                                             return (
-                                                <div key={key} className="pre-mini-img" onClick={()=>handlePreBgImg(image)}>
+                                                <div key={image.key} className="pre-mini-img" onClick={()=>handlePreBgImg(image)}>
                                                     <img src={image.img} alt=""/>
                                                     {canvasProps.backgroundImageKey == image.key?<Button
                                                         className="pre-img-selected-icon"

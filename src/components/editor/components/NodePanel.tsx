@@ -11,7 +11,7 @@ import {
   ComponentType,
   ComponentMap,
   COMPONENT_CATEGORY,
-  Node, IndustrialImageProps, ImageProps
+  Node, IndustrialImageProps, ImageProps, UploadURIProps
 } from '../constants/defines'
 import "./NodePanel.scss";
 import IndustrialLibraryUpload from './IndustrialLibraryUpload'
@@ -26,13 +26,14 @@ interface NodePanelProps {
   // 预设工业图库
   industrialLibrary?:IndustrialImageProps[];
   // 自定义的工业图库
-  selfIndustrialLibrary?:ImageProps[]
+  selfIndustrialLibrary?:ImageProps[];
+  config?:UploadURIProps;
 }
 
 export default function NodePanel(props: NodePanelProps) {
   const componnetList = Object.values(ComponentType);
   console.log("componnetList",componnetList)
-  let { onDrag, visible = false,industrialLibrary,selfIndustrialLibrary } = props;
+  let { onDrag, visible = false,industrialLibrary,selfIndustrialLibrary,config } = props;
 
   // 自定义图库
   const [selfImageLibrary,setSelfImageLibrary] = useState(selfIndustrialLibrary)
@@ -182,7 +183,7 @@ export default function NodePanel(props: NodePanelProps) {
                       )
                     })}
                   </div>
-                  <IndustrialLibraryUpload onUploadComplete={handleUploadComplete} selfLibrary={selfIndustrialLibrary}/>
+                  <IndustrialLibraryUpload onUploadComplete={handleUploadComplete} selfLibrary={selfIndustrialLibrary} uploadConfig={config}/>
                 </Panel>
               </Collapse>
             </div>

@@ -2,7 +2,7 @@ import React from 'react'
 import { Upload, Icon, Modal } from 'antd';
 import { UploadFile, UploadListType } from 'antd/es/upload/interface'
 import axios from 'axios'
-import { ImageProps } from '../../constants/defines'
+import { ImageProps, UploadURIProps } from '../../constants/defines'
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -12,10 +12,12 @@ function getBase64(file) {
     reader.onerror = error => reject(error);
   });
 }
+// 工业上传组件
 interface IndustrialLibraryUploadProps {
   onUploadComplete?: (newFile:UploadFile,files:UploadFile[])=>void;
   onRemoveFile?:(file:UploadFile)=>void;
-  selfLibrary?:ImageProps[]
+  selfLibrary?:ImageProps[];
+  uploadConfig?:UploadURIProps
 }
 
 export default class IndustrialLibraryUpload extends React.Component<IndustrialLibraryUploadProps,any> {
@@ -24,31 +26,38 @@ export default class IndustrialLibraryUpload extends React.Component<IndustrialL
     previewImage: '',
     addFile:undefined,
     fileList: [],
+    timer:null,
   };
   componentDidMount() {
 
   }
+  componentWillUnmount(): void {
+    clearTimeout(this.state.timer)
+  }
 
   // 手动上传文件
   handleUpload = ()=>{
+    const {onUploadComplete,uploadConfig} = this.props
     const formData = new FormData()
     formData.append("file",this.state.addFile)
-    formData.append("mappingId","23233")
-    formData.append("mappingType","106")
+    for(let k in uploadConfig.data){
+      formData.append(k,uploadConfig.data[k])
+    }
+    // formData.append("mappingId","23233")
+    // formData.append("mappingType","106")
     const instance = axios.create({
-      baseURL:'http://192.168.3.42:50010',
+      baseURL:uploadConfig?.baseURL,
       timeout:10000000,
       maxContentLength:1000000000
     })
-    instance.post("/api/file/file/uploadReturnPath",formData,{
+    instance.post(uploadConfig.url,formData,{
       method:'POST',
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
-        'token':'development_of_special_token_by_star_quest',
+        'token':uploadConfig.token,
         'Content-Type':'multipart/form-data'
       }
     }).then((res)=>{
-      const {onUploadComplete} = this.props
       let fileList = this.state.fileList;
       let newFile = fileList.pop();
       newFile["url"] = res.data?.data[0]
@@ -62,6 +71,7 @@ export default class IndustrialLibraryUpload extends React.Component<IndustrialL
   handleChange = ({ fileList }) => {
     this.setState({ fileList });
     const timer = setTimeout(this.handleUpload,500);
+    this.setState({timer:timer})
   }
 
   render() {
