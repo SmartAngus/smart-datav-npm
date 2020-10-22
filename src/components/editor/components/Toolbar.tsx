@@ -43,7 +43,8 @@ export type ToolbarType =
   | "topJustify"
   | "verticallyJustify"
   | "bottomJustify"
-  | "poweroff";
+  | "poweroff"
+  | "extraRender";
 
 export class ToolbarProps {
   /** 适应画布 */
@@ -105,6 +106,8 @@ export class ToolbarProps {
 
   onPoweroff?:()=>void;
 
+  onExtraRender?:()=>void;
+
   /** 处理全屏 */
   // handleFullScreen?: () => void;
   /** Toolbar选项 */
@@ -141,7 +144,8 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
     onTopJustify,
     onVerticallyJustify,
     onBottomJustify,
-    onPoweroff
+    onPoweroff,
+    onExtraRender
   } = props;
   const scale = String(Math.round(screenScale));
 
@@ -203,6 +207,8 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
 
   const isBottomJustify = items.includes("bottomJustify");
 
+  const isExtraRenderNode = items.includes("extraRender")
+
   /** 当前是否是全屏状态 */
 
   const fullscreenStatus = isFull();
@@ -224,7 +230,6 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
      handleResizeTo(value / 100);
      handleScreenResizeTo(value / 100);
      changeScreenScale(value);
-    // // console.log("handleResize...",value);
   };
 
 
@@ -274,7 +279,7 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
         )}
         <div className="btn-separator"></div>
         {isSave && (
-          <div className="toolbar-btn toolbar-btn-save" id="toolbarBtnSave"  onClick={onSave} >
+          <div className="toolbar-btn toolbar-btn-save" id="editor-_toolbarBtnSave"  onClick={onSave} >
             <Tooltip title="保存">
               <Icon type="save"/>
               <span className="toolbar-btn-text">保存</span>
@@ -458,6 +463,14 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
                 <span className="toolbar-btn-text">底部对齐</span>
               </Tooltip>
             </div>
+        )}
+        {isExtraRenderNode && (
+          <div className="toolbar-btn" onClick={onExtraRender} >
+            <Tooltip title="配置">
+              <Icon type="setting" />
+              <span className="toolbar-btn-text">配置</span>
+            </Tooltip>
+          </div>
         )}
       </React.Fragment>
     );

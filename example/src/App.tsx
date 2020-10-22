@@ -1,4 +1,4 @@
-import React,{useEffect,useState} from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import { DataVPreview,DataVEditor } from 'smart-datav-npm'
 import 'antd/dist/antd.css'
@@ -6,8 +6,11 @@ import 'smart-datav-npm/dist/index.css'
 import axios from "axios"
 import { Modal } from 'antd'
 
+const { confirm } = Modal;
+
 const App = () => {
   const [editorData,setEditorData] = useState(undefined)
+  const [extraVisible,setExtraVisible]=useState(true)
   const preInstallBgImages = [
     {key:1,img:''},
     {key:2,img:''},
@@ -142,30 +145,74 @@ const App = () => {
   const handlePreview = (data:any)=>{
     console.log(data)
   }
-  const renderExtraModel = ()=>{
+  const handlePoweroff = (isSave:boolean)=>{
+    console.log("handlePoweroff=",isSave)
+    if(isSave){
+      console.log("已经保存了，不用弹出框")
+    }else{
+      showConfirm()
+    }
+  }
+  //
+  const handleExtraOk = () => {
+    setExtraVisible(false)
+  }
+  const handleExtraCancel = () => {
+    setExtraVisible(false)
+  }
+
+  // 点击额外配置按钮的回调
+  const handleExtraSetting = ()=>{
+    setExtraVisible(true)
+  }
+  const ExtraModel = ()=>{
     return (
       <Modal
-        title="预览"
-        className="preview-modal"
-        visible={true}
-        onOk={handlePreview}
-        onCancel={handlePreview}
+        title="额外配置"
+        className="extra-modal"
+        visible={extraVisible}
+        onOk={handleExtraOk}
+        onCancel={handleExtraCancel}
         okText="确认"
         cancelText="取消"
       >
-        <div>ssssss</div>
+        <div>这是额外配置</div>
       </Modal>
     )
   }
+  const editorRef = useRef()
+
+  function showConfirm() {
+    confirm({
+      title: '退出页面提示！',
+      content: '画布已经修改未保存，是否离开？',
+      okText: '保存并退出',
+      cancelText: ' 取消',
+      onOk() {
+        console.log('OK');
+        // @ts-ignore
+        editorRef?.current.handleSaveData()
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  }
+
   return (
     <React.Fragment>
       <DataVEditor
+        ref={editorRef}
         onEditorSaveCb={handleSaveEditorData}
         editorData={editorData}
-        extraSetting={renderExtraModel}
+        onExtraSetting={handleExtraSetting}
+        extraSetting={()=>{
+          return <ExtraModel />
+        }}
         selfIndustrialLibrary={selfIndustrialLibrary}
         industrialLibrary={industrialLibrary}
         uploadConfig={uploadConfig}
+        onPoweroff={handlePoweroff}
         preInstallBgImages={preInstallBgImages}
       />
       {/*<DataVPreview editorData={editorData}/>*/}

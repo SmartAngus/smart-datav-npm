@@ -32,7 +32,6 @@ interface NodePanelProps {
 
 export default function NodePanel(props: NodePanelProps) {
   const componnetList = Object.values(ComponentType);
-  console.log("componnetList",componnetList)
   let { onDrag, visible = false,industrialLibrary,selfIndustrialLibrary,config } = props;
 
   // 自定义图库
@@ -52,19 +51,16 @@ export default function NodePanel(props: NodePanelProps) {
   };
 
   const handleDrag = (item: Node) => {
-    console.log("nodeitem==",item)
     if (onDrag) {
       onDrag(item);
     }
   };
   const handleImageDrag = (image:ImageProps)=>{
-    console.log("image==",image)
     if (onDrag) {
       onDrag(image as Node);
     }
   }
   const onTabChange = (a)=>{
-    console.log("onTabChange")
   }
   // 处理自定义图库上传完
   const handleUploadComplete = (newFile,files)=>{

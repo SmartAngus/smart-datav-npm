@@ -63,7 +63,6 @@ export default class IndustrialLibraryUpload extends React.Component<IndustrialL
       newFile["url"] = res.data?.data[0]
       fileList.push(newFile)
       this.setState({fileList:fileList})
-      console.log(this.state.fileList)
       onUploadComplete&&onUploadComplete(newFile,this.state.fileList)
     })
   }

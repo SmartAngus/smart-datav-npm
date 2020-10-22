@@ -23,6 +23,8 @@ const canvasConfig = {
 
 export function useEditorStore() {
   const [editorData, setEditorData] = useState();
+  // 是否保存了数据
+  const [isSave,setIsSave] = useState(false)
   const [nodes, setNodes] = useState<Node[]>([]);
   const [links, setLinks] = useState<Link[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
@@ -74,6 +76,7 @@ export function useEditorStore() {
       ...nodes.slice(index + 1)
     ];
     setNodes(newNodes);
+    setIsSave(false);
   };
 
   const updateLinks = (link: Link) => {
@@ -85,6 +88,7 @@ export function useEditorStore() {
     ];
 
     setLinks(newLinks);
+    setIsSave(false);
   };
 
   const updateGroups = (group: Group) => {
@@ -97,9 +101,11 @@ export function useEditorStore() {
     ];
 
     setGroups(newGroups);
+    setIsSave(false);
   };
   // 保存最新的数据
   const handleSaveData = async () => {
+    setIsSave(true)
     const newNodes = nodes || [];
     const newGroups = groups || [];
 
@@ -125,7 +131,6 @@ export function useEditorStore() {
   const handleAutoSaveSettingInfo = async (canvasProps,nodes,groups,links)=>{
     const newCanvasProps = canvasProps || {};
     handleSaveData()
-    console.log("nodes===",nodes)
     const result = await setEditorLocalData({
       ...(editorData as any),
       nodes:nodes,
@@ -232,6 +237,8 @@ export function useEditorStore() {
     handleSaveHistoryData,
     canvasProps,
     setCanvasProps,
-    handleAutoSaveSettingInfo
+    handleAutoSaveSettingInfo,
+    isSave,
+    setIsSave
   };
 }

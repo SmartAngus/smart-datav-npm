@@ -23,13 +23,11 @@ import RenderPropertySidebar from "./common/RenderPropertySidebar";
 import "./index.scss";
 import DataVPreview from '../preview'
 
-const { useState, useRef, useEffect,useContext } = React;
+const { useState, useRef, useEffect,useContext,useImperativeHandle } = React;
 
 
 
-
-
-export default function DataVEditor(props:DataVEditorProps) {
+const DataVEditor = React.forwardRef((props:DataVEditorProps,ref)=> {
     const {
       onEditorSaveCb,
       editorData,
@@ -39,15 +37,15 @@ export default function DataVEditor(props:DataVEditorProps) {
       industrialLibrary,
       selfIndustrialLibrary,
       uploadConfig,
-      preInstallBgImages
+      preInstallBgImages,
+      extraSetting,
+      onExtraSetting,
     } = props
-    console.log("DataVEditor Init",editorData)
-
     const [screenScale, changeScreenScale] = useState(100);
     const [dragSelectable, setDragSelectable] = useState(false);
     const [keyPressing, setKeyPressing] = useState(false);
     const [isShowPreviewModel, setIsShowPreviewModel] = useState(false)
-    const [isSave,setIsSave] = useState(false)
+    const [isShowExtraRender,setIsShowExtraRender] = useState(false)
     const {
         nodes,
         links,
@@ -77,12 +75,22 @@ export default function DataVEditor(props:DataVEditorProps) {
         setEditorLocalHistoryData,
         canvasProps,
         setCanvasProps,
-        handleAutoSaveSettingInfo
+        handleAutoSaveSettingInfo,
+        isSave,
+        setIsSave
     } = useEditorStore();
 
 
     // 画布容器
     const screenRef = useRef(null);
+
+    // 对父组件暴露保存数据的接口
+    useImperativeHandle(ref, () => ({
+      handleSaveData: () => {
+        const saveDiv = document.getElementById("editor-_toolbarBtnSave")
+        saveDiv.click()
+      }
+    }));
 
     // 画布 ref
     const canvasRef = useRef({
@@ -91,21 +99,6 @@ export default function DataVEditor(props:DataVEditorProps) {
     // 第一次加载，如果后端有数据，就加载后端的数据
     useEffect(()=>{
       const initData = ()=>{
-        const isQuaiTime = setInterval(()=>{
-          const localEditorData = {
-            nodes,
-            links,
-            groups,
-            editorConfig: canvasProps
-          }
-          const isEqual = _.isEqualWith(localEditorData.nodes,editorData.nodes,(objValue, othValue ,key, object, other, stack)=>{
-            return true;
-          })
-          console.log(localEditorData)
-          console.log(editorData)
-          console.log("isEqual===",isEqual)
-        },1000*60*10000)
-        console.log("initData",editorData)
         if (editorData&&editorData!=null&&editorData!=undefined){// 有数据就初始化
           const newNodes = (editorData?.nodes || []).map(item => {
             return {
@@ -117,11 +110,13 @@ export default function DataVEditor(props:DataVEditorProps) {
           setGroups(editorData.groups)
           setLinks(editorData.links)
           setCanvasProps(editorData.editorConfig)
+          //设置初始化就是最新数据，此时退出不需要提示
+          setIsSave(true)
         }
       };
       const timer = setTimeout(()=>{
         initData();
-      },2000)
+      },1000)
       return ()=>{
         clearTimeout(timer)
       }
@@ -129,13 +124,13 @@ export default function DataVEditor(props:DataVEditorProps) {
     // 设置每五分钟保存一次数据
     useEffect(()=>{
       const timer = setTimeout( ()=>{
-        const saveDiv = document.getElementById("toolbarBtnSave")
+        const saveDiv = document.getElementById("editor-_toolbarBtnSave")
         saveDiv.click()
       },1000*60*(autoSaveInterval||1))
       return ()=>{
         clearTimeout(timer)
       }
-    },[])
+    },[isSave])
 
     const canvasInstance = canvasRef.current;
 
@@ -388,7 +383,6 @@ export default function DataVEditor(props:DataVEditorProps) {
 
     // 圈选
     const handleDragSelect = () => {
-        console.log('圈选')
         setDragSelectable(!dragSelectable);
     };
 
@@ -477,7 +471,6 @@ export default function DataVEditor(props:DataVEditorProps) {
     };
     /** 退出，要检查是否已经保存 */
     const handlePoweroff = ()=>{
-      console.log("点击了退出按钮")
       onPoweroff&&onPoweroff(isSave)
     }
     /** 保存历史 */
@@ -611,6 +604,11 @@ export default function DataVEditor(props:DataVEditorProps) {
             // setNodes(historyNode)
         }
     }
+    // 渲染额外的node
+    const handleExtraRender=()=>{
+      setIsShowExtraRender(true)
+      onExtraSetting&&onExtraSetting()
+    }
 
     useKeyPress(
         "delete",
@@ -694,7 +692,8 @@ export default function DataVEditor(props:DataVEditorProps) {
                     "topJustify",
                     "verticallyJustify",
                     "bottomJustify",
-                    "poweroff"
+                    "poweroff",
+                    "extraRender"
                 ]}
                 onCopy={handleCopy}
                 onPaste={handlePaste}
@@ -718,6 +717,7 @@ export default function DataVEditor(props:DataVEditorProps) {
                 onRightJustify={handleRightJustify}
                 onBottomJustify={handleBottomJustify}
                 onHorizontallyJustify={handleHorizontallyJustify}
+                onExtraRender={handleExtraRender}
             />
         </div>
     );
@@ -824,6 +824,10 @@ export default function DataVEditor(props:DataVEditorProps) {
             </div>
           </div>
           {isShowPreviewModel&&renderPreviewModel()}
+          {isShowExtraRender&&extraSetting()}
+
         </React.Fragment>
     );
-}
+})
+
+export default DataVEditor;

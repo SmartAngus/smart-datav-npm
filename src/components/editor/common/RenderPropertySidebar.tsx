@@ -102,8 +102,6 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
     // setCanvasProps(defaultCanvasProps)
 
     // 存的是node的id，是一个数组
-    // // console.log("selectedNodes==",selectedNodes)
-    // // console.log("nodes==",nodes)
     const node = _.find(nodes, n => n.id === selectedNodes[0]);
     if(node===undefined){
         isCompSetting=false
@@ -115,7 +113,7 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
 
     // 切换tab发生的回掉函数
     const onTabChange = () => {
-        // // console.log("onTabChange")
+
 
     }
     const collapseKey = () => {
@@ -166,14 +164,11 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
     }
     // 当上传背景图片时
     const handleSetUploadImage = (file:UploadFile)=>{
-      // canvasProps.backgroundImage=`url(${file.url})`;
-      // canvasProps.backgroundImageKey=null;
       canvasProps.uploadBackgroundImage.show=true;
       canvasProps.uploadBackgroundImage.name=file.name
       canvasProps.uploadBackgroundImage.url=file.url
       setCanvasProps(canvasProps)
       autoSaveSettingInfo(canvasProps,nodes,groups,links)
-        console.log("handleSetUploadImage==",file)
     }
     // 当删除图片时
     const handleRemoveFile = (file:UploadFile)=>{
@@ -296,7 +291,6 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
     }
     // 设置显示日期
     const handleShowDate = (e)=>{
-        console.log('handleShowDate==',e.target.checked)
         const newNode = _.cloneDeep(node)
         if(newNode.chart) {
             newNode.chart.format.d.show = e.target.checked;

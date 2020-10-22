@@ -547,7 +547,9 @@ export class DataVEditorProps{
   /** 间隔几分钟保存数据 */
   autoSaveInterval?:number;
   // 额外的配置按钮，所有操作均由调用者控制
-  extraSetting?:React.ReactNode;
+  extraSetting?:()=>React.ReactNode;
+  // 当点击额外配置按钮的回掉
+  onExtraSetting?:()=>void;
   // 预设工业图库
   industrialLibrary?:IndustrialImageProps[];
   // 图片上传配置
