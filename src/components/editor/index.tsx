@@ -824,7 +824,7 @@ const DataVEditor = React.forwardRef((props:DataVEditorProps,ref)=> {
             </div>
           </div>
           {isShowPreviewModel&&renderPreviewModel()}
-          {isShowExtraRender&&extraSetting()}
+          {isShowExtraRender&&extraSetting&&extraSetting()}
 
         </React.Fragment>
     );

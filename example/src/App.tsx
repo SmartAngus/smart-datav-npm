@@ -5,6 +5,9 @@ import 'antd/dist/antd.css'
 import 'smart-datav-npm/dist/index.css'
 import axios from "axios"
 import { Modal } from 'antd'
+import preBgImg1 from './pre_bgimg_1.jpg'
+import preBgImg2 from './pre_bgimg_2.jpg'
+import preBgImg3 from './pre_bgimg_3.jpg'
 
 const { confirm } = Modal;
 
@@ -12,9 +15,9 @@ const App = () => {
   const [editorData,setEditorData] = useState(undefined)
   const [extraVisible,setExtraVisible]=useState(true)
   const preInstallBgImages = [
-    {key:1,img:''},
-    {key:2,img:''},
-    {key:3,img:''}
+    {key:1,img:preBgImg1},
+    {key:2,img:preBgImg2},
+    {key:3,img:preBgImg3}
   ]
   const industrialLibrary = [
     {
@@ -219,5 +222,19 @@ const App = () => {
     </React.Fragment>
   )
 }
+// <DataVEditor
+//   ref={editorRef}
+//   onEditorSaveCb={handleSaveEditorData}
+//   editorData={editorData}
+//   onExtraSetting={handleExtraSetting}
+//   extraSetting={()=>{
+//     return <ExtraModel />
+//   }}
+//   selfIndustrialLibrary={selfIndustrialLibrary}
+//   industrialLibrary={industrialLibrary}
+//   uploadConfig={uploadConfig}
+//   onPoweroff={handlePoweroff}
+//   preInstallBgImages={preInstallBgImages}
+// />
 
 export default App

@@ -13,7 +13,8 @@ import {
 } from "../utils/FullsreenUtils";
 import { MIN_SCALE, MAX_SCALE } from "../constants/defines";
 import "./Toolbar.scss";
-import {LeftJustifyingIcon} from '../icons/editorIcons'
+import {LeftJustifyingIcon,RightJustifyingIcon,TopJustifyingIcon,PreviewDesktopIcon,
+  BottomJustifyingIcon,VerticalCenterIcon,HorizontalCenterIcon,UpperOneIcon,DownOneIcon} from '../icons/editorIcons'
 
 /** 操作面板，支持全屏、缩放、自适应画布、格式化、显示比例 */
 
@@ -379,7 +380,7 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
         {isPreview && (
             <div className="toolbar-btn" onClick={onPreview} >
               <Tooltip title="预览">
-                <Icon type="caret-right"/>
+                <PreviewDesktopIcon/>
                 <span className="toolbar-btn-text">预览</span>
               </Tooltip>
             </div>
@@ -387,7 +388,7 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
         {isBringUp && (
             <div className="toolbar-btn" onClick={onBringUp} >
               <Tooltip title="上移一层">
-                <Icon type="vertical-align-top" />
+                <UpperOneIcon/>
                 <span className="toolbar-btn-text">上移一层</span>
               </Tooltip>
             </div>
@@ -395,7 +396,7 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
         {isBringDown && (
             <div className="toolbar-btn" onClick={onBringDown} >
               <Tooltip title="下移一层">
-                <Icon type="vertical-align-bottom" />
+                <DownOneIcon/>
                 <span className="toolbar-btn-text">下移一层</span>
               </Tooltip>
             </div>
@@ -427,7 +428,7 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
         {isHorizontallyJustify && (
             <div className="toolbar-btn" onClick={onHorizontallyJustify} >
               <Tooltip title="水平居中">
-                <LeftJustifyingIcon />
+                <HorizontalCenterIcon/>
                 <span className="toolbar-btn-text">水平居中</span>
               </Tooltip>
             </div>
@@ -435,7 +436,7 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
         {isRightJustify && (
             <div className="toolbar-btn" onClick={onRightJustify} >
               <Tooltip title="右侧对齐">
-                <LeftJustifyingIcon />
+                <RightJustifyingIcon />
                 <span className="toolbar-btn-text">右侧对齐</span>
               </Tooltip>
             </div>
@@ -443,7 +444,7 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
         {isTopJustify && (
             <div className="toolbar-btn" onClick={onTopJustify} >
               <Tooltip title="顶部对齐">
-                <LeftJustifyingIcon />
+                <TopJustifyingIcon />
                 <span className="toolbar-btn-text">顶部对齐</span>
               </Tooltip>
             </div>
@@ -451,7 +452,7 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
         {isVerticallyJustify && (
             <div className="toolbar-btn" onClick={onVerticallyJustify} >
               <Tooltip title="垂直居中">
-                <LeftJustifyingIcon />
+                <VerticalCenterIcon />
                 <span className="toolbar-btn-text">垂直居中</span>
               </Tooltip>
             </div>
@@ -459,7 +460,7 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
         {isBottomJustify && (
             <div className="toolbar-btn" onClick={onBottomJustify} >
               <Tooltip title="底部对齐">
-                <LeftJustifyingIcon />
+                <BottomJustifyingIcon />
                 <span className="toolbar-btn-text">底部对齐</span>
               </Tooltip>
             </div>
