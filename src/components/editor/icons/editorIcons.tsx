@@ -78,6 +78,58 @@ const PreviewDesktop = ()=>(
       ></path>
   </svg>
 )
+const TextOfRect = ()=>(
+  <svg className="icon" style={style}
+       viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <path d="M938.666667 42.666667a42.666667 42.666667 0 0 1 42.666666 42.666666v853.333334a42.666667 42.666667 0 0 1-42.666666 42.666666H85.333333a42.666667 42.666667 0 0 1-42.666666-42.666666V85.333333a42.666667 42.666667 0 0 1 42.666666-42.666666h853.333334z m-42.666667 85.333333H128v768h768V128z m-234.666667 192.213333a21.333333 21.333333 0 0 1 21.333334 21.333334v42.666666a21.333333 21.333333 0 0 1-21.333334 21.333334H554.666667v277.333333a21.333333 21.333333 0 0 1-21.333334 21.333333h-42.666666a21.333333 21.333333 0 0 1-21.333334-21.333333v-277.333333H362.666667a21.333333 21.333333 0 0 1-21.333334-21.333334v-42.666666a21.333333 21.333333 0 0 1 21.333334-21.333334h298.666666z"></path>
+  </svg>
+)
+const ReplaceTwo = ()=>(
+  <svg className="icon" style={style}
+       viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <path d="M277.461333 618.752l1.450667 0.085333H917.333333a21.333333 21.333333 0 0 1 20.992 17.536l0.341334 3.84v42.666667a21.333333 21.333333 0 0 1-21.333334 21.333333H298.794667v106.709334a21.333333 21.333333 0 0 1-38.4 12.8l-128-170.88a21.333333 21.333333 0 0 1 17.066666-34.133334h128z m529.066667-418.218667l128 170.88a21.333333 21.333333 0 0 1-17.066667 34.133334H149.333333a21.333333 21.333333 0 0 1-21.333333-21.333334v-42.666666a21.333333 21.333333 0 0 1 21.333333-21.333334h618.752V213.333333a21.333333 21.333333 0 0 1 38.4-12.8z"></path>
+  </svg>
+)
+const HourTime = ()=>(
+  <svg className="icon" style={style}
+       viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M512 896c212.08 0 384-171.92 384-384S724.08 128 512 128 128 299.92 128 512s171.92 384 384 384z m0 72C260.16 968 56 763.84 56 512S260.16 56 512 56s456 204.16 456 456-204.16 456-456 456z"></path>
+    <path
+      d="M713.616 665.584a36 36 0 1 1-48.696 53.04L487.648 555.848a36 36 0 0 1-11.648-26.52V224a36 36 0 1 1 72 0v289.52l165.616 152.064z"></path>
+    <path d="M716 292m-36 0a36 36 0 1 0 72 0 36 36 0 1 0-72 0Z" p-id="25811"></path>
+    <path d="M788 516m-36 0a36 36 0 1 0 72 0 36 36 0 1 0-72 0Z" p-id="25812"></path>
+    <path d="M516 804m-36 0a36 36 0 1 0 72 0 36 36 0 1 0-72 0Z" p-id="25813"></path>
+    <path d="M316 708m-36 0a36 36 0 1 0 72 0 36 36 0 1 0-72 0Z" p-id="25814"></path>
+    <path d="M220 516m-36 0a36 36 0 1 0 72 0 36 36 0 1 0-72 0Z" p-id="25815"></path>
+    <path d="M316 292m-36 0a36 36 0 1 0 72 0 36 36 0 1 0-72 0Z" p-id="25816"></path>
+  </svg>
+)
+const Rectangle = ()=>(
+  <svg className="icon" style={style}
+       viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 0h1024v1024H0z" fill="#989898" p-id="28198"></path>
+    <path d="M68.266667 68.266667v887.466666h887.466666V68.266667H68.266667zM0 0h1024v1024H0V0z" fill="#FFFFFF"
+          ></path>
+  </svg>
+)
+const Line = ()=>(
+  <svg className="icon" style={style}
+       viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M813.698893 149.961328m30.16989 30.169889l0 0q30.169889 30.169889 0 60.339779l-603.397787 603.397787q-30.169889 30.169889-60.339779 0l0 0q-30.169889-30.169889 0-60.339779l603.397787-603.397787q30.169889-30.169889 60.339779 0Z"
+      ></path>
+  </svg>
+)
+const Circle = ()=>(
+  <svg className="icon" style={style}
+       viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" >
+    <path
+      d="M858.3 311.2C894 372.5 912 439.4 912 512s-17.9 139.5-53.7 200.8C822.5 774 774 822.6 712.8 858.3S584.6 912 512 912s-139.5-17.9-200.8-53.7c-61.2-35.7-109.7-84.2-145.6-145.6C129.9 651.5 112 584.6 112 512c0-72.5 17.9-139.4 53.7-200.8 35.7-61.2 84.2-109.7 145.6-145.6C372.5 130 439.4 112 512 112c72.5 0 139.4 17.9 200.8 53.7C774 201.5 822.5 250 858.3 311.2z"
+      ></path>
+  </svg>
+)
+
 // 来自于 阿里巴巴矢量图库
 // https://www.iconfont.cn/collections/detail?spm=a313x.7781069.1998910419.d9df05512&cid=25957
 export const LeftJustifyingIcon = props => <Icon component={LeftJustifying} {...props} />;
@@ -89,6 +141,16 @@ export const VerticalCenterIcon = props => <Icon component={VerticalCenter} {...
 export const UpperOneIcon = props => <Icon component={UpperOne} {...props} />;
 export const DownOneIcon = props => <Icon component={DownOne} {...props} />;
 export const PreviewDesktopIcon = props => <Icon component={PreviewDesktop} {...props} />;
+export const TextOfRectIcon = props => <Icon component={TextOfRect} {...props} />;
+export const ReplaceTwoIcon = props => <Icon component={ReplaceTwo} {...props} />;
+export const HourTimeIcon = props => <Icon component={HourTime} {...props} />;
+export const RectangleIcon = props => <Icon component={Rectangle} {...props} />;
+export const LineIcon = props => <Icon component={Line} {...props} />;
+export const CircleIcon = props => <Icon component={Circle} {...props} />;
+
+
+
+
 
 
 

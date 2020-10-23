@@ -157,6 +157,7 @@ const DataVEditor = React.forwardRef((props:DataVEditorProps,ref)=> {
         const newNodes = _.remove(cloneNodes, item => !ids.includes(item.id));
 
         setNodes(newNodes);
+        setIsSave(false)
 
         // 清空高亮状态
         setSelectedLinks([]);
@@ -174,6 +175,7 @@ const DataVEditor = React.forwardRef((props:DataVEditorProps,ref)=> {
             ? diffLinks.map(link => _.find(links, item => item.id === link))
             : [];
         setLinks(newLinks);
+      setIsSave(false)
     };
 
     /** 复制节点 */
@@ -199,6 +201,7 @@ const DataVEditor = React.forwardRef((props:DataVEditorProps,ref)=> {
             });
             setCopiedNodes(currentCopied);
             setNodes([...nodes, ...currentCopied]);
+          setIsSave(false)
         }
     };
 
@@ -207,6 +210,7 @@ const DataVEditor = React.forwardRef((props:DataVEditorProps,ref)=> {
         if (selectedNodes) {
             handleNodesCopy(selectedNodes);
             handleDeleteNodes(selectedNodes);
+          setIsSave(false)
         }
     };
 
@@ -225,6 +229,7 @@ const DataVEditor = React.forwardRef((props:DataVEditorProps,ref)=> {
                 nodes.push(node)
             })
             handleSaveHistory()
+          setIsSave(false)
         }
     };
 
@@ -252,6 +257,7 @@ const DataVEditor = React.forwardRef((props:DataVEditorProps,ref)=> {
             handleDeleteLinks(selectedLinks);
         }
         handleSaveHistory()
+
     };
     // 将节点上移一层或者下移一层
     const handleBringUp = () =>{

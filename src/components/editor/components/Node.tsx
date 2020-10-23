@@ -238,8 +238,8 @@ const Node = React.forwardRef((props: NodeProps, ref: any) => {
   );
 
   useEffect(() => {
-    onResize && onResize(resizeWidth, resizeHeight, resizeX, resizeY,rotateDeg,stroke);
-  }, [resizeWidth, resizeHeight, resizeX, resizeY,rotateDeg,stroke]);
+    onResize && onResize(resizeWidth, resizeHeight, resizeX, resizeY,lineRotate,stroke);
+  }, [resizeWidth, resizeHeight, resizeX, resizeY,lineRotate,stroke]);
   useEffect(()=>{
     onChangeZIndex && onChangeZIndex(zIndex)
   },[zIndex])

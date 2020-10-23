@@ -23,7 +23,7 @@ const useResize = (isResize: boolean, { width, height, x, y,rotate,lineRotate,..
   const [nodeTop, setNodeTop] = useState(y);
   const [nodeRotate,setNodeRotate] = useState(lineRotate)
   const [nodeChartStroke,setNodeChartStroke]=useState(otherInfo?.chart?.stroke);
-
+  console.log('useResize',rotate,lineRotate)
 
   useEffect(() => {
     setNodeLeft(x);

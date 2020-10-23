@@ -5,6 +5,7 @@
 import * as React from "react";
 import * as _ from "lodash";
 import {BarChartOutlined, RadarChartOutlined} from "@ant-design/icons"
+import {TextOfRectIcon,HourTimeIcon,RectangleIcon,LineIcon,CircleIcon} from '../icons/editorIcons'
 
 
 // 组件卡片宽度高度
@@ -54,7 +55,7 @@ export enum ComponentType {
   /** 通用 */
   common = "common",
   /** 自定义 */
-  self = 'self'
+  //self = 'self'
 }
 // 工业图片属性
 export class ImageProps{
@@ -78,7 +79,7 @@ export interface IndustrialImageProps {
 
 export const ComponentMap: Record<ComponentType, string> = {
   [ComponentType.common]: "通用",
-  [ComponentType.self]: '图表'
+  //[ComponentType.self]: '图表'
 };
 export class Stroke {// 直线控件有的属性
   color?:string;
@@ -260,14 +261,7 @@ const COMMON_COMPONENT: Node[] = [
     width: 100,
     height: 30,
     icon: (
-      <div
-        style={{
-          width: 36,
-          height: 36,
-          border: "2px solid #52619b",
-          borderRadius: 10
-        }}
-      />
+      <TextOfRectIcon/>
     ),
     chart:{
       type: 'text',
@@ -293,7 +287,7 @@ const COMMON_COMPONENT: Node[] = [
     width: 100,
     height: 100,
     icon: (
-      <div style={{ width: 36, height: 36, border: "2px solid #52619b" }} />
+      <RectangleIcon />
     ),
     style:{
       backgroundColor:'#fff',
@@ -312,21 +306,7 @@ const COMMON_COMPONENT: Node[] = [
     width: 100,
     height: 100,
     icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        version="1.1"
-        width="72px"
-        height="40px"
-      >
-        <circle
-          cx="36"
-          cy="20"
-          r="18"
-          stroke="#52619b"
-          strokeWidth="2"
-          fill="transparent"
-        />
-      </svg>
+      <CircleIcon/>
     ),
     style:{
       backgroundColor:'#fff',
@@ -345,16 +325,7 @@ const COMMON_COMPONENT: Node[] = [
     width: 100,
     height: 20,
     icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        version="1.1"
-        width="72px"
-        height="40px"
-      >
-        <line xmlns="http://www.w3.org/2000/svg" x1="20" y1="30" x2="52" y2="10"
-              stroke="#52619b"
-              strokeWidth="2" />
-      </svg>
+      <LineIcon/>
     ),
     chart:{
       type: 'line',
@@ -382,21 +353,7 @@ const COMMON_COMPONENT: Node[] = [
     width: 200,
     height: 30,
     icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        version="1.1"
-        width="72px"
-        height="40px"
-      >
-        <circle
-          cx="36"
-          cy="20"
-          r="18"
-          stroke="#52619b"
-          strokeWidth="2"
-          fill="transparent"
-        />
-      </svg>
+      <HourTimeIcon/>
     ),
     chart:{
       type: 'time',
@@ -423,7 +380,7 @@ const COMMON_COMPONENT: Node[] = [
 const SELF_COMPONENT: Node[] = [
   /** 星形 */
   {
-    type: ComponentType.self,
+    type: "self",//ComponentType.self
     key: ComponentKey.star,
     name: "STAR",
     width: 100,
@@ -450,7 +407,7 @@ const SELF_COMPONENT: Node[] = [
   },
   /** 饼图 */
   {
-    type: ComponentType.self,
+    type: "self",//ComponentType.self
     key: ComponentKey.ellipse,
     name: "ellipse",
     width: 200,
@@ -479,8 +436,8 @@ const SELF_COMPONENT: Node[] = [
 
 // 组件库类目
 export const COMPONENT_CATEGORY: Record<ComponentType, Node[]> = {
-  [ComponentType.common]: COMMON_COMPONENT,
-  [ComponentType.self]: SELF_COMPONENT
+  [ComponentType.common]: COMMON_COMPONENT
+  // [ComponentType.self]: SELF_COMPONENT
 };
 
 export const keyCodeMap = {
