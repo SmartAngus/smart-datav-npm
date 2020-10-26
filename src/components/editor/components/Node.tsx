@@ -52,7 +52,7 @@ class NodeProps {
   children?: React.ReactNode;
 
   /** 改变节点大小 */
-  onResize?: (width: number, height: number, x: number, y: number,lineRoate:number,stroke:Stroke) => void;
+  onResize?: (width: number, height: number, x: number, y: number,rotate:number,stroke:Stroke) => void;
 
   /** chart 信息 */
   chart?:EChart;
@@ -113,7 +113,7 @@ const Node = React.forwardRef((props: NodeProps, ref: any) => {
     height: resizeHeight,
     x: resizeX,
     y: resizeY,
-    lineRotate,
+    rotate: resizeRotate,
     stroke,
   } = useResize(isSelected, {
     width,
@@ -125,8 +125,6 @@ const Node = React.forwardRef((props: NodeProps, ref: any) => {
     zIndex,
     style,
   });
-  const rotateDeg = lineRotate || rotate
-
   const handleContextMenu = (event: React.MouseEvent<any>) => {
     event.preventDefault();
     event.stopPropagation();
@@ -238,8 +236,8 @@ const Node = React.forwardRef((props: NodeProps, ref: any) => {
   );
 
   useEffect(() => {
-    onResize && onResize(resizeWidth, resizeHeight, resizeX, resizeY,lineRotate,stroke);
-  }, [resizeWidth, resizeHeight, resizeX, resizeY,lineRotate,stroke]);
+    onResize && onResize(resizeWidth, resizeHeight, resizeX, resizeY,resizeRotate,stroke);
+  }, [resizeWidth, resizeHeight, resizeX, resizeY,resizeRotate,stroke]);
   useEffect(()=>{
     onChangeZIndex && onChangeZIndex(zIndex)
   },[zIndex])
@@ -253,7 +251,7 @@ const Node = React.forwardRef((props: NodeProps, ref: any) => {
         top: y,
         width,
         height,
-        transform: `rotate(${rotateDeg}deg)`,
+        transform: `rotate(${rotate}deg)`,
         transformOrigin:type=='line'?`${chart.stroke.transformOrigin}`:`center`
       }}
       ref={ref}

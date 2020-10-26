@@ -13,7 +13,7 @@ const { confirm } = Modal;
 
 const App = () => {
   const [editorData,setEditorData] = useState(undefined)
-  const [extraVisible,setExtraVisible]=useState(true)
+  const [extraVisible,setExtraVisible]=useState(false)
   const preInstallBgImages = [
     {key:1,img:preBgImg1},
     {key:2,img:preBgImg2},
@@ -148,13 +148,13 @@ const App = () => {
   const handlePreview = (data:any)=>{
     console.log(data)
   }
-  const handlePoweroff = (isSave:boolean)=>{
-    console.log("handlePoweroff=",isSave)
-    if(isSave){
-      console.log("已经保存了，不用弹出框")
-    }else{
-      showConfirm()
-    }
+  const handlePoweroff = ()=>{
+    // @ts-ignore
+    const isSave = editorRef?.current.getIsSave()
+      if(!isSave){
+        showConfirm()
+      }
+
   }
   //
   const handleExtraOk = () => {
@@ -204,19 +204,18 @@ const App = () => {
 
   return (
     <React.Fragment>
+      <ExtraModel/>
       <DataVEditor
         ref={editorRef}
         onEditorSaveCb={handleSaveEditorData}
         editorData={editorData}
         onExtraSetting={handleExtraSetting}
-        extraSetting={()=>{
-          return <ExtraModel />
-        }}
         selfIndustrialLibrary={selfIndustrialLibrary}
         industrialLibrary={industrialLibrary}
         uploadConfig={uploadConfig}
         onPoweroff={handlePoweroff}
         preInstallBgImages={preInstallBgImages}
+        autoSaveInterval={20}
       />
       {/*<DataVPreview editorData={editorData}/>*/}
     </React.Fragment>

@@ -4,6 +4,11 @@
     justify-content: flex-start;
     flex-direction: column;
     background-color: #f3f3f3;
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
   }
 
   .editor-operation {
@@ -19,8 +24,7 @@
     display: flex;
     justify-content: flex-start;
     background: #fff;
-    height: 860px;
-
+    flex-grow: 1;
     .editor-nodePanel {
       width: 228px;
     }

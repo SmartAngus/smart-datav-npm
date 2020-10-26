@@ -23,8 +23,8 @@ const canvasConfig = {
 
 export function useEditorStore() {
   const [editorData, setEditorData] = useState();
-  // 是否保存了数据
-  const [isSave,setIsSave] = useState(false)
+  // 是否保存了数据updateNodes
+  const [isSave,setIsSave] = useState(true)
   const [nodes, setNodes] = useState<Node[]>([]);
   const [links, setLinks] = useState<Link[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);

@@ -512,6 +512,7 @@ export default class CanvasContent extends React.Component<
 
   /** 按下节点 */
   onDragNodeMouseDown = (node: Node, event: any) => {
+    console.log("currentSelectedNode==",node)
     this.setState({currentSelectedNode: node})
     if (node) {
       const { k, x, y } = this.props.currTrans;

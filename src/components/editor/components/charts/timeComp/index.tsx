@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import './style.scss'
 import moment from 'moment'
 import {Node} from "../../../constants/defines";
@@ -91,11 +91,20 @@ moment.locale('zh-cn', {
 })
 
 const TimeComp:React.FC<TimeCompProps> =  (props,ref)=>{
+    const [currentTime,setCurrentTime] = useState(moment())
+    useEffect(()=>{
+      const interval = setInterval(()=>{
+        setCurrentTime(moment())
+      },1000)
+      return ()=>{
+        clearInterval(interval)
+      }
+    },[])
     return (
         <div className="base-comp-box">
-            {props.node.chart?.format?.d?.show&&moment().format(props.node.chart?.format?.d?.fm)}
+            {props.node.chart?.format?.d?.show&&currentTime.format(props.node.chart?.format?.d?.fm)}
             &nbsp;
-            {props.node.chart?.format?.t?.show&&moment().format(props.node.chart?.format?.t?.fm)}
+            {props.node.chart?.format?.t?.show&&currentTime.format(props.node.chart?.format?.t?.fm)}
         </div>
     )
 }

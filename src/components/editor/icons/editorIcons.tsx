@@ -6,7 +6,8 @@ const style = {
   height: '1em',
   verticalAlign: "middle",
   fill: "currentColor",
-  overflow: "hidden"
+  overflow: "hidden",
+  color:"#989898"
 };
 const LeftJustifying = ()=>(
   <svg className="icon" style={style}
@@ -130,6 +131,36 @@ const Circle = ()=>(
   </svg>
 )
 
+const LongArrow = ()=>(
+  <svg className="icon" style={style}
+       viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="32999">
+    <path d="M3.190031 483.28971972l861.30841101 0L864.49844201 563.04049872 3.19003099 563.04049872l1e-8-79.750779z"
+          fill="" p-id="33000"></path>
+    <path d="M823.02803698 403.53894071L1023.99999999 521.57009373l-200.97196301 121.22118401 0-239.25233703z" fill=""
+          p-id="33001"></path>
+  </svg>
+)
+const Arrow2 = ()=>(
+  <svg className="icon" style={style}
+       viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="38471">
+    <path d="M946.88491901 515.308303L80.423388 1023.999992 329.85928401 508.744201 77.115081 0Z" p-id="38472"></path>
+  </svg>
+)
+const style2 = {
+  width: "15em",
+  height: "1em",
+  verticalAlign:"middle",
+  fill: "currentColor",
+  overflow: "hidden",
+}
+const DashArrow1 = (props)=>(
+  <svg width="60" height="10" version="1.1"
+       xmlns="http://www.w3.org/2000/svg">
+    <line x1="0" y1="5" x2="60" y2="5"
+          style={{stroke:"rgb(99,99,99)",strokeWidth:2}} {...props}/>
+  </svg>
+)
+
 // 来自于 阿里巴巴矢量图库
 // https://www.iconfont.cn/collections/detail?spm=a313x.7781069.1998910419.d9df05512&cid=25957
 export const LeftJustifyingIcon = props => <Icon component={LeftJustifying} {...props} />;
@@ -147,6 +178,9 @@ export const HourTimeIcon = props => <Icon component={HourTime} {...props} />;
 export const RectangleIcon = props => <Icon component={Rectangle} {...props} />;
 export const LineIcon = props => <Icon component={Line} {...props} />;
 export const CircleIcon = props => <Icon component={Circle} {...props} />;
+export const LongArrowIcon = props => <Icon component={LongArrow} {...props} />;
+export const DashArrow1Icon = props => <Icon component={()=><DashArrow1 {...props}/>} {...props} />;
+
 
 
 
@@ -157,7 +191,7 @@ export const CircleIcon = props => <Icon component={Circle} {...props} />;
 
 
 // 网格背景图片
-export const GridBackgroundSVG = ({width = 410, height = 410, strokeColor = '#33001A'}: HeroPatternProps)=>{
+export const GridBackgroundSVG = ({width = 41, height = 41, strokeColor = '#33001A'}: HeroPatternProps)=>{
     let d1 = "";
     const d2 = `M ${width} 0 L 0 0 0 ${height}`
     const coord = getTwoDimen(width,41);

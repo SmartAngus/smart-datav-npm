@@ -12,6 +12,9 @@ class TextCompProps{
 const LineComp:React.FC<TextCompProps> = (props,ref) =>{
     const {node}=props
     const arrawUrl = `url(#${node.id}_${node.chart?.stroke?.endMarker})`;
+
+
+
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -47,6 +50,17 @@ const LineComp:React.FC<TextCompProps> = (props,ref) =>{
                         refY="2.25">
                     <path d="M 0 0 L 5 2 L 0 5 Z" stroke={node.chart.stroke.color} fill={node.chart.stroke.color}></path>
                 </marker>
+              <marker id={node.id+'_open'}
+                      markerUnits="strokeWidth"
+                      markerWidth="12"
+                      markerHeight="12"
+                      viewBox="0 0 12 12"
+                      refX="9.5"
+                      refY="6"
+                      orient="auto">
+                <path d="M2,2 L10,6 L2,10 L6,6 L2,2" fill={node.chart.stroke.color} />
+
+              </marker>
                 <marker id="markerArrow2"
                         markerWidth="5"
                         markerHeight="5"

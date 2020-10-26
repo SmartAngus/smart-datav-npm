@@ -38,7 +38,6 @@ const DataVEditor = React.forwardRef((props:DataVEditorProps,ref)=> {
       selfIndustrialLibrary,
       uploadConfig,
       preInstallBgImages,
-      extraSetting,
       onExtraSetting,
     } = props
     const [screenScale, changeScreenScale] = useState(100);
@@ -84,13 +83,7 @@ const DataVEditor = React.forwardRef((props:DataVEditorProps,ref)=> {
     // 画布容器
     const screenRef = useRef(null);
 
-    // 对父组件暴露保存数据的接口
-    useImperativeHandle(ref, () => ({
-      handleSaveData: () => {
-        const saveDiv = document.getElementById("editor-_toolbarBtnSave")
-        saveDiv.click()
-      }
-    }));
+
 
     // 画布 ref
     const canvasRef = useRef({
@@ -121,6 +114,17 @@ const DataVEditor = React.forwardRef((props:DataVEditorProps,ref)=> {
         clearTimeout(timer)
       }
     },[editorData])
+    // 对父组件暴露保存数据的接口
+    useImperativeHandle(ref, () => ({
+      handleSaveData: () => {
+        const saveDiv = document.getElementById("editor-_toolbarBtnSave")
+        saveDiv.click()
+        setIsSave(true)
+      },
+      getIsSave:()=>{
+        return isSave;
+      }
+    }),[isSave]);
     // 设置每五分钟保存一次数据
     useEffect(()=>{
       const timer = setTimeout( ()=>{
@@ -477,7 +481,7 @@ const DataVEditor = React.forwardRef((props:DataVEditorProps,ref)=> {
     };
     /** 退出，要检查是否已经保存 */
     const handlePoweroff = ()=>{
-      onPoweroff&&onPoweroff(isSave)
+      onPoweroff&&onPoweroff()
     }
     /** 保存历史 */
     const handleSaveHistory =async () => {
@@ -830,8 +834,6 @@ const DataVEditor = React.forwardRef((props:DataVEditorProps,ref)=> {
             </div>
           </div>
           {isShowPreviewModel&&renderPreviewModel()}
-          {isShowExtraRender&&extraSetting&&extraSetting()}
-
         </React.Fragment>
     );
 })

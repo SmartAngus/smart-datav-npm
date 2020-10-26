@@ -10,20 +10,18 @@ class NodeInfo {
   y: number;
   chart?:EChart;
   zIndex?:number;
-  lineRotate?:number;
   style?:BaseCompStyle;
   stroke?:Stroke;
   rotate?:number;
 }
 
-const useResize = (isResize: boolean, { width, height, x, y,rotate,lineRotate,...otherInfo }: NodeInfo): NodeInfo => {
+const useResize = (isResize: boolean, { width, height, x, y,rotate,...otherInfo }: NodeInfo): NodeInfo => {
   const [nodeWidth, setNodeWidth] = useState(width);
   const [nodeHeight, setNodeHeight] = useState(height);
   const [nodeLeft, setNodeLeft] = useState(x);
   const [nodeTop, setNodeTop] = useState(y);
-  const [nodeRotate,setNodeRotate] = useState(lineRotate)
+  const [nodeRotate,setNodeRotate] = useState(rotate)
   const [nodeChartStroke,setNodeChartStroke]=useState(otherInfo?.chart?.stroke);
-  console.log('useResize',rotate,lineRotate)
 
   useEffect(() => {
     setNodeLeft(x);
@@ -44,9 +42,13 @@ const useResize = (isResize: boolean, { width, height, x, y,rotate,lineRotate,..
     // 鼠标拖拽的初始位置
     let originMouseX = 0;
     let originMouseY = 0;
-    // 旋转中心位置
+    // 旋转中心位置 左侧为旋转中心
     let originCenterX = 0;
     let originCenterY = 0;
+
+    // 右侧为旋转中心
+    let roriginCenterX = 0;
+    let roriginCenterY = 0;
 
     if (isResize) {
       for (let i = 0; i < resizers.length; i++) {
@@ -75,6 +77,8 @@ const useResize = (isResize: boolean, { width, height, x, y,rotate,lineRotate,..
           const x = width*Math.cos(h)
           originCenterX = originMouseX - x
           originCenterY = originMouseY - y
+          roriginCenterX = originMouseX + x
+          roriginCenterY = originMouseY + y
               // 变更type
           window.addEventListener('mousemove', resize);
           window.addEventListener('mouseup', stopResize);
@@ -118,11 +122,16 @@ const useResize = (isResize: boolean, { width, height, x, y,rotate,lineRotate,..
             }
           } else if(currentResizer.classList.contains('left')){
             // 暂时没做旋转处理
-            newWidth = originWidth - (e.pageX - originMouseX);
-            if (newWidth > minSize) {
-              setNodeWidth(newWidth);
-              setNodeLeft(nodeLeft + (e.pageX - originMouseX));
-            }
+            // newWidth = originWidth - (e.pageX - originMouseX);
+            // const mouseMoveY = e.pageY - originMouseY
+            // // const dotDistance = distance({x:roriginCenterX,y:roriginCenterY},{x:e.pageX,y:e.pageY})
+            // //   setNodeWidth(dotDistance);
+            // //   setNodeLeft(nodeLeft + (e.pageX - originMouseX));
+            // nodeChartStroke.transformOrigin="right"
+            // let rotateDeg = Math.asinh(mouseMoveY/newWidth)
+            // const orotate = rotate||0
+            // rotateDeg = rotateDeg*180/Math.PI+orotate
+            // setNodeRotate(-rotateDeg)
           }else if(currentResizer.classList.contains('right')){
             // 鼠标移动距离
             const mouseMoveY = e.pageY - originMouseY
@@ -162,7 +171,7 @@ const useResize = (isResize: boolean, { width, height, x, y,rotate,lineRotate,..
     height: nodeHeight,
     x: nodeLeft,
     y: nodeTop,
-    lineRotate: nodeRotate,
+    rotate:nodeRotate,
     stroke: nodeChartStroke
   };
 };

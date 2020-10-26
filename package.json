@@ -1,6 +1,6 @@
 {
   "name": "smart-datav-npm",
-  "version": "1.1.2",
+  "version": "1.2.2",
   "description": "Made with create-react-library",
   "author": "SmartAngus",
   "license": "MIT",
@@ -109,7 +109,8 @@
     "react-scripts": "^3.4.1",
     "reactcss": "^1.2.3",
     "typescript": "^3.7.5",
-    "uuid": "^8.3.1"
+    "uuid": "^8.3.1",
+    "babel-loader": "^8.1.0"
   },
   "files": [
     "dist"
@@ -124,7 +125,6 @@
     "@types/uuid": "^8.3.0",
     "antd": "3.26.12",
     "axios": "^0.20.0",
-    "babel-loader": "^8.1.0",
     "classnames": "^2.2.6",
     "d3-selection": "1.4.2",
     "d3-zoom": "1.8.3",

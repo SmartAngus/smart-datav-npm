@@ -7,7 +7,7 @@ import "../components/NodePanel.scss";
 import "./RenderPropertySidebar.scss"
 import { BgImagesProps, Group, Link, Node, UploadURIProps } from '../constants/defines'
 import UploadBgImg from "../components/uploadBgImg/UploadBgImg";
-import {GridBackgroundSVG} from "../icons/editorIcons";
+import {GridBackgroundSVG,ReplaceTwoIcon,DashArrow1Icon} from "../icons/editorIcons";
 import { UploadFile } from 'antd/es/upload/interface'
 
 
@@ -64,15 +64,15 @@ const timeFormats = [
 // 箭头类型
 const arrowTypes =[
     {key:0,value:'none',name:'无'},
-    {key:1,value:'typical',name:'typical'},
-    {key:2,value:'open',name:'open'},
-    {key:3,value:'block',name:'block'}
+    {key:1,value:'typical',name:'geSprite-endclassic'},
+    {key:2,value:'open',name:'geSprite-endopen'},
+    {key:3,value:'block',name:'geSprite-endblock'}
 ]
 // 线段类型
 const lineTypes = [
-    {key:0,value:'0,0',name:'直线'},
-    {key:1,value:'5,5',name:'虚线'},
-    {key:1,value:'0,11',name:'虚线2'},
+    {key:0,value:'0,0'},
+    {key:1,value:'5,5'},
+    {key:1,value:'5,11'},
 ]
 
 const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
@@ -97,7 +97,8 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
     let isCompSetting= false
     let isSetting = false
     // convert component to string useable in data-uri
-    let svgString = encodeURIComponent(renderToStaticMarkup(<GridBackgroundSVG strokeColor={gridColor} />));
+
+    let svgString = encodeURIComponent(renderToStaticMarkup(<GridBackgroundSVG height={200} width={200} strokeColor={gridColor} />));
     //svgString = btoa(svgString);
     // setCanvasProps(defaultCanvasProps)
 
@@ -144,6 +145,15 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
         canvasProps.width=value;
         setCanvasProps(canvasProps)
         autoSaveSettingInfo(canvasProps,nodes,groups,links)
+    }
+    // 交换屏幕尺寸的宽和高
+    const handleReplaceWH=()=>{
+      const h = canvasProps.height;
+      const w = canvasProps.width;
+      canvasProps.height=w;
+      canvasProps.width=h;
+      setCanvasProps(canvasProps)
+      autoSaveSettingInfo(canvasProps,nodes,groups,links)
     }
     const onCanvasHChange=(value)=>{
         canvasProps.height=value;
@@ -326,32 +336,37 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
     const handleSetLineDashArray = (value)=>{
         const newNode = _.cloneDeep(node)
         if(newNode.chart) {
+            node.chart.stroke.dashArray = value;
             newNode.chart.stroke.dashArray = value;
             updateNodes(newNode)
         }
     }
     // 设置线段颜色
     const handleSetLineStrokeColor = (color)=>{
-        const newNode = _.cloneDeep(node)
-        if(newNode.chart) {
-            newNode.chart.stroke.color = color;
-            updateNodes(newNode)
-        }
+      const newNode = _.cloneDeep(node)
+      if(newNode?.chart) {
+        node.chart.stroke.color = color;
+        newNode.chart.stroke.color = color;
+        updateNodes(newNode)
+      }
     }
+
     // 设置线段宽度
     const handleSetLineStrokeWidth = (value)=>{
         const newNode = _.cloneDeep(node)
         if(newNode.chart) {
-            newNode.chart.stroke.width = value;
-            updateNodes(newNode)
+          node.chart.stroke.width = value;
+          newNode.chart.stroke.width = value;
+          updateNodes(newNode)
         }
     }
     // 设置线段末端箭头
     const handleSetLineEndMarker = (marker)=>{
         const newNode = _.cloneDeep(node)
         if(newNode.chart) {
-            newNode.chart.stroke.endMarker = marker;
-            updateNodes(newNode)
+          node.chart.stroke.endMarker = marker;
+          newNode.chart.stroke.endMarker = marker;
+          updateNodes(newNode)
         }
     }
     // 位置和尺寸改变
@@ -395,7 +410,12 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                         <p>H</p>
                         <InputNumber min={480} max={1080} value={canvasProps.height} onChange={onCanvasHChange} />
                     </span>
-                    <span><p>&nbsp;</p><Button type="link" icon="retweet"/></span>
+                  <span>
+                    <p style={{marginBottom:0}}>&nbsp;</p>
+                    <Button onClick={handleReplaceWH} type="link" style={{fontSize:30}}>
+                      <ReplaceTwoIcon/>
+                    </Button>
+                  </span>
                 </div>
                 <Collapse
                     defaultActiveKey={['1']}
@@ -440,7 +460,8 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                     <Panel header="背景" key="2">
                         <div className="components-box">
                             <ul>
-                                <li style={{display:'flex'}}>背景颜色：<ColorsPicker  onSetColor={handleSetBgColor}/></li>
+                                <li style={{display:'flex'}}>背景颜色：
+                                  <ColorsPicker  onSetColor={handleSetBgColor} defaultColor={canvasProps?.backgroundColor}/></li>
                                 <li style={{display:'flex'}}>
                                   背景图片：<UploadBgImg
                                   onUploadComplete={handleSetUploadImage}
@@ -480,7 +501,7 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                                         parser={value => value.replace('px', '')}
                                         onChange={handleChangeGridSize}
                                     />
-                                    <ColorsPicker onSetColor={handleSetGridColor}/>
+                                    <ColorsPicker onSetColor={handleSetGridColor} defaultColor={canvasProps?.grid?.color}/>
                                 </li>
                             </ul>
                         </div>
@@ -527,7 +548,9 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                             style={{ width: 100,marginRight:20 }}
                             onChange={handleSetLineDashArray}>
                         {lineTypes.map((item,key)=>{
-                            return <Option key={key} value={item.value}>{item.name}</Option>
+                            return <Option key={key} value={item.value}>
+                              <div className="geStroke"><DashArrow1Icon strokeDasharray={item.value}/></div>
+                            </Option>
                         })}
                     </Select>
                 </div>
@@ -547,7 +570,17 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                             style={{ width: 100,marginRight:20 }}
                             onChange={handleSetLineEndMarker}>
                         {arrowTypes.map((item,key)=>{
-                            return <Option key={key} value={item.value}>{item.name}</Option>
+                            let classStr = `geSpriteArrow geSprite ${item.name}`
+                          if(item.name=='无'){
+                            return <Option key={key} value={item.value}>
+                              无
+                              </Option>
+                          }else{
+                            return <Option className="geOption" key={key} value={item.value}>
+                              <div className={classStr}></div>
+                            </Option>
+                          }
+
                         })}
                     </Select>
                 </div>

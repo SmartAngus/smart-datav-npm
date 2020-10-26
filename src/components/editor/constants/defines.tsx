@@ -500,11 +500,9 @@ export class DataVEditorProps{
   // 自定义预览按钮的功能
   onPreview?:(editorData:any)=>void;
   // 当点击退出按钮时
-  onPoweroff?:(isSave:boolean)=>void;
+  onPoweroff?:()=>void;
   /** 间隔几分钟保存数据 */
   autoSaveInterval?:number;
-  // 额外的配置按钮，所有操作均由调用者控制
-  extraSetting?:()=>React.ReactNode;
   // 当点击额外配置按钮的回掉
   onExtraSetting?:()=>void;
   // 预设工业图库
