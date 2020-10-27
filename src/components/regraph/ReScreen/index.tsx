@@ -225,11 +225,6 @@ export default class ReScreen extends React.Component<Props, State> {
     this.getScreenToMapTransform();
     // 初始化设置编辑窗口居中，设置滚动条位置
     this.handleScreenResizeTo(1,[this.screenWidth/2,this.screenHeight/2-100])
-    window.localStorage.setItem("editorDataHistory", JSON.stringify({
-      id: "editorData-history",
-      currentIndex:0,
-      datas:[]
-    }));
   }
 
   initEvent() {

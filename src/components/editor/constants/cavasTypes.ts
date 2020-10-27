@@ -18,7 +18,6 @@ export class CanvasContentProps {
     /** 当前拖拽的节点 */
     dragNode: Node;
     updateNodes: (node: Node) => void;
-    onSaveHistory:()=>void;
     updateLinks: (link: Link) => void;
     updateGroups?: (nodes: Node[], deleteGroupId?: string) => void;
     deleteNodes: (selectedNodes: string[]) => void;

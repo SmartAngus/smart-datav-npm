@@ -1,4 +1,4 @@
-/** 
+/**
  * 本地持久化存储
  */
 
@@ -9,7 +9,7 @@ export function useLocalStorage(key, initialValue) {
   // Pass initial state function to useState so logic is only executed once
   const [storedValue, setStoredValue] = useState(() => {
     try {
-      const item = window.localStorage.getItem(key);
+      const item = window.sessionStorage.getItem(key);
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
       // // console.log(error);
@@ -26,7 +26,7 @@ export function useLocalStorage(key, initialValue) {
       // Save state
       setStoredValue(valueToStore);
       // Save to local storage
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      window.sessionStorage.setItem(key, JSON.stringify(valueToStore));
       return resolve(true)
     } catch (error) {
       // A more advanced implementation would handle the error case

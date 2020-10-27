@@ -1,8 +1,9 @@
 import * as React from "react";
-import * as _ from "lodash";
 import { Node, Link, Group } from "../constants/defines";
 import { ZoomTransform, zoomIdentity } from "d3-zoom";
 import { useLocalStorage } from "./useLocalStorage";
+import { useHistory } from './useHistory'
+import { useDebouncedCallback } from 'use-debounce';
 
 const { useState, useEffect } = React;
 
@@ -34,17 +35,23 @@ export function useEditorStore() {
   const [editorLocalData, setEditorLocalData] = useLocalStorage("editorData", {
     id: "editorData-local"
   });
+  const { state, set:setHistory, undo, redo, clear, canUndo, canRedo } = useHistory(editorData);
   const [canvasProps, setCanvasProps] = useState(canvasConfig)
-  const [editorLocalHistoryData,setEditorLocalHistoryData]= useLocalStorage("editorDataHistory", {
-    id: "editorData-history",
-    currentIndex:0,
-    datas:[]
-  });
+
   const [dragNode, setDragNode] = useState(null);
 
   const [currTrans, setCurrTrans] = useState<ZoomTransform>(zoomIdentity);
 
   const [copiedNodes, setCopiedNodes] = useState<Node[]>([]);
+  // 保存操作历史
+  const debouncedHistory = useDebouncedCallback(
+    (value) => {
+      setHistory(value);
+    },
+    500,
+    // The maximum time func is allowed to be delayed before it's invoked:
+    { maxWait: 600 }
+  );
 
   useEffect(() => {
     setEditorData(editorLocalData);
@@ -69,6 +76,7 @@ export function useEditorStore() {
   }, [editorLocalData]);
 
   const updateNodes = (node: Node) => {
+    console.log('updateNodes---')
     const index = nodes.findIndex(item => item.id === node.id);
     const newNodes = [
       ...nodes.slice(0, index),
@@ -77,6 +85,13 @@ export function useEditorStore() {
     ];
     setNodes(newNodes);
     setIsSave(false);
+    debouncedHistory.callback({
+      ...(editorData as any),
+      nodes:nodes,
+      links:links,
+      groups: groups,
+      canvasProps:canvasProps
+    })
   };
 
   const updateLinks = (link: Link) => {
@@ -89,6 +104,13 @@ export function useEditorStore() {
 
     setLinks(newLinks);
     setIsSave(false);
+    debouncedHistory.callback({
+      ...(editorData as any),
+      nodes:nodes,
+      links:links,
+      groups: groups,
+      canvasProps:canvasProps
+    })
   };
 
   const updateGroups = (group: Group) => {
@@ -102,6 +124,13 @@ export function useEditorStore() {
 
     setGroups(newGroups);
     setIsSave(false);
+    debouncedHistory.callback({
+      ...(editorData as any),
+      nodes:nodes,
+      links:links,
+      groups: groups,
+      canvasProps:canvasProps
+    })
   };
   // 保存最新的数据
   const handleSaveData = async () => {
@@ -139,6 +168,14 @@ export function useEditorStore() {
       canvasProps:newCanvasProps
     });
 
+    debouncedHistory.callback({
+      ...(editorData as any),
+      nodes:nodes,
+      links:links,
+      groups: groups,
+      canvasProps:canvasProps
+    })
+
     return result;
   }
 
@@ -167,43 +204,7 @@ export function useEditorStore() {
     }
     return true
   }
-  // 保存操作历史数据
-  const handleSaveHistoryData = async () => {
-    const newNodes = nodes || [];
-    const newGroups = groups || [];
 
-    // 保存数据时，需要去掉ref,保存历史数据不需要，否则拿不到当前的节点
-    // newNodes.forEach(node => delete node.ref);
-    // newGroups.forEach(group => {
-    //   delete group.ref;
-    //   group.nodes.forEach(node => {
-    //     delete node.ref;
-    //   });
-    // });
-    const data = {
-      ...(editorData as any),
-      nodes: newNodes,
-      groups: newGroups,
-      links
-    }
-   if(editorLocalHistoryData.datas&&editorLocalHistoryData.datas.length>0){
-     const isEqual = isObjectValueEqual(data,editorLocalHistoryData.datas.slice(-1)[0])
-     if(isEqual){
-       return;
-     }else{
-       editorLocalHistoryData.datas.push(data)
-     }
-   }else{
-     editorLocalHistoryData.datas.push(data)
-   }
-   if(editorLocalHistoryData.datas.length>100){// 最多记录100步历史
-     editorLocalHistoryData.datas.splice(0,editorLocalHistoryData.datas.length-100)
-   }
-    editorLocalHistoryData.currentIndex = editorLocalHistoryData.datas.length-1;
-    const result = await setEditorLocalHistoryData(editorLocalHistoryData);
-    return result;
-
-  }
 
   return {
     editorData,
@@ -232,13 +233,13 @@ export function useEditorStore() {
     updateGroups,
     selectedGroup,
     setSelectedGroup,
-    editorLocalHistoryData,
-    setEditorLocalHistoryData,
-    handleSaveHistoryData,
     canvasProps,
     setCanvasProps,
     handleAutoSaveSettingInfo,
     isSave,
-    setIsSave
+    setIsSave,
+    stateHistory:state,
+    undo,
+    redo
   };
 }

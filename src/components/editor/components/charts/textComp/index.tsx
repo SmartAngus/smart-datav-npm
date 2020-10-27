@@ -19,7 +19,6 @@ const TextComp:React.FC<TextCompProps> = (props,ref) =>{
     const {node,updateNodes,interactive} = props
     const [showEditable,setShowEditable] = useState(false)
     const editableRef = useRef(null)
-    console.log(node)
     useClickAway(
         () => {
             setShowEditable(false)

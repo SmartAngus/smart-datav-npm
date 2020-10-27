@@ -221,19 +221,6 @@ const App = () => {
     </React.Fragment>
   )
 }
-// <DataVEditor
-//   ref={editorRef}
-//   onEditorSaveCb={handleSaveEditorData}
-//   editorData={editorData}
-//   onExtraSetting={handleExtraSetting}
-//   extraSetting={()=>{
-//     return <ExtraModel />
-//   }}
-//   selfIndustrialLibrary={selfIndustrialLibrary}
-//   industrialLibrary={industrialLibrary}
-//   uploadConfig={uploadConfig}
-//   onPoweroff={handlePoweroff}
-//   preInstallBgImages={preInstallBgImages}
-// />
+
 
 export default App

@@ -17,7 +17,7 @@ const reducer = (state, action) => {
     case "UNDO":
       const previous = past[past.length - 1];
       const newPast = past.slice(0, past.length - 1);
-
+      console.log("UNDO",future)
       return {
         past: newPast,
         present: previous,
@@ -26,7 +26,7 @@ const reducer = (state, action) => {
     case "REDO":
       const next = future[0];
       const newFuture = future.slice(1);
-
+      console.log("UNDO",newFuture)
       return {
         past: [...past, present],
         present: next,
@@ -34,7 +34,7 @@ const reducer = (state, action) => {
       };
     case "SET":
       const { newPresent } = action;
-
+      console.log("SET==",newPresent)
       if (newPresent === present) {
         return state;
       }
@@ -58,7 +58,6 @@ const useHistory = initialPresent => {
     ...initialState,
     present: initialPresent
   });
-
   const canUndo = state.past.length !== 0;
   const canRedo = state.future.length !== 0;
 
