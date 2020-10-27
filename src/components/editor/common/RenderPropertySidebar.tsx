@@ -9,6 +9,7 @@ import { BgImagesProps, Group, Link, Node, UploadURIProps } from '../constants/d
 import UploadBgImg from "../components/uploadBgImg/UploadBgImg";
 import {GridBackgroundSVG,ReplaceTwoIcon,DashArrow1Icon} from "../icons/editorIcons";
 import { UploadFile } from 'antd/es/upload/interface'
+import ResizePanel from '../components/resizeSidebar'
 
 
 const { TabPane } = Tabs
@@ -757,7 +758,7 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
     }
 
     return (
-        <div className="editor-property">
+      <div className="editor-property">
             {isSetting&&renderPageSetting()}
             {isCompSetting&&renderCompSetting()}
         </div>

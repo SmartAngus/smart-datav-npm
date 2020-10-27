@@ -113,8 +113,8 @@ export class ToolbarProps {
   // handleFullScreen?: () => void;
   /** Toolbar选项 */
   items?: ToolbarType[];
-
-  /**  */
+  /** isSave */
+  showIsSave?:boolean;
 }
 
 const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
@@ -146,7 +146,8 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
     onVerticallyJustify,
     onBottomJustify,
     onPoweroff,
-    onExtraRender
+    onExtraRender,
+    showIsSave
   } = props;
   const scale = String(Math.round(screenScale));
 
@@ -270,6 +271,7 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
                 <span className="toolbar-btn-text">放大</span>
               </Tooltip>
             </div>
+            <div className="toolbar-scale">{scale}%</div>
             <div className="toolbar-btn" onClick={handleResize.bind(null, false)}>
               <Tooltip title="缩小">
                 <Icon type="zoom-out"/>
@@ -279,15 +281,6 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
           </React.Fragment>
         )}
         <div className="btn-separator"></div>
-        {isSave && (
-          <div className="toolbar-btn toolbar-btn-save" id="editor-_toolbarBtnSave"  onClick={onSave} >
-            <Tooltip title="保存">
-              <Icon type="save"/>
-              <span className="toolbar-btn-text">保存</span>
-            </Tooltip>
-          </div>
-        )}
-
         {isFullScreen && (
           <div className="toolbar-btn" onClick={handleFullScreen}>
             <Tooltip title="全屏">
@@ -296,7 +289,7 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
             </Tooltip>
           </div>
         )}
-
+        <div className="btn-separator"></div>
         {isShear && (
           <div className="toolbar-btn" onClick={onShear} >
             <Tooltip title="剪切">
@@ -331,7 +324,6 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
             </Tooltip>
           </div>
         )}
-
         {isDragSelect && (
           <div className="toolbar-btn" onClick={onDragSelect} >
             <Tooltip title="圈选">
@@ -377,14 +369,6 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
             </div>
         )}
 
-        {isPreview && (
-            <div className="toolbar-btn" onClick={onPreview} >
-              <Tooltip title="预览">
-                <PreviewDesktopIcon/>
-                <span className="toolbar-btn-text">预览</span>
-              </Tooltip>
-            </div>
-        )}
         {isBringUp && (
             <div className="toolbar-btn" onClick={onBringUp} >
               <Tooltip title="上移一层">
@@ -465,11 +449,38 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
               </Tooltip>
             </div>
         )}
+        <div className="btn-separator"></div>
         {isExtraRenderNode && (
           <div className="toolbar-btn" onClick={onExtraRender} >
             <Tooltip title="配置">
               <Icon type="setting" />
               <span className="toolbar-btn-text">配置</span>
+            </Tooltip>
+
+          </div>
+        )}
+
+        <div className="btn-separator"></div>
+        {isPreview && (
+          <div className="toolbar-btn" onClick={onPreview} >
+            <Tooltip title="预览(Ctrl/Command+p)">
+              <PreviewDesktopIcon/>
+              <span className="toolbar-btn-text">预览</span>
+            </Tooltip>
+          </div>
+        )}
+        {isSave && (
+          <div className="toolbar-btn toolbar-btn-save" id="editor-_toolbarBtnSave"  onClick={onSave} >
+            <Tooltip title="保存(Ctrl/Command+s)">
+              <Icon type="save"/>
+              <span className="toolbar-btn-text">保存</span>
+            </Tooltip>
+          </div>
+        )}
+        {!showIsSave && (
+          <div className="toolbar-btn" style={{lineHeight:"60px"}}>
+            <Tooltip title="修改未保存">
+              <span className="toolbar-btn-text" style={{fontSize:'14px',color:'red'}}>修改未保存</span>
             </Tooltip>
           </div>
         )}
@@ -479,7 +490,6 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
 
   return (
     <div className="toolbar">
-      <div className="toolbar-scale">{scale}%</div>
       <div className="toolbar-button">{renderButtons()}</div>
     </div>
   );

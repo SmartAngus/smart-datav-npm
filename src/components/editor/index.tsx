@@ -21,6 +21,8 @@ import RenderPropertySidebar from './common/RenderPropertySidebar'
 
 import './index.scss'
 import DataVPreview from '../preview'
+// import ResizePanel from "react-resize-panel";
+import ResizePanel from './components/resizeSidebar'
 
 const { useState, useRef, useEffect, useContext, useImperativeHandle } = React
 
@@ -629,6 +631,14 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
   useKeyPress(isMac ? ['meta.v'] : ['ctrl.v'], () => {
     handlePaste()
   })
+  useKeyPress(isMac ? ['meta.s'] : ['ctrl.s'], (event) => {
+    event.returnValue=false;
+    handleSave()
+  })
+  useKeyPress(isMac ? ['meta.f12'] : ['ctrl.f12'], (event) => {
+    event.returnValue=false;
+    handlePreview()
+  })
 
   useEventListener(
     'keydown',
@@ -654,7 +664,9 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
   const renderOperation = (
     <div>
       <Toolbar
+
         ref={screenRef}
+        showIsSave={isSave}
         screenScale={screenScale}
         changeScreenScale={changeScreenScale}
         handleResizeTo={canvasInstance && canvasInstance.handleResizeTo}
@@ -719,14 +731,14 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
   )
   /** 渲染节点选择区 */
   const renderNodePanel = (
-    <div className='editor-nodePanel'>
+    <ResizePanel direction="e" style={{ width: '320px' }}>
       <NodePanel
         onDrag={setDragNode}
         industrialLibrary={industrialLibrary}
         selfIndustrialLibrary={selfIndustrialLibrary}
         config={uploadConfig.self}
       />
-    </div>
+    </ResizePanel>
   )
   // 渲染本地预览框
   const renderPreviewModel = () => {

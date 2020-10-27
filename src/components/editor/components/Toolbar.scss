@@ -5,7 +5,7 @@
     line-height: 36px;
     margin-left: 2px;
     color: #333;
-    padding-left: 35px;
+    padding-left: 10px;
     background-color: #f3f3f3;
     border-top: 1px solid #cbcccc;
     border-bottom: 1px solid #cbcccc;
@@ -39,11 +39,11 @@
     &-btn>span{
       display: flex;
       flex-direction: column;
-      font-size: 26px;
+      font-size: 24px;
       align-items: center;
     }
     &-btn-text{
-      font-size: 14px;
+      font-size: 13px;
       margin-top: -5px;
     }
     &-btn-disabled{

@@ -215,7 +215,7 @@ const App = () => {
         uploadConfig={uploadConfig}
         onPoweroff={handlePoweroff}
         preInstallBgImages={preInstallBgImages}
-        autoSaveInterval={20}
+        autoSaveInterval={1}
       />
       {/*<DataVPreview editorData={editorData}/>*/}
     </React.Fragment>

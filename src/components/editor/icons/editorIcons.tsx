@@ -160,6 +160,21 @@ const DashArrow1 = (props)=>(
           style={{stroke:"rgb(99,99,99)",strokeWidth:2}} {...props}/>
   </svg>
 )
+const styleDrag = {
+  width: '1em',
+  height: '1em',
+  verticalAlign: "middle",
+  fill: "currentColor",
+  overflow: "hidden",
+};
+const DragColunm = ()=>(
+  <svg className="icon" style={styleDrag}
+       viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="50671">
+    <path
+      d="M398.222222 142.222222c0-17.066667 11.377778-28.444444 28.444445-28.444444s28.444444 11.377778 28.444444 28.444444v512c0 17.066667-11.377778 28.444444-28.444444 28.444445s-28.444444-11.377778-28.444445-28.444445v-512z m170.666667 0c0-17.066667 11.377778-28.444444 28.444444-28.444444s28.444444 11.377778 28.444445 28.444444v512c0 17.066667-11.377778 28.444444-28.444445 28.444445s-28.444444-11.377778-28.444444-28.444445v-512z"
+      p-id="50672"></path>
+  </svg>
+)
 
 // 来自于 阿里巴巴矢量图库
 // https://www.iconfont.cn/collections/detail?spm=a313x.7781069.1998910419.d9df05512&cid=25957
@@ -180,6 +195,8 @@ export const LineIcon = props => <Icon component={Line} {...props} />;
 export const CircleIcon = props => <Icon component={Circle} {...props} />;
 export const LongArrowIcon = props => <Icon component={LongArrow} {...props} />;
 export const DashArrow1Icon = props => <Icon component={()=><DashArrow1 {...props}/>} {...props} />;
+export const DragColunmIcon = props => <Icon component={DragColunm} {...props} />;
+
 
 
 

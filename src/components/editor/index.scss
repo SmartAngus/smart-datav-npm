@@ -26,7 +26,20 @@
     background: #fff;
     flex-grow: 1;
     .editor-nodePanel {
-      width: 228px;
+      width: 100%;
+      position: relative;
+      .editor-nodePanel-resize{
+        position: absolute;
+        width: 10px;
+        right: 0;
+        top: 0;
+        bottom:0;
+        background: #989898;
+        cursor: e-resize;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
     }
 
     .editor-canvas {
