@@ -1,15 +1,28 @@
 import React,{ useRef,useState,useContext,useEffect,useMemo } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Tabs, Collapse, Select, Input, Tooltip, Icon,InputNumber, Button,Radio, Checkbox } from 'antd'
+import { Tabs, Collapse, Select, Input, Tooltip, Icon,InputNumber, Button, Checkbox,Row,Col } from 'antd'
 import * as _ from 'lodash'
 import ColorsPicker from './ColorsPicker'
 import "../components/NodePanel.scss";
 import "./RenderPropertySidebar.scss"
 import { BgImagesProps, Group, Link, Node, UploadURIProps } from '../constants/defines'
 import UploadBgImg from "../components/uploadBgImg/UploadBgImg";
-import {GridBackgroundSVG,ReplaceTwoIcon,DashArrow1Icon} from "../icons/editorIcons";
+import {
+  GridBackgroundSVG,
+  HorizontalLongRectIcon,
+  DashArrow1Icon,
+  LeftJustifyingIcon,
+  RightJustifyingIcon,
+  TopJustifyingIcon,
+  VerticalLongRectIcon,
+  ExitBtnIcon,
+  BottomJustifyingIcon,
+  VerticalCenterIcon,
+  HorizontalCenterIcon
+} from "../icons/editorIcons";
 import { UploadFile } from 'antd/es/upload/interface'
 import ResizePanel from '../components/resizeSidebar'
+import ReactSwitch from '../components/reactSwitch/index'
 
 
 const { TabPane } = Tabs
@@ -32,6 +45,17 @@ export class OptionsProperty  {
     setDragNode?:(node:Node)=>void;
     config?:UploadURIProps;
     preInstallBgImages?:BgImagesProps[];
+    onLeftJustify?:()=>void;
+
+    onHorizontallyJustify?:()=>void;
+
+    onRightJustify?:()=>void;
+
+    onTopJustify?:()=>void;
+
+    onVerticallyJustify?:()=>void;
+
+    onBottomJustify?:()=>void;
 }
 // 定义页面尺寸
 const pageSizes = [
@@ -78,13 +102,34 @@ const lineTypes = [
 
 const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
     const sidebarRef = useRef(null)
-    const {selectedNodes,nodes,groups,links,updateNodes,canvasProps,setCanvasProps,autoSaveSettingInfo,config,preInstallBgImages} = props;
+    const {
+      selectedNodes,
+      nodes,
+      groups,
+      links,
+      updateNodes,
+      canvasProps,
+      setCanvasProps,
+      autoSaveSettingInfo,
+      config,
+      preInstallBgImages,
+      onLeftJustify,
+      onRightJustify,
+      onTopJustify,
+      onBottomJustify,
+      onHorizontallyJustify,
+      onVerticallyJustify
+    } = props;
     const [isSelf,setIsSelf] = useState(false)
 
     const [gridSize,setGridSize]=useState(10)
     let [showGrid,setShowGrid]=useState(false)
     let [gridColor,setGridColor]=useState("transparent")
-
+    const [rcSwitchState,setRcSwitchState]=useState(()=>{
+      if(canvasProps.width>canvasProps.height) return false;
+      return true;
+    })
+    const [selectPlaceholder,setSelectPlaceholder]=useState("选择画布大小")
     useEffect(()=>{
         if(canvasProps&&canvasProps.grid){
             setGridSize(canvasProps.grid.size)
@@ -140,21 +185,13 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
         canvasProps.width=canvasSize.width;
         setCanvasProps(canvasProps)
         autoSaveSettingInfo(canvasProps,nodes,groups,links)
+        setSelectPlaceholder(`已选择画布大小${canvasSize.width}X${canvasSize.height}`)
     }
     //屏幕尺寸变化
     const onCanvasWChange=(value)=>{
         canvasProps.width=value;
         setCanvasProps(canvasProps)
         autoSaveSettingInfo(canvasProps,nodes,groups,links)
-    }
-    // 交换屏幕尺寸的宽和高
-    const handleReplaceWH=()=>{
-      const h = canvasProps.height;
-      const w = canvasProps.width;
-      canvasProps.height=w;
-      canvasProps.width=h;
-      setCanvasProps(canvasProps)
-      autoSaveSettingInfo(canvasProps,nodes,groups,links)
     }
     const onCanvasHChange=(value)=>{
         canvasProps.height=value;
@@ -387,6 +424,15 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
         let r = value.match(reg);
         return r&&r[2]
     }
+    const handleRCSwitchStateChange = ()=>{
+      setRcSwitchState(!rcSwitchState)
+      const h = canvasProps.height;
+      const w = canvasProps.width;
+      canvasProps.height=w;
+      canvasProps.width=h;
+      setCanvasProps(canvasProps)
+      autoSaveSettingInfo(canvasProps,nodes,groups,links)
+    }
     // 根据不同的组件类型渲染不同的组件属性
     let isLineComp=false;
     let isCommonComp=false;
@@ -397,116 +443,142 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
         isCommonComp=true;
     }
 
+
     // 渲染自定义页面设置
     const renderPageSetting = ()=>{
             return (
                 <React.Fragment>
-                <h3 style={{borderBottom:'2px solid #ccc',paddingBottom:10}}>页面设置</h3>
-                <div className="self-setting-size">
-                    <span>
-                        <p>W</p>
-                        <InputNumber min={640} max={1920} value={canvasProps.width} onChange={onCanvasWChange} />
-                    </span>
-                    <span>
-                        <p>H</p>
-                        <InputNumber min={480} max={1080} value={canvasProps.height} onChange={onCanvasHChange} />
-                    </span>
-                  <span>
-                    <p style={{marginBottom:0}}>&nbsp;</p>
-                    <Button onClick={handleReplaceWH} type="link" style={{fontSize:30}}>
-                      <ReplaceTwoIcon/>
-                    </Button>
-                  </span>
-                </div>
                 <Collapse
                     defaultActiveKey={['1']}
                     onChange={handleCollapseKey}
                     bordered={true}
                     accordion={false}
                 >
-                    <Panel header="预设尺寸" key="1">
-                        <ul className="bant-list-items">
-                            <li className="bant-list-item">
-                                <div className="bant-list-item-extra">
-                                    <div className="preview-box"></div>
+                  <Panel  header="基础属性" key="1">
+                    <div className="self-setting-size">
+                      <Select
+                        style={{ width: "100%",backgroundColor:'#D6D6D6' }}
+                        dropdownStyle={{backgroundColor:'#D6D6D6'}}
+                        placeholder={selectPlaceholder}
+                        dropdownRender={menu => {
+                          const r1  = pageSizes.map((size,key)=>{
+                            return <Col span={12} key={key}><Button type="link"
+                                      onClick={()=>handleCanvasChange(size.key)}
+                                                     className="canvas-size-row">{size.text}</Button></Col>
+                          })
+                          const r2=pageSizes2.map((size,key)=>{
+                              return <Col span={12} key={key}><Button type="link" onClick={()=>handleCanvasChange(size.key)}
+                                                         className="canvas-size-row">{size.text}</Button></Col>
+                            })
+                          return (
+                            <div style={{padding:10}} onMouseDown={e => e.preventDefault()}>
+                              <Row>
+                                <h3>16:9</h3>
+                              </Row>
+                              <Row>
+                                {r1}
+                              </Row>
+                              <Row>
+                                <h3>4:3</h3>
+                              </Row>
+                              <Row>
+                                {r2}
+                              </Row>
+                            </div>
+                          )
+                        }}
+                      >
+                      </Select>
+                    </div>
+                    <div className="self-setting-size">
+                      <span>
+                          <InputNumber min={640} max={1920} value={canvasProps.width} onChange={onCanvasWChange} />
+                      </span>
+                      <span>
+                          <InputNumber min={480} max={1080} value={canvasProps.height} onChange={onCanvasHChange} />
+                      </span>
+                      <span>
+                        <ReactSwitch
+                          onChange={handleRCSwitchStateChange}
+                          checked={rcSwitchState}
+                          offHandleColor="#096DD9"
+                          onHandleColor="#096DD9"
+                          offColor="#ccc"
+                          onColor="#ccc"
+                          uncheckedIcon={<VerticalLongRectIcon />}
+                          checkedIcon={<HorizontalLongRectIcon/>}
+                        />
+                      </span>
+                    </div>
+                  </Panel>
+                  <Panel header="背景" key="3">
+                    <div className="components-box">
+                      <ul style={{width:'100%'}} className="components-box-inner-ul">
+                        <li>
+                          <Select
+                            style={{ width: "100%",backgroundColor:'#D6D6D6' }}
+                            dropdownStyle={{backgroundColor:'#D6D6D6'}}
+                            placeholder="选择预设背景图片"
+                            clearIcon={<div>sas</div>}
+                            dropdownRender={menu => {
+                              const a = (preInstallBgImages||[]).map((image)=>{
+                                return (
+                                  <Col style={{position:"relative"}} span={24} key={image.key} onClick={()=>handlePreBgImg(image)}>
+                                    <img src={image.img} alt="" style={{width:'100%'}}/>
+                                    {canvasProps.backgroundImageKey == image.key?<Button
+                                      className="pre-img-selected-icon"
+                                      size="small" type="primary" shape="circle" icon="check" />:''}
+                                  </Col>
+                                )
+                              })
+                              return (
+                                <div style={{padding:10}} onMouseDown={e => e.preventDefault()}>
+                                  <Row>
+                                    {a}
+                                  </Row>
                                 </div>
-                                <div className="bant-list-item-main">
-                                    <div className="bant-list-item-meta"><h3>16:9</h3></div>
-                                    <div className="bant-list-item-meta-content">
-                                            {pageSizes.map((size,key)=>{
-                                                return <a
-                                                    onClick={()=>handleCanvasChange(size.key)}
-                                                    key={key}
-                                                    className="canvas-size-row">{size.text}</a>
-                                            })}
-                                    </div>
-                                </div>
-                            </li>
-                            <li className="bant-list-item">
-                                <div className="bant-list-item-extra">
-                                    <div className="preview-box box-four-to-three"></div>
-                                </div>
-                                <div className="bant-list-item-main">
-                                    <div className="bant-list-item-meta"><h3>4:3</h3></div>
-                                    <div className="bant-list-item-meta-content">
-                                        {pageSizes2.map((size,key)=>{
-                                            return <a  onClick={()=>handleCanvasChange(size.key)}
-                                                key={key} className="canvas-size-row">{size.text}</a>
-                                        })}
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </Panel>
-                    <Panel header="背景" key="2">
-                        <div className="components-box">
-                            <ul>
-                                <li style={{display:'flex'}}>背景颜色：
-                                  <ColorsPicker  onSetColor={handleSetBgColor} defaultColor={canvasProps?.backgroundColor}/></li>
-                                <li style={{display:'flex'}}>
-                                  背景图片：<UploadBgImg
-                                  onUploadComplete={handleSetUploadImage}
-                                  onRemoveFile={handleRemoveFile}
-                                  uploadConfig={config}/>
-                                </li>
-                              <li>
-                                <div  className="pre-mini-img" onClick={()=>handleChangeBgImg()}>
-                                  <img src={canvasProps.uploadBackgroundImage?.url} alt="" style={{width:192,height:108}}/>
-                                  {canvasProps.uploadBackgroundImage.show===true?<Button
-                                    className="pre-img-selected-icon"
-                                    size="small" type="primary" shape="circle" icon="check" />:''}
-                                </div>
-                              </li>
-                                <li>
-                                    <p style={{textAlign:'left'}}>预设图片：</p>
-                                    <div className="preinstall-bg-img">
-                                        {(preInstallBgImages||[]).map((image)=>{
-                                            return (
-                                                <div key={image.key} className="pre-mini-img" onClick={()=>handlePreBgImg(image)}>
-                                                    <img src={image.img} alt=""/>
-                                                    {canvasProps.backgroundImageKey == image.key?<Button
-                                                        className="pre-img-selected-icon"
-                                                        size="small" type="primary" shape="circle" icon="check" />:''}
-                                                </div>
-                                            )
-                                        })}
-                                    </div>
-                                </li>
-                                <li className="grid-setting">
-                                    <Checkbox  checked={showGrid} onChange={handleChangeGrid} >网格</Checkbox>
-                                    <InputNumber
-                                        value={gridSize}
-                                        min={10}
-                                        max={100}
-                                        formatter={value => `${value}px`}
-                                        parser={value => value.replace('px', '')}
-                                        onChange={handleChangeGridSize}
-                                    />
-                                    <ColorsPicker onSetColor={handleSetGridColor} defaultColor={canvasProps?.grid?.color}/>
-                                </li>
-                            </ul>
-                        </div>
-                    </Panel>
+                              )
+                            }}
+                          >
+                          </Select>
+                        </li>
+                          <li style={{display:'flex'}}>背景颜色：
+                            <ColorsPicker  onSetColor={handleSetBgColor} defaultColor={canvasProps?.backgroundColor}/></li>
+                          <li style={{display:'flex'}}>
+                            背景图片：<UploadBgImg
+                            onUploadComplete={handleSetUploadImage}
+                            onRemoveFile={handleRemoveFile}
+                            uploadConfig={config}/>
+                          </li>
+                        <li>
+                          <div  className="pre-mini-img" onClick={()=>handleChangeBgImg()}>
+                            <img src={canvasProps.uploadBackgroundImage?.url} alt="" style={{width:192,height:108}}/>
+                            {canvasProps.uploadBackgroundImage.show===true?<Button
+                              className="pre-img-selected-icon"
+                              size="small" type="primary" shape="circle" icon="check" />:''}
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </Panel>
+                  <Panel header="网格" key="2">
+                    <div className="components-box">
+                      <ul style={{width:'100%'}} className="components-box-inner-ul">
+                        <li className="grid-setting">
+                          <Checkbox  checked={showGrid} onChange={handleChangeGrid} >网格</Checkbox>
+                          <InputNumber
+                            value={gridSize}
+                            min={10}
+                            max={100}
+                            formatter={value => `${value}px`}
+                            parser={value => value.replace('px', '')}
+                            onChange={handleChangeGridSize}
+                          />
+                          <ColorsPicker onSetColor={handleSetGridColor} defaultColor={canvasProps?.grid?.color}/>
+                        </li>
+                      </ul>
+                    </div>
+                  </Panel>
                 </Collapse>
                 </React.Fragment>
             )
@@ -759,6 +831,16 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
 
     return (
       <div className="editor-property">
+           <div className="alignment-operation-wrapper">
+             <ButtonGroup>
+               <Tooltip title="左侧对齐"><Button type="link" onClick={onLeftJustify}><LeftJustifyingIcon/></Button></Tooltip>
+               <Tooltip title="右侧对齐"><Button type="link" onClick={onRightJustify}><RightJustifyingIcon/></Button></Tooltip>
+               <Tooltip title="顶部对齐"><Button type="link" onClick={onTopJustify}><TopJustifyingIcon/></Button></Tooltip>
+               <Tooltip title="底部对齐"><Button type="link" onClick={onBottomJustify}><BottomJustifyingIcon/></Button></Tooltip>
+               <Tooltip title="水平居中"><Button type="link" onClick={onHorizontallyJustify}><HorizontalCenterIcon/></Button></Tooltip>
+               <Tooltip title="垂直居中"><Button type="link" onClick={onVerticallyJustify}><VerticalCenterIcon/></Button></Tooltip>
+             </ButtonGroup>
+           </div>
             {isSetting&&renderPageSetting()}
             {isCompSetting&&renderCompSetting()}
         </div>

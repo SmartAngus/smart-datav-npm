@@ -8,7 +8,7 @@ import { useDebouncedCallback } from 'use-debounce';
 const { useState, useEffect } = React;
 
 const canvasConfig = {
-  backgroundColor: "#f0f2f5",
+  backgroundColor: "#ffffff",
   backgroundImage: null,
   backgroundImageKey: null,
   uploadBackgroundImage:{
@@ -76,7 +76,6 @@ export function useEditorStore() {
   }, [editorLocalData]);
 
   const updateNodes = (node: Node) => {
-    console.log('updateNodes---')
     const index = nodes.findIndex(item => item.id === node.id);
     const newNodes = [
       ...nodes.slice(0, index),

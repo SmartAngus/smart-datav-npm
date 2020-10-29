@@ -23,7 +23,6 @@ class UploadBgImg extends React.Component<UploadBgImgProps> {
   }
 
   handleRemove = (file)=>{
-    console.log("aaaa")
     this.setState({fileList:[]})
   }
   // 手动上传文件

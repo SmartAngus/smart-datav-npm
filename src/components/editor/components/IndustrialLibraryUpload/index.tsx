@@ -97,7 +97,7 @@ export default class IndustrialLibraryUpload extends React.Component<IndustrialL
     return (
       <div className="clearfix" draggable={false}>
         <Upload {...uploadProps}>
-          {newFileList.length >= 8 ? null : uploadButton}
+          {newFileList.length >= 58 ? null : uploadButton}
         </Upload>
       </div>
     );

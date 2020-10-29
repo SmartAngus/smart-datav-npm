@@ -7,12 +7,11 @@ import * as React from "react";
 import classNames from "classnames";
 import { Menu } from "antd";
 import { Node as NodeContainer } from "../components";
-import { ContextMenu,ContextEditable } from "./ContextMenu";
+import { ContextMenu } from "./ContextMenu";
 import {Node, OperateType, Stroke} from "../constants/defines";
 import { useClickAway } from "../hooks/useClickAway";
 import "./EditorNode.scss";
-import loadable from '@loadable/component'
-import * as _ from 'lodash'
+
 
 import CapsuleChart from '../components/charts/capsuleChart'
 import CircleComp from '../components/charts/circleComp'
@@ -21,12 +20,8 @@ import TextComp from '../components/charts/textComp'
 import TimeComp from '../components/charts/timeComp'
 import ImageComp from '../components/charts/imageComp'
 
-const { useState, useRef, useMemo, useCallback,useEffect,useLayoutEffect } = React;
-// const CapsuleChart = loadable(() => import('../components/charts/capsuleChart'));
-// const CircleComp = loadable(() => import('../components/charts/circleComp'));
-// const LineComp = loadable(() => import('../components/charts/lineComp'));
-// const TextComp = loadable(() => import('../components/charts/textComp'));
-// const TimeComp = loadable(() => import('../components/charts/timeComp'));
+const { useState, useRef, useMemo, useCallback } = React;
+
 
 class EditorNodeProps {
   /** 唯一id，用于Contextmenu展示 */
@@ -105,15 +100,12 @@ export function EditorNode(props: EditorNodeProps) {
     nodeRef,
     onResize,
     onChangeZIndex,
-    showSelector,
-    id,
     updateNodes
   } = props;
   // 组件内状态，与业务无关
   const [menuShow, setMenuShow] = useState(false);
   const [menuPos, setMenuPos] = useState({ left: 0, top: 0 });
   const [editableShow,setEditableShow]=useState(false)
-  const [nodeType,setNodeType]=useState("base")
 
   useClickAway(
     () => {

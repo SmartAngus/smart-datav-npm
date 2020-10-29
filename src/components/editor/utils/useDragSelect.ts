@@ -70,7 +70,6 @@ export default function useDragSelect(dragSelectContainerRef: any, shape: Shape)
       event.stopPropagation();
       mousdownX.current = event.layerX;
       mousdownY.current = event.layerY;
-        console.log(event)
       dragSelectContainerRef.current.addEventListener('mousemove', handleMouseMove);
       dragSelectContainerRef.current.addEventListener('mouseup', handleMouseUp);
     },

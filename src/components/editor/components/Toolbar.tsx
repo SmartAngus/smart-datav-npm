@@ -4,7 +4,7 @@
  */
 
 import * as React from "react";
-import { Icon, Tooltip } from "antd";
+import { Icon, Tooltip,Button } from "antd";
 import classNames from "classnames";
 import {
   launchFullscreen,
@@ -13,8 +13,22 @@ import {
 } from "../utils/FullsreenUtils";
 import { MIN_SCALE, MAX_SCALE } from "../constants/defines";
 import "./Toolbar.scss";
-import {LeftJustifyingIcon,RightJustifyingIcon,TopJustifyingIcon,PreviewDesktopIcon,
-  BottomJustifyingIcon,VerticalCenterIcon,HorizontalCenterIcon,UpperOneIcon,DownOneIcon} from '../icons/editorIcons'
+import {
+  LeftJustifyingIcon,
+  RightJustifyingIcon,
+  TopJustifyingIcon,
+  PreviewDesktopIcon,
+  ExitBtnIcon,
+  BottomJustifyingIcon,
+  VerticalCenterIcon,
+  HorizontalCenterIcon,
+  UpperOneIcon,
+  DownOneIcon,
+  ToBottomLayerIcon,
+  ToTopLayerIcon,
+  ToNextLayerIcon,
+  ToPrevLayerIcon
+} from '../icons/editorIcons'
 
 /** 操作面板，支持全屏、缩放、自适应画布、格式化、显示比例 */
 
@@ -38,6 +52,8 @@ export type ToolbarType =
   | "undo"
   | "redo"
   | "bringDown"
+  | "bringTop"
+  | "bringBottom"
   | "leftJustify"
   | "horizontallyJustify"
   | "rightJustify"
@@ -89,6 +105,11 @@ export class ToolbarProps {
   //下移一层
   onBringDown?: () => void;
 
+  //上移一层
+  onBringTop?: () => void;
+  //下移一层
+  onBringBottom?: () => void;
+
   onRedo?:()=>void;
 
   onUndo?:()=>void;
@@ -137,6 +158,8 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
     onPreview,
     onBringDown,
     onBringUp,
+    onBringBottom,
+    onBringTop,
     onRedo,
     onUndo,
     onLeftJustify,
@@ -193,6 +216,10 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
 
   const isBringDown = items.includes("bringDown")
 
+  const isBringTop = items.includes("bringTop")
+
+  const isBringBottom = items.includes("bringBottom")
+
   const isUndo = items.includes("undo")
 
   const isRedo = items.includes("redo")
@@ -233,6 +260,8 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
      handleScreenResizeTo(value / 100);
      changeScreenScale(value);
   };
+  // 初始化缩放
+
 
 
   /** 处理全屏事件 */
@@ -257,38 +286,12 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
         {isPowerOff && (
             <div className="toolbar-btn "  onClick={onPoweroff} >
               <Tooltip title="退出">
-                <Icon type="poweroff"/>
+                <ExitBtnIcon/>
                 <span className="toolbar-btn-text">退出</span>
               </Tooltip>
             </div>
           )
         }
-        {isZoom && (
-          <React.Fragment>
-            <div className="toolbar-btn" onClick={handleResize.bind(null, true)}>
-              <Tooltip title="放大">
-                <Icon type="zoom-in" />
-                <span className="toolbar-btn-text">放大</span>
-              </Tooltip>
-            </div>
-            <div className="toolbar-scale">{scale}%</div>
-            <div className="toolbar-btn" onClick={handleResize.bind(null, false)}>
-              <Tooltip title="缩小">
-                <Icon type="zoom-out"/>
-                <span className="toolbar-btn-text">缩小</span>
-              </Tooltip>
-            </div>
-          </React.Fragment>
-        )}
-        <div className="btn-separator"></div>
-        {isFullScreen && (
-          <div className="toolbar-btn" onClick={handleFullScreen}>
-            <Tooltip title="全屏">
-              <Icon type={fullScreenClassName} />
-              <span className="toolbar-btn-text">全屏</span>
-            </Tooltip>
-          </div>
-        )}
         <div className="btn-separator"></div>
         {isShear && (
           <div className="toolbar-btn" onClick={onShear} >
@@ -300,7 +303,7 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
         )}
 
         {isCopy && (
-          <div className="toolbar-btn toolbar-btn-disabled" onClick={onCopy} >
+          <div className="toolbar-btn" onClick={onCopy} >
             <Tooltip title="复制">
               <Icon type="copy" />
               <span className="toolbar-btn-text">复制</span>
@@ -372,7 +375,7 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
         {isBringUp && (
             <div className="toolbar-btn" onClick={onBringUp} >
               <Tooltip title="上移一层">
-                <UpperOneIcon/>
+                <ToPrevLayerIcon/>
                 <span className="toolbar-btn-text">上移一层</span>
               </Tooltip>
             </div>
@@ -380,10 +383,26 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
         {isBringDown && (
             <div className="toolbar-btn" onClick={onBringDown} >
               <Tooltip title="下移一层">
-                <DownOneIcon/>
+                <ToNextLayerIcon/>
                 <span className="toolbar-btn-text">下移一层</span>
               </Tooltip>
             </div>
+        )}
+        {isBringTop && (
+          <div className="toolbar-btn" onClick={onBringTop} >
+            <Tooltip title="置于顶层">
+              <ToTopLayerIcon/>
+              <span className="toolbar-btn-text">置于顶层</span>
+            </Tooltip>
+          </div>
+        )}
+        {isBringBottom && (
+          <div className="toolbar-btn" onClick={onBringBottom} >
+            <Tooltip title="置于底层">
+              <ToBottomLayerIcon/>
+              <span className="toolbar-btn-text">置于底层</span>
+            </Tooltip>
+          </div>
         )}
         {isUndo && (
             <div className="toolbar-btn" onClick={onUndo} >
@@ -450,30 +469,60 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
             </div>
         )}
         <div className="btn-separator"></div>
-        {isExtraRenderNode && (
-          <div className="toolbar-btn" onClick={onExtraRender} >
-            <Tooltip title="配置">
-              <Icon type="setting" />
-              <span className="toolbar-btn-text">配置</span>
+        {isZoom && (
+          <React.Fragment>
+            <div className="toolbar-btn-wrapper">
+              <div className="zoom-wrapper-inner">
+                <div  className="toolbar-btn" id="toolbar-btn__zoom" onClick={handleResize.bind(null, true)}>
+                  <Tooltip title="放大">
+                    <Icon type="plus-circle" />
+                  </Tooltip>
+                </div>
+                <div className="toolbar-scale">{scale}%</div>
+                <div className="toolbar-btn" onClick={handleResize.bind(null, false)}>
+                  <Tooltip title="缩小">
+                    <Icon type="minus-circle" />
+                  </Tooltip>
+                </div>
+              </div>
+            </div>
+          </React.Fragment>
+        )}
+        <div className="btn-separator"></div>
+        {isFullScreen && (
+          <div className="toolbar-btn" onClick={handleFullScreen}>
+            <Tooltip title="全屏">
+              <Icon type={fullScreenClassName} />
+              <span className="toolbar-btn-text">全屏</span>
             </Tooltip>
-
+          </div>
+        )}
+        {isExtraRenderNode && (
+          <div className="toolbar-btn-wrapper">
+            <Tooltip title="配置看版">
+              <Button
+                type="link"
+                icon="setting"
+                onClick={onExtraRender}
+              >
+                配置看版
+              </Button>
+            </Tooltip>
           </div>
         )}
 
         <div className="btn-separator"></div>
         {isPreview && (
-          <div className="toolbar-btn" onClick={onPreview} >
-            <Tooltip title="预览(Ctrl/Command+p)">
-              <PreviewDesktopIcon/>
-              <span className="toolbar-btn-text">预览</span>
+          <div className="toolbar-btn-wrapper">
+            <Tooltip title="保存(Ctrl/Command+p)">
+              <Button onClick={onPreview}>预览</Button>
             </Tooltip>
           </div>
         )}
         {isSave && (
-          <div className="toolbar-btn toolbar-btn-save" id="editor-_toolbarBtnSave"  onClick={onSave} >
+          <div className="toolbar-btn-wrapper">
             <Tooltip title="保存(Ctrl/Command+s)">
-              <Icon type="save"/>
-              <span className="toolbar-btn-text">保存</span>
+              <Button id="editor-_toolbarBtnSave" type="primary" onClick={onSave}>保存</Button>
             </Tooltip>
           </div>
         )}

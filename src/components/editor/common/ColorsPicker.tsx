@@ -51,12 +51,10 @@ class ColorsPicker extends React.Component<ColorsPickerProps,ColorsPickerState> 
     };
 
     handleChange = (color) => {
-        console.log(color)
        this.setState({ color: color.rgb })
     };
     handleSetColor = ()=>{
         const {onSetColor} = this.props;
-        console.log(this.state.isTransparent)
         if(!this.state.isTransparent){
             onSetColor(getHexColor(this.state.color))
         }else{

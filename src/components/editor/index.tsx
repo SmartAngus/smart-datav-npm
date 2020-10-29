@@ -12,19 +12,15 @@ import {
   GROUP_PADDING,
   Node,
   Group,
-  Link,
-  IndustrialImageProps,
-  ImageProps,
   DataVEditorProps
 } from './constants/defines'
 import RenderPropertySidebar from './common/RenderPropertySidebar'
 
 import './index.scss'
 import DataVPreview from '../preview'
-// import ResizePanel from "react-resize-panel";
 import ResizePanel from './components/resizeSidebar'
 
-const { useState, useRef, useEffect, useContext, useImperativeHandle } = React
+const { useState, useRef, useEffect, useImperativeHandle } = React
 
 const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
   const {
@@ -39,11 +35,10 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
     preInstallBgImages,
     onExtraSetting
   } = props
-  const [screenScale, changeScreenScale] = useState(100)
+  const [screenScale, changeScreenScale] = useState(60)
   const [dragSelectable, setDragSelectable] = useState(false)
   const [keyPressing, setKeyPressing] = useState(false)
   const [isShowPreviewModel, setIsShowPreviewModel] = useState(false)
-  const [isShowExtraRender, setIsShowExtraRender] = useState(false)
   const {
     nodes,
     links,
@@ -66,8 +61,6 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
     handleSaveData,
     groups,
     setGroups,
-    updateGroups,
-    editorLocalData,
     canvasProps,
     setCanvasProps,
     handleAutoSaveSettingInfo,
@@ -137,7 +130,19 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
     }
   }, [isSave])
 
+  useEffect(()=>{
+    const timer = setTimeout(()=>{
+      const saveDiv = document.getElementById('toolbar-btn__zoom')
+      saveDiv.click()
+    },200)
+    return () => {
+      clearTimeout(timer)
+    }
+  },[1])
+
   const canvasInstance = canvasRef.current
+
+
 
   // 初始化的时候，将后端传过来的数据赋值给前端
 
@@ -263,22 +268,75 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
   // 将节点上移一层或者下移一层
   const handleBringUp = () => {
     if (selectedNodes) {
-      selectedNodes.map((nodeId) => {
-        const node = _.find(nodes, (item) => item.id === nodeId)
-        node.zIndex = node.zIndex ? node.zIndex + 1 : 1
-        updateNodes(node)
-        return node
+      // selectedNodes.map((nodeId) => {
+      //   const node = _.find(nodes, (item) => item.id === nodeId)
+      //   node.zIndex = node.zIndex ? node.zIndex + 1 : 1
+      //   updateNodes(node)
+      //   return node
+      // })
+      const nodeIndexs = selectedNodes.map(nodeId=>{
+        return _.findIndex(nodes,item=>item.id===nodeId)
       })
+      const newNodes = _.cloneDeep(nodes);
+      const nodesLength = nodes.length;
+      nodeIndexs.map(nodeIndex=>{
+        let nodeTemp = newNodes[nodeIndex]
+        if((nodeIndex+1)<nodesLength){
+          newNodes[nodeIndex] = newNodes.splice(nodeIndex+1,1,nodeTemp)[0]
+        }
+        return null;
+      })
+      setNodes(newNodes)
     }
   }
   const handleBringDown = () => {
     if (selectedNodes) {
-      selectedNodes.map((nodeId) => {
-        const node = _.find(nodes, (item) => item.id === nodeId)
-        node.zIndex = node.zIndex ? node.zIndex - 1 : 1
-        updateNodes(node)
-        return node
+      // selectedNodes.map((nodeId) => {
+      //   const node = _.find(nodes, (item) => item.id === nodeId)
+      //   node.zIndex = node.zIndex ? node.zIndex - 1 : 1
+      //   updateNodes(node)
+      //   return node
+      // })
+
+      const nodeIndexs = selectedNodes.map(nodeId=>{
+        return _.findIndex(nodes,item=>item.id===nodeId)
       })
+      let newNodes = _.cloneDeep(nodes);
+      nodeIndexs.map(nodeIndex=>{
+        let nodeTemp = newNodes[nodeIndex]
+        if(nodeIndex<1) return null;
+        newNodes[nodeIndex] = newNodes.splice(nodeIndex-1,1,nodeTemp)[0]
+        return newNodes;
+      })
+      setNodes(newNodes)
+    }
+  }
+  const handleBringTop = () => {
+    if (selectedNodes) {
+      const nodeIndexs = selectedNodes.map(nodeId=>{
+        return _.findIndex(nodes,item=>item.id===nodeId)
+      })
+      let newNodes = _.cloneDeep(nodes);
+      nodeIndexs.map(nodeIndex=>{
+        if(nodeIndex+1>nodes.length) return null;
+        newNodes.push(newNodes.splice(nodeIndex,1)[0])
+        return newNodes;
+      })
+      setNodes(newNodes)
+    }
+  }
+  const handleBringBottom = () => {
+    if (selectedNodes) {
+      const nodeIndexs = selectedNodes.map(nodeId=>{
+        return _.findIndex(nodes,item=>item.id===nodeId)
+      })
+      let newNodes = _.cloneDeep(nodes);
+      nodeIndexs.map(nodeIndex=>{
+        if(nodeIndex<1) return null;
+        newNodes.unshift(newNodes.splice(nodeIndex,1)[0])
+        return newNodes;
+      })
+      setNodes(newNodes)
     }
   }
 
@@ -591,18 +649,15 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
     if(stateHistory){
       setNodes(stateHistory["nodes"]);
     }
-    console.log("handleUndo",stateHistory)
   }
   const handleRedo = () => {
     redo()
     if(stateHistory){
       setNodes(stateHistory["nodes"]);
     }
-    console.log("handleRedo",stateHistory)
   }
   // 渲染额外的node
   const handleExtraRender = () => {
-    setIsShowExtraRender(true)
     onExtraSetting && onExtraSetting()
   }
 
@@ -677,29 +732,20 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
           'save',
           'fullscreen',
           'zoom',
-          'adapt',
           'format',
           'ratio',
           'shear',
           'copy',
           'paste',
-          'delete',
-          'dragSelect',
-          'layout',
-          'adapt',
           'group',
           'ungroup',
           'preview',
           'bringUp',
           'bringDown',
+          'bringTop',
+          'bringBottom',
           'undo',
           'redo',
-          'leftJustify',
-          'horizontallyJustify',
-          'rightJustify',
-          'topJustify',
-          'verticallyJustify',
-          'bottomJustify',
           'poweroff',
           'extraRender'
         ]}
@@ -717,6 +763,8 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
         onPreview={handlePreview}
         onBringUp={handleBringUp}
         onBringDown={handleBringDown}
+        onBringBottom={handleBringBottom}
+        onBringTop={handleBringTop}
         onUndo={handleUndo}
         onRedo={handleRedo}
         onLeftJustify={handleLeftJustify}
@@ -827,6 +875,12 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
             autoSaveSettingInfo={handleAutoSaveSettingInfo}
             config={uploadConfig.preInstall}
             preInstallBgImages={preInstallBgImages}
+            onLeftJustify={handleLeftJustify}
+            onVerticallyJustify={handleVerticallyJustify}
+            onTopJustify={handleTopJustify}
+            onRightJustify={handleRightJustify}
+            onBottomJustify={handleBottomJustify}
+            onHorizontallyJustify={handleHorizontallyJustify}
           />
         </div>
       </div>

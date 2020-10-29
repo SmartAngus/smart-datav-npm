@@ -37,7 +37,6 @@ export default class DataVPreview extends React.Component<DataVPreviewProps, Dat
   componentWillReceiveProps(nextProps: Readonly<DataVPreviewProps>, nextContext: any): void {
     this.setState({editorData:nextProps.editorData})
     if(nextProps.editorData?.editorConfig?.uploadBackgroundImage?.show){
-      console.log("componentWillReceiveProps")
       this.setState({backgroundImage: `url(${nextProps.editorData.editorConfig.uploadBackgroundImage.url})`})
     }else if(nextProps.editorData?.editorConfig?.backgroundImageKey){
       this.setState({backgroundImage:nextProps.editorData?.editorConfig?.backgroundImage})

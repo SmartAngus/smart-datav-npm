@@ -73,7 +73,6 @@ const TextComp:React.FC<TextCompProps> = (props,ref) =>{
     // }
 
     const handleDoubleClick = ()=>{
-        console.log(node)
         setShowEditable(true)
         editableRef.current.focus()
         // const p = editableRef.current,

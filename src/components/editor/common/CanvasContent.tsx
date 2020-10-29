@@ -227,7 +227,7 @@ export default class CanvasContent extends React.Component<
   };
   // resize结束
   resizeMouseUp = ()=>{
-    console.log("resizeMouseUp")
+    //console.log("resizeMouseUp")
   }
   // 监听整个区域的双击事件
   onNodesContainerDbCLick = (event: any)=>{
@@ -508,7 +508,6 @@ export default class CanvasContent extends React.Component<
 
   /** 按下节点 */
   onDragNodeMouseDown = (node: Node, event: any) => {
-    console.log("currentSelectedNode==",node)
     this.setState({currentSelectedNode: node})
     if (node) {
       const { k, x, y } = this.props.currTrans;
@@ -760,7 +759,6 @@ export default class CanvasContent extends React.Component<
     if (dragNode) {
       // 新添加了chart属性
       const { key, name, type, width, height,chart,zIndex,style,rotate,url } = dragNode;
-      console.log(style)
 
       const newNode = {
         key,

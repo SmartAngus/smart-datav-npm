@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import {BaseCompStyle, EChart,Stroke} from "../constants/defines";
-import {getRotateAngle,distance} from '../utils/calc'
+import {distance} from '../utils/calc'
+import { useEventListener } from './useEventListener'
 
 
 class NodeInfo {
@@ -22,11 +23,32 @@ const useResize = (isResize: boolean, { width, height, x, y,rotate,...otherInfo 
   const [nodeTop, setNodeTop] = useState(y);
   const [nodeRotate,setNodeRotate] = useState(rotate)
   const [nodeChartStroke,setNodeChartStroke]=useState(otherInfo?.chart?.stroke);
+  const [isShiftKeya,setIsShiftKeya]=useState(true)
+
+  useEventListener(
+    'keydown',
+    (event: KeyboardEvent) => {
+      if(event.shiftKey){
+        setIsShiftKeya(true)
+      }
+    },
+  )
+
+  useEventListener(
+    'keyup',
+    (event: KeyboardEvent) => {
+      if(event.key=='Shift'){
+        setIsShiftKeya(false)
+      }
+    },
+  )
 
   useEffect(() => {
     setNodeLeft(x);
     setNodeTop(y);
   }, [x, y]);
+
+
 
   useEffect(() => {
     const resizers = document.querySelectorAll('.resizer');
@@ -80,7 +102,7 @@ const useResize = (isResize: boolean, { width, height, x, y,rotate,...otherInfo 
           roriginCenterX = originMouseX + x
           roriginCenterY = originMouseY + y
               // 变更type
-          window.addEventListener('mousemove', resize);
+          window.addEventListener('mousemove',resize);
           window.addEventListener('mouseup', stopResize);
         });
         const resize = e => {
@@ -93,7 +115,11 @@ const useResize = (isResize: boolean, { width, height, x, y,rotate,...otherInfo 
 
           if (currentResizer.classList.contains('bottom-right')) {
             newWidth = originWidth + (e.pageX - originMouseX);
-            newHeight = originHeight + (e.pageY - originMouseY);
+            if (isShiftKeya){
+              newHeight = originHeight*newWidth/originWidth
+            }else{
+              newHeight = originHeight + (e.pageY - originMouseY);
+            }
             if (newWidth > minSize) {
               setNodeWidth(newWidth);
             }
@@ -101,8 +127,13 @@ const useResize = (isResize: boolean, { width, height, x, y,rotate,...otherInfo 
               setNodeHeight(newHeight);
             }
           } else if (currentResizer.classList.contains('bottom-left')) {
+
             newWidth = originWidth - (e.pageX - originMouseX);
-            newHeight = originHeight + (e.pageY - originMouseY);
+            if (isShiftKeya){
+              newHeight = originHeight*newWidth/originWidth
+            }else{
+              newHeight = originHeight + (e.pageY - originMouseY);
+            }
             if (newWidth > minSize) {
               setNodeWidth(newWidth);
               setNodeLeft(nodeLeft + (e.pageX - originMouseX));
@@ -111,8 +142,13 @@ const useResize = (isResize: boolean, { width, height, x, y,rotate,...otherInfo 
               setNodeHeight(newHeight);
             }
           } else if (currentResizer.classList.contains('top-right')) {
-            newWidth = originWidth + (e.pageX - originMouseX);
             newHeight = originHeight - (e.pageY - originMouseY);
+
+            if (isShiftKeya){
+              newWidth = originWidth*newHeight/originHeight
+            }else{
+              newWidth = originWidth + (e.pageX - originMouseX);
+            }
             if (newWidth > minSize) {
               setNodeWidth(newWidth);
             }
@@ -146,8 +182,13 @@ const useResize = (isResize: boolean, { width, height, x, y,rotate,...otherInfo 
             setNodeRotate(rotateDeg)
 
           } else {
-            newWidth = originWidth - (e.pageX - originMouseX);
+
             newHeight = originHeight - (e.pageY - originMouseY);
+            if (isShiftKeya){
+              newWidth = originWidth*newHeight/originHeight
+            }else{
+              newWidth = originWidth - (e.pageX - originMouseX);
+            }
             if (width > minSize) {
               setNodeWidth(newWidth);
               setNodeLeft(nodeLeft + (e.pageX - originMouseX));
