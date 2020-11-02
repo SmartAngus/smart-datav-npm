@@ -44,7 +44,7 @@ const Group = React.forwardRef((props: GroupProps, ref: any) => {
         left: x,
         top: y,
         width,
-        height
+        height,
       }}
       ref={ref}
       onDoubleClick={onDoubleClick}

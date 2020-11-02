@@ -66,6 +66,7 @@ export default class CanvasContent extends React.Component<
   constructor(props) {
     super(props);
     this.state = {
+      isResizingNode:false,
       isDraggingNode: false,
       isDraggingLink: false,
       isDraggingGroup: false,
@@ -106,8 +107,6 @@ export default class CanvasContent extends React.Component<
       this.openContainerMenu
     );
     this.container.current.addEventListener("click", this.onContainerMouseDown);
-    // 已经修改为text组件自己实现编辑，后期代码可能会去掉
-    // this.nodesContainerRef.current.addEventListener("dblclick",this.onNodesContainerDbCLick)
 
     // 初始化布局
     this.handleApplyTransform(zoomIdentity);
@@ -127,7 +126,6 @@ export default class CanvasContent extends React.Component<
       "click",
       this.onContainerMouseDown
     );
-    this.nodesContainerRef.current.removeEventListener("dblclick",this.onNodesContainerDbCLick)
 
   }
 
@@ -227,41 +225,26 @@ export default class CanvasContent extends React.Component<
   };
   // resize结束
   resizeMouseUp = ()=>{
-    //console.log("resizeMouseUp")
+    // console.log("resizeMouseUp")
+    // const {nodes,links,groups,canvasStyle,setHistory} = this.props
+    // setHistory({
+    //   nodes:nodes,
+    //   links:links,
+    //   groups: groups,
+    //   canvasProps:canvasStyle
+    // })
   }
-  // 监听整个区域的双击事件
-  onNodesContainerDbCLick = (event: any)=>{
-    const nd=this.state.currentSelectedNode
-    if(nd&&nd.key=='text'){
-      // 创建一个可编辑的div
-      // const textEdittable=document.createElement("div");
-      // textEdittable.style.width = nd.width+"px"
-      // textEdittable.style.height = nd.height+"px"
-      // textEdittable.style.backgroundColor = "#fff"
-      // textEdittable.style.position = "absolute"
-      // textEdittable.style.left = nd.x+"px"
-      // textEdittable.style.top = nd.y+"px"
-      // textEdittable.style.overflow="hidden"
-      // textEdittable.style.textOverflow="hidden"
-      // textEdittable.style.whiteSpace="nowrap"
-      // textEdittable.style.zIndex=nd.zIndex+""
-      // textEdittable.style.transform=`rotate(${nd.rotate}deg)`
-      // textEdittable.innerText=nd.name
-      // textEdittable.setAttribute("class","editor-node")
-      // textEdittable.setAttribute("contenteditable","true")
-      // const p = getParent(this.nodesContainerRef.current,"div")
-      // addChildAt(p,textEdittable,1000);
-      this.setState({textCompTxt:true})
 
-    }
-  }
 
 
   /** 监听整个区域，提升性能 */
   onNodesContainerMouseDown = (event: any) => {
+    console.log("监听整个区域，提升性能")
     event.stopPropagation();
     //event.preventDefault()
     const { nodes, groups,setSelectedGroup } = this.props;
+    console.log("groups",groups)
+
     // 如果画布中有节点
     if (nodes && nodes.length > 0) {
       const currentNode = _.find(nodes, c => {
@@ -279,8 +262,9 @@ export default class CanvasContent extends React.Component<
           this.onDragLinkMouseDown(currentNode as any, position);
           return;
         } else if (type === "resize") {
-          event.target.removeEventListener("mouseup",this.resizeMouseUp)
-          event.target.addEventListener("mouseup",this.resizeMouseUp)
+          // console.log("resize")
+          // event.target.removeEventListener("mouseup",this.resizeMouseUp)
+          // event.target.addEventListener("mouseup",this.resizeMouseUp)
           return;
         }else if(type === "rotate" && position){
           /**旋转图形**/
@@ -292,6 +276,7 @@ export default class CanvasContent extends React.Component<
       }
     }
     // 如果当前选中的是组
+    console.log("groups==",groups)
     if (groups && groups.length > 0) {
       const currentGroup = _.find(groups, c => {
         if (c.ref && c.ref.current) {
@@ -310,7 +295,9 @@ export default class CanvasContent extends React.Component<
     // event.preventDefault()
     // event.stopPropagation();
     // 过滤掉节点和边
+    console.log("onContainerMouseDown")
     const path = event.path;
+    console.log(path)
     const isNodeOrLink = this.hasNodeOrLink(path, "editor-node", "editor-link");
     if (!isNodeOrLink) {
       // 清空高亮的节点和边
@@ -534,17 +521,14 @@ export default class CanvasContent extends React.Component<
     event.preventDefault();
     event.stopPropagation();
 
-    const { setNodes, nodes,selectedNodes } = this.props;
+    const { setNodes, nodes } = this.props;
 
     const { k, x, y } = this.props.currTrans;
 
     const { offsetTop, offsetLeft } = getOffset(this.container.current);
     const screenX = event.clientX - offsetLeft;
     const screenY = event.clientY - offsetTop;
-    // 判断当前节点平移后是否溢出画布
-    // const isOver = this.checkNodeIsOverScreen(dragNode, screenX, screenY);
-
-    // if (!isOver) {
+    //
     this.setState(preState => {
       const { dragNode, dragNodeOffset } = preState;
 
@@ -562,7 +546,7 @@ export default class CanvasContent extends React.Component<
     });
 
     const { dragNodeOffset, dragNode } = this.state;
-
+    // 移动单个节点
     setNodes(
       nodes.map(c => {
         return c.id === dragNode.id
@@ -612,6 +596,7 @@ export default class CanvasContent extends React.Component<
 
   /** 按下组 */
   onDragGroupMouseDown = (group: Group, event: any) => {
+    console.log("按下组")
     if (group) {
       const {setSelectedGroup} = this.props
       setSelectedGroup(group);
@@ -741,7 +726,7 @@ export default class CanvasContent extends React.Component<
 
   // 添加节点到画布
   onDrop(event: React.DragEvent<HTMLDivElement>) {
-    const { setNodes, nodes, dragNode } = this.props;
+    const { setNodes, nodes, dragNode,setHistory,links,groups,canvasStyle } = this.props;
     const { offsetTop, offsetLeft } = getOffset(this.container.current);
     // 计算滚动条的位置
     const scrollLeft =
@@ -778,6 +763,12 @@ export default class CanvasContent extends React.Component<
       };
       setNodes([...nodes, newNode]);
       nodes.push(newNode)
+      // setHistory({
+      //   nodes:nodes,
+      //   links:links,
+      //   groups: groups,
+      //   canvasProps:canvasStyle
+      // })
     }
   }
 

@@ -3,7 +3,7 @@
   position: relative;
   display: flex;
   justify-content: space-between;
-  cursor: -webkit-grab;
+  cursor: auto;
 }
 
 svg,
@@ -63,6 +63,8 @@ rect {
 .screen-animation-wh {
   transition: 0.3s all linear;
   background-position: -56px -151px;
+  overflow: initial!important;
+  z-index: -1;
 }
 
 }

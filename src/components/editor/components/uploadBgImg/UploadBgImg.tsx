@@ -29,7 +29,7 @@ class UploadBgImg extends React.Component<UploadBgImgProps> {
   handleUpload = ()=>{
     const { uploadConfig } = this.props
     const formData = new FormData()
-    formData.append("file",this.state.fileList[0])
+    formData.append("file",this.state.fileList[this.state.fileList.length-1])
     for(let k in uploadConfig.data){
       formData.append(k,uploadConfig.data[k])
     }
@@ -59,6 +59,7 @@ class UploadBgImg extends React.Component<UploadBgImgProps> {
   uploadProps = {
     handleRemove: this.handleRemove,
     multiple: false,
+    accept:'image/*',
     showUploadList:false,
     beforeUpload: file => {
       this.setState(state => ({

@@ -12,7 +12,7 @@ const initialState = {
 
 // Our reducer function to handle state changes based on action
 const reducer = (state, action) => {
-  const { past, present, future } = state;
+  let { past, present, future } = state;
   switch (action.type) {
     case "UNDO":
       const previous = past[past.length - 1];
@@ -38,7 +38,7 @@ const reducer = (state, action) => {
       return {
         past: [...past, present],
         present: newPresent,
-        future: []
+        future: [...future]
       };
     case "CLEAR":
       const { initialPresent } = action;
@@ -82,7 +82,7 @@ const useHistory = initialPresent => {
   ]);
 
   // If needed we could also return past and future state
-  return { state: state.present, set, undo, redo, clear, canUndo, canRedo };
+  return { state: state, set, undo, redo, clear, canUndo, canRedo };
 };
 
 export { useHistory };

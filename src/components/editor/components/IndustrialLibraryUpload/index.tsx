@@ -81,6 +81,7 @@ export default class IndustrialLibraryUpload extends React.Component<IndustrialL
       listType: 'picture-card' as UploadListType,
       onChange:this.handleChange,
       showUploadList:false,
+      accept:'image/*',
       beforeUpload: file => {
         this.setState(state => ({
           addFile: file,

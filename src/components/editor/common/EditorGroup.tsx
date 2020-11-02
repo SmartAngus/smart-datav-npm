@@ -3,9 +3,8 @@
  * @description 基于Group的群组
  */
 import * as React from "react";
-import * as _ from "lodash";
 import { Group as GroupContainer } from "../components";
-import { Group, Node, GROUP_PADDING } from "../constants/defines";
+import { Group, Node } from "../constants/defines";
 import "./EditorGroup.scss";
 
 export class EditorGroupProps {

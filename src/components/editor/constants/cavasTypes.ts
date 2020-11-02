@@ -31,9 +31,12 @@ export class CanvasContentProps {
     // 面板背景大小设置
     canvasStyle?:any;
     onEditNode?:(node:Node,nodes:Node[],group:Group[],links:Link[])=>void;
+    setHistory?:(editorData:any)=>void;
 }
 
 export class CanvasContentState {
+    /***缩放节点**/
+    isResizingNode:boolean;
     /** 拖拽节点 */
     isDraggingNode: boolean;
     /** 拖拽边 */

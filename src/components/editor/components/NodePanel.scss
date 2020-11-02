@@ -108,15 +108,11 @@
         .components-box {
           width: 100%;
           height: auto;
-          display: flex;
-          justify-content: flex-start;
           flex-flow: wrap;
-
+          display: flex;
           &-item {
             width: 76px;
-            height: 72px;
-            margin-bottom: 6px;
-
+            height: 92px;
             &-disabled {
               cursor: no-drop;
             }

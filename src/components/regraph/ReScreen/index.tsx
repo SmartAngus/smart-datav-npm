@@ -450,16 +450,16 @@ export default class ReScreen extends React.Component<Props, State> {
     const { type, mapRectStyle } = this.props;
     const { screenToMapTransform } = this.state;
     // 画布内容缩放变化
-    if (type === 'SVG') {
-      this.screenContent &&
-        this.screenContent.attr('transform', `translate(${transform.x}, ${transform.y}) scale(${transform.k})`);
-    } else if (type === 'DOM') {
-      this.screenContent &&
-        this.screenContent.style('transform', `translate(${transform.x}px, ${transform.y}px) scale(${transform.k})`);
-      this.screenContent && this.screenContent.style('transform-origin', '0 0');
-    }
-
-    this.transform = zoomIdentity.translate(transform.x, transform.y).scale(transform.k);
+    // if (type === 'SVG') {
+    //   this.screenContent &&
+    //     this.screenContent.attr('transform', `translate(${transform.x}, ${transform.y}) scale(${transform.k})`);
+    // } else if (type === 'DOM') {
+    //   this.screenContent &&
+    //     this.screenContent.style('transform', `translate(${transform.x}px, ${transform.y}px) scale(${transform.k})`);
+    //   this.screenContent && this.screenContent.style('transform-origin', '0 0');
+    // }
+    //
+    // this.transform = zoomIdentity.translate(transform.x, transform.y).scale(transform.k);
 
     if (this.rectRef.current) {
       // strokeWidth 要做特殊处理，因为会被缩放
@@ -705,9 +705,9 @@ export default class ReScreen extends React.Component<Props, State> {
     screenContent.style.width = '100%';
 
     if (this.props.type === 'SVG') {
-      screenContent.firstChild.setAttribute('transform', screenToMap);
+     // screenContent.firstChild.setAttribute('transform', screenToMap);
     } else {
-      screenContent.firstChild.style.transform = `translate(${screenToMapTransform.x}px, ${screenToMapTransform.y}px) scale(${screenToMapTransform.k})`;
+     // screenContent.firstChild.style.transform = `translate(${screenToMapTransform.x}px, ${screenToMapTransform.y}px) scale(${screenToMapTransform.k})`;
       screenContent.firstChild.style.transformOrigin = '0 0';
     }
     const targetNode = document.getElementById('minimap');
@@ -861,7 +861,7 @@ export default class ReScreen extends React.Component<Props, State> {
       return (
         <div
           className="screen-animation-wh"
-          style={{ width, height, backgroundImage, overflow: 'hidden'}}
+          style={{ width, height, backgroundImage, overflow: 'initial'}}
           ref={(ele: any) => {
             if (this.screen) {
               return;

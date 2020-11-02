@@ -48,22 +48,23 @@ export default class DataVPreview extends React.Component<DataVPreviewProps, Dat
   renderCanvas(): React.ReactNode {
     return (
       <div className="editor-preview"  style={{
-        // position:'fixed',
-        // top:0,
-        // right:0,
-        // bottom:0,
-        // left:0,
         position:'relative',
         overflow:'auto',
         width:'100%',
         height:'100%',
-        backgroundColor: this.state.editorData?.editorConfig?.backgroundColor,
-        backgroundImage: this.state.backgroundImage
       }}>
         <div className="editor-preview-content"
           style={{
             width: this.state.editorData?.editorConfig?.width,
             height: this.state.editorData?.editorConfig?.height,
+            backgroundColor: this.state.editorData?.editorConfig?.backgroundColor,
+            backgroundImage: this.state.backgroundImage,
+            margin:'0 auto',
+            position:'relative',
+            overflow: "hidden",
+            backgroundSize:"cover",
+            backgroundPosition:"bottom",
+            backgroundOrigin:"inherit"
           }}
         >
           {(this.state.editorData?.nodes || []).map((child,index) => {

@@ -124,12 +124,16 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
 
     const [gridSize,setGridSize]=useState(10)
     let [showGrid,setShowGrid]=useState(false)
+    const bgImgRef = useRef()
     let [gridColor,setGridColor]=useState("transparent")
     const [rcSwitchState,setRcSwitchState]=useState(()=>{
       if(canvasProps.width>canvasProps.height) return false;
       return true;
     })
+
     const [selectPlaceholder,setSelectPlaceholder]=useState("选择画布大小")
+    const [selectBgPlaceholder,setSelectBgPlaceholder] = useState("选择预设背景图")
+
     useEffect(()=>{
         if(canvasProps&&canvasProps.grid){
             setGridSize(canvasProps.grid.size)
@@ -138,16 +142,11 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
         }
     },[canvasProps])
 
-
-
     let isCompSetting= false
     let isSetting = false
     // convert component to string useable in data-uri
 
     let svgString = encodeURIComponent(renderToStaticMarkup(<GridBackgroundSVG height={200} width={200} strokeColor={gridColor} />));
-    //svgString = btoa(svgString);
-    // setCanvasProps(defaultCanvasProps)
-
     // 存的是node的id，是一个数组
     const node = _.find(nodes, n => n.id === selectedNodes[0]);
     if(node===undefined){
@@ -203,20 +202,27 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
         if(canvasProps.backgroundImageKey == image.key){
             canvasProps.backgroundImage=null;
             canvasProps.backgroundImageKey = null
+            setSelectBgPlaceholder(`选择预设背景图`)
         }else{
             canvasProps.backgroundImage=`url(${image.img})`;
             canvasProps.backgroundImageKey = image.key
+          setSelectBgPlaceholder(`已选择预设背景图${image.key}`)
         }
+        canvasProps.uploadBackgroundImage.show=false;
         setCanvasProps(canvasProps)
         autoSaveSettingInfo(canvasProps,nodes,groups,links)
     }
-    // 当上传背景图片时
+    // 当上传背景图片完成时时
     const handleSetUploadImage = (file:UploadFile)=>{
-      canvasProps.uploadBackgroundImage.show=true;
+      canvasProps.uploadBackgroundImage.show=false;
       canvasProps.uploadBackgroundImage.name=file.name
       canvasProps.uploadBackgroundImage.url=file.url
       setCanvasProps(canvasProps)
       autoSaveSettingInfo(canvasProps,nodes,groups,links)
+      if(bgImgRef!=undefined){
+        // @ts-ignore
+        bgImgRef.current&&bgImgRef.current.click()
+      }
     }
     // 当删除图片时
     const handleRemoveFile = (file:UploadFile)=>{
@@ -518,7 +524,7 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                           <Select
                             style={{ width: "100%",backgroundColor:'#D6D6D6' }}
                             dropdownStyle={{backgroundColor:'#D6D6D6'}}
-                            placeholder="选择预设背景图片"
+                            placeholder={selectBgPlaceholder}
                             clearIcon={<div>sas</div>}
                             dropdownRender={menu => {
                               const a = (preInstallBgImages||[]).map((image)=>{
@@ -544,18 +550,20 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                         </li>
                           <li style={{display:'flex'}}>背景颜色：
                             <ColorsPicker  onSetColor={handleSetBgColor} defaultColor={canvasProps?.backgroundColor}/></li>
-                          <li style={{display:'flex'}}>
-                            背景图片：<UploadBgImg
+                          <li style={{display:'flex',lineHeight: '2rem'}}>
+                            背景图片：<Checkbox style={{marginRight:10}}
+                                           onChange={handleChangeBgImg} checked={canvasProps.uploadBackgroundImage.show}/>
+                            <UploadBgImg
                             onUploadComplete={handleSetUploadImage}
                             onRemoveFile={handleRemoveFile}
                             uploadConfig={config}/>
                           </li>
-                        <li>
-                          <div  className="pre-mini-img" onClick={()=>handleChangeBgImg()}>
-                            <img src={canvasProps.uploadBackgroundImage?.url} alt="" style={{width:192,height:108}}/>
-                            {canvasProps.uploadBackgroundImage.show===true?<Button
-                              className="pre-img-selected-icon"
-                              size="small" type="primary" shape="circle" icon="check" />:''}
+                        <li style={{display:'none'}}>
+                          <div  className="pre-mini-img" ref={bgImgRef}  onClick={()=>handleChangeBgImg()}>
+                            {/*<img src={canvasProps.uploadBackgroundImage?.url} alt="" style={{width:192,height:108}}/>*/}
+                            {/*{canvasProps.uploadBackgroundImage.show===true?<Button*/}
+                            {/*  className="pre-img-selected-icon"*/}
+                            {/*  size="small" type="primary" shape="circle" icon="check" />:''}*/}
                           </div>
                         </li>
                       </ul>
@@ -697,6 +705,8 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                                             <InputNumber
                                                 style={{width:110}}
                                                 value={node&&node.x}
+                                                min={-800}
+                                                max={2042}
                                                 formatter={value => `X ${value} px`}
                                                 parser={parserInputValue}
                                                 onChange={onInputPositionXChange}
@@ -704,7 +714,7 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                                             <InputNumber
                                                 style={{width:110}}
                                                 value={node&&node.y}
-                                                min={10}
+                                                min={-800}
                                                 max={2042}
                                                 formatter={value => `Y ${value} px`}
                                                 parser={parserInputValue}

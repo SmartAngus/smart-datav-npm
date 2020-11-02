@@ -35,7 +35,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
     preInstallBgImages,
     onExtraSetting
   } = props
-  const [screenScale, changeScreenScale] = useState(60)
+  const [screenScale, changeScreenScale] = useState(70)
   const [dragSelectable, setDragSelectable] = useState(false)
   const [keyPressing, setKeyPressing] = useState(false)
   const [isShowPreviewModel, setIsShowPreviewModel] = useState(false)
@@ -67,9 +67,11 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
     isSave,
     setIsSave,
     stateHistory,
+    setHistory,
     undo,
     redo
   } = useEditorStore()
+
 
   // 画布容器
   const screenRef = useRef(null)
@@ -90,7 +92,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
           }
         })
         setNodes(newNodes)
-        setGroups(editorData.groups)
+        //setGroups(editorData.groups)
         setLinks(editorData.links)
         setCanvasProps(editorData.editorConfig)
         // 设置初始化就是最新数据，此时退出不需要提示
@@ -123,7 +125,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       const saveDiv = document.getElementById('editor-_toolbarBtnSave')
-      saveDiv.click()
+      if(!isSave) saveDiv.click()
     }, 1000 * 60 * (autoSaveInterval || 1))
     return () => {
       clearTimeout(timer)
@@ -244,6 +246,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
   // 删除节点
   const handleDelete = () => {
     if (selectedNodes) {
+      console.log("handleDelete")
       handleDeleteNodes(selectedNodes)
       // 判断删除的节点是否在组内，删除组内的节点
       const newGroups = groups.map((group) => {
@@ -268,12 +271,6 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
   // 将节点上移一层或者下移一层
   const handleBringUp = () => {
     if (selectedNodes) {
-      // selectedNodes.map((nodeId) => {
-      //   const node = _.find(nodes, (item) => item.id === nodeId)
-      //   node.zIndex = node.zIndex ? node.zIndex + 1 : 1
-      //   updateNodes(node)
-      //   return node
-      // })
       const nodeIndexs = selectedNodes.map(nodeId=>{
         return _.findIndex(nodes,item=>item.id===nodeId)
       })
@@ -470,6 +467,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
   }
 
   /** 处理DragSelector 关闭事件 */
+  // 处理圈选事件
   const onDragSelectorClose = (selectorProps: ShapeProps) => {
     // 计算区域内的位置有多少节点需要高亮,其实计算的是一个点是否在矩形内
 
@@ -641,20 +639,21 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
     setSelectedNodes([])
   }
   const handleUnGroup = () => {
+    console.log("handleUnGroup",selectedGroup)
     selectedGroup &&
       updateGroupsInfo(selectedGroup.nodes, 'merge', selectedGroup.id)
   }
   const handleUndo = () => {
     undo()
-    if(stateHistory){
-      setNodes(stateHistory["nodes"]);
-    }
+    console.log("stateHistory",stateHistory)
+    stateHistory.present&&setNodes(stateHistory.present.nodes)
+
   }
   const handleRedo = () => {
     redo()
-    if(stateHistory){
-      setNodes(stateHistory["nodes"]);
-    }
+    stateHistory.present&&setNodes(stateHistory.present.nodes)
+    console.log("stateHistory",stateHistory)
+
   }
   // 渲染额外的node
   const handleExtraRender = () => {
@@ -669,9 +668,10 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
       }
     },
     {
-      events: ['keydown', 'keyup']
+      events: ['keyup']
     }
   )
+
 
   const isMac = navigator.platform.startsWith('Mac')
 
@@ -747,7 +747,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
           'undo',
           'redo',
           'poweroff',
-          'extraRender'
+          'extraRender',
         ]}
         onCopy={handleCopy}
         onPaste={handlePaste}
@@ -779,7 +779,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
   )
   /** 渲染节点选择区 */
   const renderNodePanel = (
-    <ResizePanel direction="e" style={{ width: '320px' }}>
+    <ResizePanel direction="e" style={{ width: '319px' }}>
       <NodePanel
         onDrag={setDragNode}
         industrialLibrary={industrialLibrary}
@@ -853,6 +853,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
         updateGroups={updateGroupsInfo}
         canvasStyle={canvasProps}
         onEditNode={handleAutoSaveSettingInfo}
+        setHistory={setHistory}
       />
     </div>
   )

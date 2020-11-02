@@ -246,12 +246,12 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
   const handleResize = (isLager?: boolean) => {
     let value = screenScale;
     if (isLager) {
-      value = screenScale + 10;
+      value = screenScale + 15;
       if (value > MAX_SCALE) {
         value = MAX_SCALE;
       }
     } else {
-      value = screenScale - 10;
+      value = screenScale - 15;
       if (value < MIN_SCALE) {
         value = MIN_SCALE;
       }
@@ -327,6 +327,24 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
             </Tooltip>
           </div>
         )}
+        <div className="btn-separator"></div>
+        {isUndo && (
+          <div className="toolbar-btn" onClick={onUndo} >
+            <Tooltip title="撤销">
+              <Icon type="undo" />
+              <span className="toolbar-btn-text">撤销</span>
+            </Tooltip>
+          </div>
+        )}
+        {isRedo && (
+          <div className="toolbar-btn" onClick={onRedo} >
+            <Tooltip title="恢复">
+              <Icon type="redo" />
+              <span className="toolbar-btn-text">恢复</span>
+            </Tooltip>
+          </div>
+        )}
+        <div className="btn-separator"></div>
         {isDragSelect && (
           <div className="toolbar-btn" onClick={onDragSelect} >
             <Tooltip title="圈选">
@@ -353,25 +371,6 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
             </Tooltip>
           </div>
         )}
-
-        {isGroup && (
-          <div className="toolbar-btn" onClick={onGroup} >
-            <Tooltip title="成组">
-              <Icon type="block"/>
-              <span className="toolbar-btn-text">成组</span>
-            </Tooltip>
-          </div>
-        )}
-
-        {isUnGroup && (
-            <div className="toolbar-btn" onClick={onUnGroup} >
-              <Tooltip title="解组">
-                <Icon type="border"/>
-                <span className="toolbar-btn-text">解组</span>
-              </Tooltip>
-            </div>
-        )}
-
         {isBringUp && (
             <div className="toolbar-btn" onClick={onBringUp} >
               <Tooltip title="上移一层">
@@ -403,22 +402,6 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
               <span className="toolbar-btn-text">置于底层</span>
             </Tooltip>
           </div>
-        )}
-        {isUndo && (
-            <div className="toolbar-btn" onClick={onUndo} >
-              <Tooltip title="撤销">
-                <Icon type="undo" />
-                <span className="toolbar-btn-text">撤销</span>
-              </Tooltip>
-            </div>
-        )}
-        {isRedo && (
-            <div className="toolbar-btn" onClick={onRedo} >
-              <Tooltip title="恢复">
-                <Icon type="redo" />
-                <span className="toolbar-btn-text">恢复</span>
-              </Tooltip>
-            </div>
         )}
         {isLeftJustify && (
             <div className="toolbar-btn" onClick={onLeftJustify} >
@@ -467,6 +450,24 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
                 <span className="toolbar-btn-text">底部对齐</span>
               </Tooltip>
             </div>
+        )}
+        <div className="btn-separator"></div>
+        {isGroup && (
+          <div className="toolbar-btn" onClick={onGroup} >
+            <Tooltip title="成组">
+              <Icon type="block"/>
+              <span className="toolbar-btn-text">成组</span>
+            </Tooltip>
+          </div>
+        )}
+
+        {isUnGroup && (
+          <div className="toolbar-btn" onClick={onUnGroup} >
+            <Tooltip title="解组">
+              <Icon type="border"/>
+              <span className="toolbar-btn-text">解组</span>
+            </Tooltip>
+          </div>
         )}
         <div className="btn-separator"></div>
         {isZoom && (

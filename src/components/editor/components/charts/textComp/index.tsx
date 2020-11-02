@@ -118,7 +118,8 @@ const TextComp:React.FC<TextCompProps> = (props,ref) =>{
                      height:'100%',
                      display: 'table-cell',
                      verticalAlign: 'middle'
-                 }}
+                 }
+                 }
             >
                     {node.name}
             </div>

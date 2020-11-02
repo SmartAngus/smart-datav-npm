@@ -16,7 +16,7 @@ const canvasConfig = {
     show:false,
     url:null
   },
-  grid: {show: true, size: 10, color: "#662b2b",url:null},
+  grid: {show: false, size: 10, color: "#662b2b",url:null},
   height: 768,
   password: null,
   width: 1366,
@@ -35,7 +35,7 @@ export function useEditorStore() {
   const [editorLocalData, setEditorLocalData] = useLocalStorage("editorData", {
     id: "editorData-local"
   });
-  const { state, set:setHistory, undo, redo, clear, canUndo, canRedo } = useHistory(editorData);
+  const {state,set:setHistory, undo, redo, clear, canUndo, canRedo} = useHistory(editorData);
   const [canvasProps, setCanvasProps] = useState(canvasConfig)
 
   const [dragNode, setDragNode] = useState(null);
@@ -48,9 +48,9 @@ export function useEditorStore() {
     (value) => {
       setHistory(value);
     },
-    500,
+    1000,
     // The maximum time func is allowed to be delayed before it's invoked:
-    { maxWait: 600 }
+    { maxWait: 2000 }
   );
 
   useEffect(() => {
@@ -238,6 +238,7 @@ export function useEditorStore() {
     isSave,
     setIsSave,
     stateHistory:state,
+    setHistory,
     undo,
     redo
   };

@@ -35,7 +35,7 @@ export default function NodePanel(props: NodePanelProps) {
   let { onDrag, visible = false,industrialLibrary,selfIndustrialLibrary,config } = props;
 
   // 自定义图库
-  const [selfImageLibrary,setSelfImageLibrary] = useState(selfIndustrialLibrary)
+  const [selfImageLibrary,setSelfImageLibrary] = useState(selfIndustrialLibrary);
 
   // 默认取第一个
   const [collapseKey, setCollapseKey] = useState<string[]>([componnetList[0]]);
@@ -66,7 +66,7 @@ export default function NodePanel(props: NodePanelProps) {
   const handleUploadComplete = (newFile,files)=>{
     const newImage = {
       width:100,height:100,type:'image',
-      name:newFile.name,
+      name:newFile.name.replace(/\.(jpg|png)$/g,''),
       url:newFile.url,
       key:`new_${files.length+1}`
     } as ImageProps
@@ -147,7 +147,7 @@ export default function NodePanel(props: NodePanelProps) {
                               onDrag={handleImageDrag.bind(null, img)}
                             >
                               <div className="components-box-item-icon">
-                                <img src={img.url} alt="" style={{width:72,height:76}}/>
+                                <img src={img.url} alt="" style={{width:"100%",height:"100%"}}/>
                               </div>
                               {img.name}
                             </div>
@@ -169,12 +169,19 @@ export default function NodePanel(props: NodePanelProps) {
                           key={idx}
                           className="components-box-item"
                           draggable={true}
+                          style={{height:100}}
                           onDrag={handleImageDrag.bind(null, img)}
+                          title={img.name}
                         >
                           <div className="components-box-item-icon">
-                            <img src={img.url} alt="" style={{width:72,height:76}}/>
+                            <img src={img.url} alt="" style={{width:72,height:66}}/>
                           </div>
-                          {img.name}
+                          <span style={{
+                            textOverflow: "clip",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            padding:'0 2px'
+                          }}>{img.name}</span>
                         </div>
                       )
                     })}

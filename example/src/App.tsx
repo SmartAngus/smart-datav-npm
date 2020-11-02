@@ -42,9 +42,9 @@ const App = () => {
     {name:"10",url:"https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",width:100,height:100,type:'image',key:'9'},
   ]
   const uploadConfig = {
-    baseURL:"http://192.168.3.42:50010",
+    baseURL:"http://qt.test.bicisims.com",
     self:{
-      baseURL:"http://192.168.3.42:50010",
+      baseURL:"http://qt.test.bicisims.com",
       token:"development_of_special_token_by_star_quest",
       url:"/api/file/file/uploadReturnPath",
       data:{
@@ -53,7 +53,7 @@ const App = () => {
       }
     },
     preInstall:{
-      baseURL:"http://192.168.3.42:50010",
+      baseURL:"http://qt.test.bicisims.com",
       token:"development_of_special_token_by_star_quest",
       url:"/api/file/file/uploadReturnPath",
       data:{
@@ -68,7 +68,7 @@ const App = () => {
     formData.append("mappingId","23233")
     formData.append("mappingType","107")
     const instance = axios.create({
-      baseURL:'http://192.168.3.42:50010',
+      baseURL:'http://qt.test.bicisims.com',
       timeout:10000000,
       maxContentLength:1000000000
     });
@@ -85,13 +85,12 @@ const App = () => {
       }
     }).then((res)=>{
       console.log("detail",res)
-      if(res.data?.data?.property){
+      if(res.data?.data!=null){
         if(res.data.data.property!=null&&res.data.data.property!=null){
           const getEditorData = JSON.parse(decodeURIComponent(escape(window.atob(res.data.data.property))));
           setEditorData(getEditorData)
         }
       }
-      console.log(JSON.parse(decodeURIComponent(escape(window.atob(res.data.data.property)))))
     })
     // 获取获取当前租户下 上传的背景图片
     instance.post("/api/applications/custom/component/componentList",{mappingType:"107"},{
@@ -115,6 +114,7 @@ const App = () => {
       (res.data.data||[]).map((image:any)=>{
         const newImg = {
           ...image,
+          name:image.name.replace(/\.(jpg|png)$/g,''),
           width:100,height:100,type:'image',key:image.id
         }
         selfIndustrialLibrary.push(newImg)
@@ -126,7 +126,7 @@ const App = () => {
   const handleSaveEditorData = (data:any)=>{
     console.log(data)
     const instance = axios.create({
-      baseURL:'http://192.168.3.42:50010',
+      baseURL:'http://qt.test.bicisims.com',
       timeout:10000000,
       maxContentLength:1000000000
     })
@@ -215,7 +215,7 @@ const App = () => {
         uploadConfig={uploadConfig}
         onPoweroff={handlePoweroff}
         preInstallBgImages={preInstallBgImages}
-        autoSaveInterval={1}
+        autoSaveInterval={20}
       />
       {/*<DataVPreview editorData={editorData}/>*/}
     </React.Fragment>
