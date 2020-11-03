@@ -4,6 +4,7 @@ import { ZoomTransform, zoomIdentity } from "d3-zoom";
 import { useLocalStorage } from "./useLocalStorage";
 import { useHistory } from './useHistory'
 import { useDebouncedCallback } from 'use-debounce';
+import { useReducer } from 'react'
 
 const { useState, useEffect } = React;
 
@@ -26,10 +27,35 @@ const initState =  {
   nodes:[],
   groups:[],
   links:[],
-  
+}
+const reducer = (state,action)=>{
+  const {nodes,groups,links} = state;
+  switch (action.type) {
+    case "SET_NODES":
+      const { newNodes } = action;
+      return {
+        ...nodes,
+        newNodes
+      }
+    case "SET_LINKS":
+      const { newLinks } = action;
+      return {
+        ...nodes,
+        newLinks
+      }
+    case "SET_GROUPS":
+      const { newGroups } = action;
+      return {
+        ...nodes,
+        newGroups
+      }
+  }
 }
 
 export function useEditorStoreByReducer() {
+  // 包括nodes，links，groups
+  const [dataState,dispatch] = useReducer(reducer,initState)
+
   const [editorData, setEditorData] = useState();
   // 是否保存了数据updateNodes
   const [isSave,setIsSave] = useState(true)
