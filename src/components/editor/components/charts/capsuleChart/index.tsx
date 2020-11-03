@@ -11,7 +11,7 @@ import { Node } from '../../../constants/defines'
 
 class CapsuleChartProps{
   node?:Node;
-  updateNodes?:(node:Node)=>void
+  onEditDone?:(node:Node)=>void
 }
 
 export default class CapsuleChart extends React.PureComponent<CapsuleChartProps> {

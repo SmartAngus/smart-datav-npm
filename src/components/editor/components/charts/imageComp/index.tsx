@@ -2,7 +2,7 @@ import React from 'react'
 import { Node } from '../../../constants/defines'
 class TimeCompProps{
   node?:Node;
-  updateNodes?:(node:Node)=>void;
+  onEditDone?:(node:Node)=>void;
 }
 
 /**

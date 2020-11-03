@@ -6,7 +6,6 @@ import {Node} from "../../../constants/defines";
 
 class TimeCompProps{
     node?:Node;
-    updateNodes?:(node:Node)=>void;
 }
 // 里面的字符可以根据自己的需要进行调整
 moment.locale('zh-cn', {

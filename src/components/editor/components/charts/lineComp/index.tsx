@@ -6,7 +6,7 @@ import {Node} from "../../../constants/defines";
 import './style.scss'
 class TextCompProps{
     node?:Node;
-    updateNodes?:(node:Node)=>void
+  onEditDone?:(node:Node)=>void
 }
 
 const LineComp:React.FC<TextCompProps> = (props,ref) =>{

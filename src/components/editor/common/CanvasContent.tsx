@@ -1045,6 +1045,10 @@ export default class CanvasContent extends React.Component<
     };
     updateNodes(newNode);
   }
+  handleEditDone = (node:Node)=>{
+    const { updateNodes } = this.props;
+    updateNodes(node)
+  }
   // 渲染可编辑文本框
   renderEditableText=()=>{
     const node = this.state.currentSelectedNode;
@@ -1088,8 +1092,9 @@ export default class CanvasContent extends React.Component<
                 onChangeZIndex={this.onChangeZIndex.bind(this,child)}
                 currTrans={this.props.currTrans}
                 onSelect={this.onSelectNode}
-                updateNodes={this.props.updateNodes}
+                onEditDone={this.handleEditDone}
                 isShiftKey={isShiftKey}
+
               />
             );
           })}

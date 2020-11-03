@@ -11,12 +11,12 @@ import { useClickAway } from "../../../hooks/useClickAway";
 
 class TextCompProps{
     node?:Node;
-    updateNodes?:(node:Node)=>void;
     interactive?:boolean;
+    onEditDone?:(newNode:Node)=>void
 }
 
 const TextComp:React.FC<TextCompProps> = (props,ref) =>{
-    const {node,updateNodes,interactive} = props
+    const {node,interactive,onEditDone} = props
     const [showEditable,setShowEditable] = useState(false)
     const editableRef = useRef(null)
     useClickAway(
@@ -27,7 +27,7 @@ const TextComp:React.FC<TextCompProps> = (props,ref) =>{
                 ...node,
                 name
             };
-          updateNodes(newNode)
+          onEditDone(newNode)
         },
         () => document.querySelector(".editable-box"),
         "click"
@@ -54,7 +54,7 @@ const TextComp:React.FC<TextCompProps> = (props,ref) =>{
             ...node,
             name
         };
-       updateNodes(newNode)
+      onEditDone(newNode)
     }
     // const handleSaveEditData = (event:any)=>{
     //    // 取消事件冒泡，防止按delete键删除节点

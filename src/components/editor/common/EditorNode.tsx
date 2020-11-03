@@ -67,7 +67,7 @@ class EditorNodeProps {
   onResize?: (width: number, height: number, x: number, y: number,rotate:number,stroke:Stroke) => void;
   /** 改变节点图层 */
   onChangeZIndex?:(zIndex: number)=>void;
-  updateNodes?:(node:Node)=>void;
+  onEditDone?:(node:Node)=>void;
   isShiftKey?:boolean
 }
 
@@ -101,7 +101,7 @@ export function EditorNode(props: EditorNodeProps) {
     nodeRef,
     onResize,
     onChangeZIndex,
-    updateNodes,
+    onEditDone,
     isShiftKey
   } = props;
   // 组件内状态，与业务无关
@@ -214,17 +214,17 @@ export function EditorNode(props: EditorNodeProps) {
   // delete newNode.ref;
   const dynamicLoadComp=useMemo(()=>{
     if (currentNode.chart?.component=='TimeComp')
-      return <TimeComp node={currentNode} updateNodes={updateNodes}></TimeComp>
+      return <TimeComp node={currentNode} ></TimeComp>
     if (currentNode.chart?.component=='TextComp')
-      return <TextComp node={currentNode} interactive={interactive} updateNodes={updateNodes}></TextComp>
+      return <TextComp node={currentNode} interactive={interactive} onEditDone={onEditDone}></TextComp>
     if (currentNode.chart?.component=='LineComp')
-      return <LineComp node={currentNode} updateNodes={updateNodes}></LineComp>
+      return <LineComp node={currentNode}></LineComp>
     if (currentNode.chart?.component=='CircleComp')
-      return <CircleComp node={currentNode} updateNodes={updateNodes}></CircleComp>
+      return <CircleComp node={currentNode}></CircleComp>
     if (currentNode.chart?.component=='CapsuleChart')
-      return <CapsuleChart node={currentNode} updateNodes={updateNodes}></CapsuleChart>
+      return <CapsuleChart node={currentNode} ></CapsuleChart>
     if (currentNode.type=='image')
-      return <ImageComp node={currentNode} updateNodes={updateNodes}></ImageComp>
+      return <ImageComp node={currentNode} ></ImageComp>
   },[currentNode.chart?.format,currentNode.chart?.stroke,currentNode.width])// 只有时间控件和直线才会重新加载
 
   return (
