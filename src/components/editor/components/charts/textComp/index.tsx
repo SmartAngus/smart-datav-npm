@@ -27,7 +27,7 @@ const TextComp:React.FC<TextCompProps> = (props,ref) =>{
                 ...node,
                 name
             };
-           updateNodes(newNode)
+          updateNodes(newNode)
         },
         () => document.querySelector(".editable-box"),
         "click"
@@ -54,7 +54,7 @@ const TextComp:React.FC<TextCompProps> = (props,ref) =>{
             ...node,
             name
         };
-        updateNodes(newNode)
+       updateNodes(newNode)
     }
     // const handleSaveEditData = (event:any)=>{
     //    // 取消事件冒泡，防止按delete键删除节点

@@ -295,7 +295,7 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
         <div className="btn-separator"></div>
         {isShear && (
           <div className="toolbar-btn" onClick={onShear} >
-            <Tooltip title="剪切">
+            <Tooltip title="剪切(Ctrl/Command+x)">
               <Icon type="scissor"/>
               <span className="toolbar-btn-text">剪切</span>
             </Tooltip>
@@ -304,7 +304,7 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
 
         {isCopy && (
           <div className="toolbar-btn" onClick={onCopy} >
-            <Tooltip title="复制">
+            <Tooltip title="复制(Ctrl/Command+c)">
               <Icon type="copy" />
               <span className="toolbar-btn-text">复制</span>
             </Tooltip>
@@ -313,7 +313,7 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
 
         {isPaste && (
           <div className="toolbar-btn" onClick={onPaste}>
-            <Tooltip title="粘贴">
+            <Tooltip title="粘贴(Ctrl/Command+v)">
               <Icon type="snippets" />
               <span className="toolbar-btn-text">粘贴</span>
             </Tooltip>
@@ -454,7 +454,7 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
         <div className="btn-separator"></div>
         {isGroup && (
           <div className="toolbar-btn" onClick={onGroup} >
-            <Tooltip title="成组">
+            <Tooltip title="成组(Ctrl/Command+g)">
               <Icon type="block"/>
               <span className="toolbar-btn-text">成组</span>
             </Tooltip>
@@ -463,7 +463,7 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
 
         {isUnGroup && (
           <div className="toolbar-btn" onClick={onUnGroup} >
-            <Tooltip title="解组">
+            <Tooltip title="解组(Ctrl/Command+u)">
               <Icon type="border"/>
               <span className="toolbar-btn-text">解组</span>
             </Tooltip>

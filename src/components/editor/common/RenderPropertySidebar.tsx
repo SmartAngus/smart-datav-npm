@@ -782,16 +782,24 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                                                     onSetColor={handleSetTextFontColor}/>
                                             </div>
                                             <div className="components-box-inner">
-                                                <label>对齐</label>
+                                                {/*<label>对齐</label>*/}
                                                 <ButtonGroup>
-                                                    <Button type="default"  icon="align-left"
+                                                    <Button type="link"  icon="align-left"
                                                             onClick={()=>handleFontTextAlign('left')} />
-                                                    <Button type="default"
+                                                    <Button type="link"
                                                             icon="align-center"
                                                             onClick={()=>handleFontTextAlign('center')} />
-                                                    <Button type="default"  icon="align-right"
+                                                    <Button type="link"  icon="align-right"
                                                         onClick={()=>handleFontTextAlign('right')}/>
+                                                  <Button type="link"  icon="bold"
+                                                          onClick={()=>handleFontTextAlign('left')} />
+                                                  <Button type="link"
+                                                          icon="align-center"
+                                                          onClick={()=>handleFontTextAlign('center')} />
+                                                  <Button type="link"  icon="align-right"
+                                                          onClick={()=>handleFontTextAlign('right')}/>
                                                 </ButtonGroup>
+
                                             </div>
                                         </div>
                                     </Panel>
@@ -832,9 +840,9 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                         </div>
                     </div>
                 </TabPane>
-                <TabPane tab="数据" key="2">
-                    Content of Tab Pane 2
-                </TabPane>
+                {/*<TabPane tab="数据" key="2">*/}
+                {/*    Content of Tab Pane 2*/}
+                {/*</TabPane>*/}
             </Tabs>
         )
     }

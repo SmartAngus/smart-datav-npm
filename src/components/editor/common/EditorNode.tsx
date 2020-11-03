@@ -68,6 +68,7 @@ class EditorNodeProps {
   /** 改变节点图层 */
   onChangeZIndex?:(zIndex: number)=>void;
   updateNodes?:(node:Node)=>void;
+  isShiftKey?:boolean
 }
 
 /**
@@ -100,7 +101,8 @@ export function EditorNode(props: EditorNodeProps) {
     nodeRef,
     onResize,
     onChangeZIndex,
-    updateNodes
+    updateNodes,
+    isShiftKey
   } = props;
   // 组件内状态，与业务无关
   const [menuShow, setMenuShow] = useState(false);
@@ -247,6 +249,7 @@ export function EditorNode(props: EditorNodeProps) {
       onResize={interactive ? onResize:null}
       onChangeZIndex={interactive ? onChangeZIndex:null}
       onContextMenu={interactive ? onContextMenu : null}
+      isShiftKey={isShiftKey}
     >
       {currentNode.chart==undefined&&currentNode.url==undefined?(
         <div className="editorNode" ref={editorNodeRef}>

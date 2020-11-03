@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import {BaseCompStyle, EChart,Stroke} from "../constants/defines";
 import {distance} from '../utils/calc'
-import { useEventListener } from './useEventListener'
-
 
 class NodeInfo {
   width: number;
@@ -16,32 +14,14 @@ class NodeInfo {
   rotate?:number;
 }
 
-const useResize = (isResize: boolean, { width, height, x, y,rotate,...otherInfo }: NodeInfo): NodeInfo => {
+const useResize = (isResize: boolean, { width, height, x, y,rotate,...otherInfo }: NodeInfo,isShiftKey:boolean): NodeInfo => {
   const [nodeWidth, setNodeWidth] = useState(width);
   const [nodeHeight, setNodeHeight] = useState(height);
   const [nodeLeft, setNodeLeft] = useState(x);
   const [nodeTop, setNodeTop] = useState(y);
   const [nodeRotate,setNodeRotate] = useState(rotate)
   const [nodeChartStroke,setNodeChartStroke]=useState(otherInfo?.chart?.stroke);
-  const [isShiftKeya,setIsShiftKeya]=useState(true)
 
-  useEventListener(
-    'keydown',
-    (event: KeyboardEvent) => {
-      if(event.shiftKey){
-        setIsShiftKeya(true)
-      }
-    },
-  )
-
-  useEventListener(
-    'keyup',
-    (event: KeyboardEvent) => {
-      if(event.key=='Shift'){
-        setIsShiftKeya(false)
-      }
-    },
-  )
 
   useEffect(() => {
     setNodeLeft(x);
@@ -115,7 +95,7 @@ const useResize = (isResize: boolean, { width, height, x, y,rotate,...otherInfo 
 
           if (currentResizer.classList.contains('bottom-right')) {
             newWidth = originWidth + (e.pageX - originMouseX);
-            if (isShiftKeya){
+            if (isShiftKey){
               newHeight = originHeight*newWidth/originWidth
             }else{
               newHeight = originHeight + (e.pageY - originMouseY);
@@ -129,7 +109,7 @@ const useResize = (isResize: boolean, { width, height, x, y,rotate,...otherInfo 
           } else if (currentResizer.classList.contains('bottom-left')) {
 
             newWidth = originWidth - (e.pageX - originMouseX);
-            if (isShiftKeya){
+            if (isShiftKey){
               newHeight = originHeight*newWidth/originWidth
             }else{
               newHeight = originHeight + (e.pageY - originMouseY);
@@ -144,7 +124,7 @@ const useResize = (isResize: boolean, { width, height, x, y,rotate,...otherInfo 
           } else if (currentResizer.classList.contains('top-right')) {
             newHeight = originHeight - (e.pageY - originMouseY);
 
-            if (isShiftKeya){
+            if (isShiftKey){
               newWidth = originWidth*newHeight/originHeight
             }else{
               newWidth = originWidth + (e.pageX - originMouseX);
@@ -184,7 +164,7 @@ const useResize = (isResize: boolean, { width, height, x, y,rotate,...otherInfo 
           } else {
 
             newHeight = originHeight - (e.pageY - originMouseY);
-            if (isShiftKeya){
+            if (isShiftKey){
               newWidth = originWidth*newHeight/originHeight
             }else{
               newWidth = originWidth - (e.pageX - originMouseX);

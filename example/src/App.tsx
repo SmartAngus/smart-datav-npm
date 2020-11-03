@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 
 import { DataVPreview,DataVEditor } from 'smart-datav-npm'
+
 import 'antd/dist/antd.css'
 import 'smart-datav-npm/dist/index.css'
 import axios from "axios"
@@ -8,6 +9,7 @@ import { Modal } from 'antd'
 import preBgImg1 from './pre_bgimg_1.jpg'
 import preBgImg2 from './pre_bgimg_2.jpg'
 import preBgImg3 from './pre_bgimg_3.jpg'
+import html2canvas from 'html2canvas'
 
 const { confirm } = Modal;
 
@@ -125,6 +127,15 @@ const App = () => {
   // 保存数据到数据库
   const handleSaveEditorData = (data:any)=>{
     console.log(data)
+    const api = axios.create({ headers: { 'Content-Type': 'multipart/form-data' } })
+    const formData = new FormData()
+    api.defaults.headers.common['token'] = "development_of_special_token_by_star_quest"
+    formData.append('file', data.screenshot)
+    formData.append('mappingId', "ooip6ffe388d487db754b885b8aa65b9")
+
+    formData.append('mappingType', "107")
+    api.post(`http://qt.test.bicisims.com//api/file/file/uploadReturnPath`, formData)
+
     const instance = axios.create({
       baseURL:'http://qt.test.bicisims.com',
       timeout:10000000,
@@ -132,7 +143,7 @@ const App = () => {
     })
     instance.post("/api/applications/newBoard/updateProperty",{
       "id":"1a99aa5c58144a7b8ce8230ace2c53b6",
-      "property":window.btoa(unescape(encodeURIComponent(JSON.stringify(data))))
+      "property":window.btoa(unescape(encodeURIComponent(JSON.stringify(data.data))))
     },{
       method:'POST',
       headers: {
@@ -147,6 +158,12 @@ const App = () => {
   // 自定义预览，多数为打开一个新页面，路由，内置的预览是弹窗
   const handlePreview = (data:any)=>{
     console.log(data)
+    html2canvas(document.querySelector(".haha") as HTMLElement).then(canvas => {
+      console.log(canvas)
+      document?.querySelector(".haha")?.appendChild(canvas)
+      var imgData = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+      console.log(imgData)
+    });
   }
   const handlePoweroff = ()=>{
     // @ts-ignore
@@ -205,6 +222,7 @@ const App = () => {
   return (
     <React.Fragment>
       <ExtraModel/>
+      <div className="haha">saas</div>
       <DataVEditor
         ref={editorRef}
         onEditorSaveCb={handleSaveEditorData}
@@ -216,6 +234,7 @@ const App = () => {
         onPoweroff={handlePoweroff}
         preInstallBgImages={preInstallBgImages}
         autoSaveInterval={20}
+        // onPreview={handlePreview}
       />
       {/*<DataVPreview editorData={editorData}/>*/}
     </React.Fragment>

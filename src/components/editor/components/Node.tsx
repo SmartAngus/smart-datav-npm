@@ -60,6 +60,7 @@ class NodeProps {
   style?:BaseCompStyle;
   rotate?:number;
   onChangeZIndex?:(zIndex:number)=>void;
+  isShiftKey?:boolean
 }
 
 /**
@@ -102,10 +103,12 @@ const Node = React.forwardRef((props: NodeProps, ref: any) => {
     style,
     interactive,
     url,
+    isShiftKey
   } = props;
 
   const [showSelector, setShowSelector] = useState(false);
   const containerRef = useRef(null);
+
 
   // 获取伸缩的大小
   const {
@@ -124,7 +127,7 @@ const Node = React.forwardRef((props: NodeProps, ref: any) => {
     rotate,
     zIndex,
     style,
-  });
+  },isShiftKey);
   const handleContextMenu = (event: React.MouseEvent<any>) => {
     event.preventDefault();
     event.stopPropagation();

@@ -239,11 +239,9 @@ export default class CanvasContent extends React.Component<
 
   /** 监听整个区域，提升性能 */
   onNodesContainerMouseDown = (event: any) => {
-    console.log("监听整个区域，提升性能")
     event.stopPropagation();
     //event.preventDefault()
     const { nodes, groups,setSelectedGroup } = this.props;
-    console.log("groups",groups)
 
     // 如果画布中有节点
     if (nodes && nodes.length > 0) {
@@ -276,7 +274,6 @@ export default class CanvasContent extends React.Component<
       }
     }
     // 如果当前选中的是组
-    console.log("groups==",groups)
     if (groups && groups.length > 0) {
       const currentGroup = _.find(groups, c => {
         if (c.ref && c.ref.current) {
@@ -295,9 +292,7 @@ export default class CanvasContent extends React.Component<
     // event.preventDefault()
     // event.stopPropagation();
     // 过滤掉节点和边
-    console.log("onContainerMouseDown")
     const path = event.path;
-    console.log(path)
     const isNodeOrLink = this.hasNodeOrLink(path, "editor-node", "editor-link");
     if (!isNodeOrLink) {
       // 清空高亮的节点和边
@@ -596,7 +591,6 @@ export default class CanvasContent extends React.Component<
 
   /** 按下组 */
   onDragGroupMouseDown = (group: Group, event: any) => {
-    console.log("按下组")
     if (group) {
       const {setSelectedGroup} = this.props
       setSelectedGroup(group);
@@ -696,7 +690,6 @@ export default class CanvasContent extends React.Component<
   onDragGroupMouseUp = (event: any) => {
     event.stopPropagation();
     const { groups, updateNodes, updateGroups } = this.props;
-
     const { dragGroup } = this.state;
 
     this.setState({
@@ -1073,7 +1066,7 @@ export default class CanvasContent extends React.Component<
   // 渲染节点内容
   renderCanvas = () => {
     const { currentHoverNode } = this.state;
-    const { nodes,links, selectedNodes, selectedLinks, groups } = this.props;
+    const { nodes,links, selectedNodes, selectedLinks, groups,isShiftKey } = this.props;
     return (
       <div className="editor-view">
         <div className="editor-view-content" ref={this.nodesContainerRef}>
@@ -1096,6 +1089,7 @@ export default class CanvasContent extends React.Component<
                 currTrans={this.props.currTrans}
                 onSelect={this.onSelectNode}
                 updateNodes={this.props.updateNodes}
+                isShiftKey={isShiftKey}
               />
             );
           })}

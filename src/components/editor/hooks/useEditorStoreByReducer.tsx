@@ -22,7 +22,14 @@ const canvasConfig = {
   width: 1366,
 }
 
-export function useEditorStore() {
+const initState =  {
+  nodes:[],
+  groups:[],
+  links:[],
+  
+}
+
+export function useEditorStoreByReducer() {
   const [editorData, setEditorData] = useState();
   // 是否保存了数据updateNodes
   const [isSave,setIsSave] = useState(true)

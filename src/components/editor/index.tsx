@@ -19,6 +19,8 @@ import RenderPropertySidebar from './common/RenderPropertySidebar'
 import './index.scss'
 import DataVPreview from '../preview'
 import ResizePanel from './components/resizeSidebar'
+import { dataURL2Blob,getScreenshot } from './utils/screenshot'
+import { useShiftKey } from './hooks/useShiftKey'
 
 const { useState, useRef, useEffect, useImperativeHandle } = React
 
@@ -72,9 +74,36 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
     redo
   } = useEditorStore()
 
+  const {isShiftKey,keydown,keyup}  =useShiftKey()
 
+
+  useEventListener(
+    'keydown',
+    (event: KeyboardEvent) => {
+      if(event.shiftKey){
+        keydown()
+      }
+    },
+    {
+      capture:false,
+      once: true,
+      passive: false
+    })
+
+  useEventListener(
+    'keyup',
+    (event: KeyboardEvent) => {
+      keyup()
+    },
+    {
+      capture:false,
+      once: true,
+      passive: false
+    })
   // 画布容器
   const screenRef = useRef(null)
+
+  const screenshotDomRef = useRef(null)
 
   // 画布 ref
   const canvasRef = useRef({
@@ -143,6 +172,8 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
   },[1])
 
   const canvasInstance = canvasRef.current
+
+
 
 
 
@@ -246,7 +277,6 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
   // 删除节点
   const handleDelete = () => {
     if (selectedNodes) {
-      console.log("handleDelete")
       handleDeleteNodes(selectedNodes)
       // 判断删除的节点是否在组内，删除组内的节点
       const newGroups = groups.map((group) => {
@@ -525,12 +555,37 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
       groups,
       editorConfig: canvasProps
     }
-    onEditorSaveCb && onEditorSaveCb(editorData)
     if (data) {
       message.success('保存成功')
     } else {
       message.error('保存失败')
     }
+    // 生成缩略图
+    getScreenShot(editorData)
+  }
+  // 获得编辑器内的缩略图
+  const getScreenShot = (editorData) => {
+    const screenshotDom = screenshotDomRef?.current
+    return getScreenshot(screenshotDom, '截图', { useCORS: true, logging: true }).then((canvas) => {
+      const dataURL = canvas.toDataURL('image/png')
+      const blob = dataURL2Blob(dataURL)
+      const file = new File([blob], '截图.png', { type: 'image/png' })
+      const data = {
+        data: editorData,
+        screenshot:file
+      }
+      onEditorSaveCb && onEditorSaveCb(data)
+      // const api = axios.create({ headers: { 'Content-Type': 'multipart/form-data' } })
+      // const formData = new FormData()
+      // api.defaults.headers.common['token'] = window.localStorage.getItem('access_token')
+      // formData.append('file', file)
+      // formData.append('mappingId', "1a99aa5c58144a7b8ce8230ace2c53b6")
+      // formData.append('mappingType', "100")
+      // api.post(`http://qt.test.bicisims.com/api/file/file/upload`, formData).then(res=>{
+      //   console.log(res)
+      // })
+
+    })
   }
   /** 退出，要检查是否已经保存 */
   const handlePoweroff = () => {
@@ -638,22 +693,22 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
     updateGroupsInfo(currentNodes, 'new')
     setSelectedNodes([])
   }
+  /** 解组 */
   const handleUnGroup = () => {
-    console.log("handleUnGroup",selectedGroup)
-    selectedGroup &&
-      updateGroupsInfo(selectedGroup.nodes, 'merge', selectedGroup.id)
+    const newGroups = (groups||[]).filter(group=>{
+      if(selectedGroup==undefined) return true;
+      return group.id != selectedGroup.id
+    })
+    setGroups(newGroups)
   }
   const handleUndo = () => {
     undo()
-    console.log("stateHistory",stateHistory)
     stateHistory.present&&setNodes(stateHistory.present.nodes)
 
   }
   const handleRedo = () => {
     redo()
     stateHistory.present&&setNodes(stateHistory.present.nodes)
-    console.log("stateHistory",stateHistory)
-
   }
   // 渲染额外的node
   const handleExtraRender = () => {
@@ -668,7 +723,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
       }
     },
     {
-      events: ['keyup']
+      events: ['keydown','keyup']
     }
   )
 
@@ -693,6 +748,14 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
   useKeyPress(isMac ? ['meta.f12'] : ['ctrl.f12'], (event) => {
     event.returnValue=false;
     handlePreview()
+  })
+  useKeyPress(isMac ? ['meta.g'] : ['ctrl.g'], (event) => {
+    event.returnValue=false;
+    handleGroup()
+  })
+  useKeyPress(isMac ? ['meta.u'] : ['ctrl.u'], (event) => {
+    event.returnValue=false;
+    handleUnGroup()
   })
 
   useEventListener(
@@ -854,11 +917,13 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
         canvasStyle={canvasProps}
         onEditNode={handleAutoSaveSettingInfo}
         setHistory={setHistory}
+        isShiftKey={isShiftKey}
       />
     </div>
   )
   return (
     <React.Fragment>
+      <div className="screenshotDom" style={{display:'none'}} ref={screenshotDomRef}></div>
       <div className='editor-demo' ref={screenRef}>
         <div className='editor-operation'>{renderOperation}</div>
         <div className='editor-container'>
