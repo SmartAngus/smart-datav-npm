@@ -12,7 +12,7 @@ import {
   GROUP_PADDING,
   Node,
   Group,
-  DataVEditorProps
+  DataVEditorProps, Link
 } from './constants/defines'
 import RenderPropertySidebar from './common/RenderPropertySidebar'
 
@@ -21,6 +21,7 @@ import DataVPreview from '../preview'
 import ResizePanel from './components/resizeSidebar'
 import { dataURL2Blob,getScreenshot } from './utils/screenshot'
 import { useShiftKey } from './hooks/useShiftKey'
+import { useEditorStoreByReducer } from './hooks/useEditorStoreByReducer'
 
 const { useState, useRef, useEffect, useImperativeHandle } = React
 
@@ -72,9 +73,11 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
     setHistory,
     undo,
     redo
-  } = useEditorStore()
+  } = useEditorStoreByReducer()
 
   const {isShiftKey,keydown,keyup}  =useShiftKey()
+
+  console.log("nodes===",nodes)
 
 
   useEventListener(
@@ -189,14 +192,14 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
     const newLinks = _.cloneDeep(links)
     ids.forEach((id) => {
       // 删除与节点连接的任意边
-      _.remove(newLinks, (link) => link.source === id || link.target === id)
+      _.remove(newLinks, (link:Link) => link.source === id || link.target === id)
     })
     // 更新连线
     setLinks(newLinks)
 
     // 剔除components
     const cloneNodes = _.cloneDeep(nodes)
-    const newNodes = _.remove(cloneNodes, (item) => !ids.includes(item.id))
+    const newNodes = _.remove(cloneNodes, (item) => !ids.includes((item as Node).id))
 
     setNodes(newNodes)
     setIsSave(false)
@@ -281,7 +284,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
       // 判断删除的节点是否在组内，删除组内的节点
       const newGroups = groups.map((group) => {
         selectedNodes.forEach((id) => {
-          const index = _.findIndex(group?.nodes, (node) => node.id === id)
+          const index = _.findIndex(group?.nodes, (node:Node) => node.id === id)
           if (index > -1) {
             group.nodes = [
               ...group.nodes.slice(0, index),
@@ -302,7 +305,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
   const handleBringUp = () => {
     if (selectedNodes) {
       const nodeIndexs = selectedNodes.map(nodeId=>{
-        return _.findIndex(nodes,item=>item.id===nodeId)
+        return _.findIndex(nodes,(item:Node)=>item.id===nodeId)
       })
       const newNodes = _.cloneDeep(nodes);
       const nodesLength = nodes.length;
@@ -326,7 +329,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
       // })
 
       const nodeIndexs = selectedNodes.map(nodeId=>{
-        return _.findIndex(nodes,item=>item.id===nodeId)
+        return _.findIndex(nodes,(item:Node)=>item.id===nodeId)
       })
       let newNodes = _.cloneDeep(nodes);
       nodeIndexs.map(nodeIndex=>{
@@ -341,7 +344,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
   const handleBringTop = () => {
     if (selectedNodes) {
       const nodeIndexs = selectedNodes.map(nodeId=>{
-        return _.findIndex(nodes,item=>item.id===nodeId)
+        return _.findIndex(nodes,(item:Node)=>item.id===nodeId)
       })
       let newNodes = _.cloneDeep(nodes);
       nodeIndexs.map(nodeIndex=>{
@@ -355,7 +358,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
   const handleBringBottom = () => {
     if (selectedNodes) {
       const nodeIndexs = selectedNodes.map(nodeId=>{
-        return _.findIndex(nodes,item=>item.id===nodeId)
+        return _.findIndex(nodes,(item:Node)=>item.id===nodeId)
       })
       let newNodes = _.cloneDeep(nodes);
       nodeIndexs.map(nodeIndex=>{
@@ -682,7 +685,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
 
   /** 成组 */
   const handleGroup = () => {
-    const currentNodes = _.compact(
+    const currentNodes:Node[] = _.compact(
       nodes.map((node) => {
         if (selectedNodes.includes(node.id)) {
           return node

@@ -67,7 +67,7 @@ export function EditorEdges(props: EditorEdgesProps) {
     dragLink,
     interactive = true
   } = props;
-  const edgesPath = links.map(link => {
+  const edgesPath = (links||[]).map(link => {
     const { source, target, id, sourcePos, targetPos } = link;
     const uNode = _.find(nodes, vertex => {
       return vertex.id === source;

@@ -22,8 +22,12 @@ const canvasConfig = {
   password: null,
   width: 1366,
 }
-
-const initState =  {
+class InitStateProps{
+  nodes:Node[];
+  groups:Group[];
+  links:Link[];
+}
+const initState:InitStateProps =  {
   nodes:[],
   groups:[],
   links:[],
@@ -33,21 +37,22 @@ const reducer = (state,action)=>{
   switch (action.type) {
     case "SET_NODES":
       const { newNodes } = action;
+      console.log("SET_NODES",newNodes)
       return {
-        ...nodes,
-        newNodes
+        ...state,
+        nodes:newNodes
       }
     case "SET_LINKS":
       const { newLinks } = action;
       return {
-        ...nodes,
-        newLinks
+        ...state,
+        links:newLinks
       }
     case "SET_GROUPS":
       const { newGroups } = action;
       return {
-        ...nodes,
-        newGroups
+        ...state,
+        groups:newGroups
       }
   }
 }
@@ -59,9 +64,9 @@ export function useEditorStoreByReducer() {
   const [editorData, setEditorData] = useState();
   // 是否保存了数据updateNodes
   const [isSave,setIsSave] = useState(true)
-  const [nodes, setNodes] = useState<Node[]>([]);
-  const [links, setLinks] = useState<Link[]>([]);
-  const [groups, setGroups] = useState<Group[]>([]);
+  // const [nodes, setNodes] = useState<Node[]>([]);
+  // const [links, setLinks] = useState<Link[]>([]);
+  // const [groups, setGroups] = useState<Group[]>([]);
   const [selectedLinks, setSelectedLinks] = useState<string[]>([]);
   const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<Group>(undefined);
@@ -76,6 +81,7 @@ export function useEditorStoreByReducer() {
   const [currTrans, setCurrTrans] = useState<ZoomTransform>(zoomIdentity);
 
   const [copiedNodes, setCopiedNodes] = useState<Node[]>([]);
+
   // 保存操作历史
   const debouncedHistory = useDebouncedCallback(
     (value) => {
@@ -85,17 +91,30 @@ export function useEditorStoreByReducer() {
     // The maximum time func is allowed to be delayed before it's invoked:
     { maxWait: 2000 }
   );
+  // 定义setNodes函数
+  const setNodes = (newNodes)=>{
+    console.log("newNodes",newNodes)
+    dispatch({type:"SET_NODES",newNodes})
+  }
+  const setGroups = (newGroups)=>{
+    console.log("newGroups",newGroups)
+    dispatch({type:"SET_GROUPS",newGroups})
+  }
+  const setLinks = (newLinks)=>{
+    console.log("newLinks",newLinks)
+    dispatch({type:"SET_LINKS",newLinks})
+  }
 
   useEffect(() => {
     console.log("setEditorData")
     setEditorData(editorLocalData);
-
     const newNodes = (editorLocalData?.nodes || []).map(item => {
       return {
         ...item,
         ref: React.createRef()
       };
     });
+
     setNodes(newNodes);
 
     const newGroups = (editorLocalData?.groups  || []).map(item => {
@@ -110,24 +129,32 @@ export function useEditorStoreByReducer() {
   }, [editorLocalData]);
 
   const updateNodes = (node: Node) => {
-    const index = nodes.findIndex(item => item.id === node.id);
-    const newNodes = [
-      ...nodes.slice(0, index),
-      node,
-      ...nodes.slice(index + 1)
-    ];
-    setNodes(newNodes);
-    setIsSave(false);
-    debouncedHistory.callback({
-      ...(editorData as any),
-      nodes:nodes,
-      links:links,
-      groups: groups,
-      canvasProps:canvasProps
-    })
+    console.log("dataState===",dataState)
+    // const nodes = dataState.nodes
+    // const links = dataState.links
+    // const groups = dataState.groups
+    // const index = nodes.findIndex(item => item.id === node.id);
+    // const newNodes = [
+    //   ...nodes.slice(0, index),
+    //   node,
+    //   ...nodes.slice(index + 1)
+    // ];
+    //
+    // setNodes(newNodes);
+    // setIsSave(false);
+    // debouncedHistory.callback({
+    //   ...(editorData as any),
+    //   nodes:nodes,
+    //   links:links,
+    //   groups: groups,
+    //   canvasProps:canvasProps
+    // })
   };
 
   const updateLinks = (link: Link) => {
+    const nodes = dataState.nodes
+    const links = dataState.links
+    const groups = dataState.groups
     const index = links.findIndex(item => item.id === link.id);
     const newLinks = [
       ...links.slice(0, index),
@@ -147,6 +174,9 @@ export function useEditorStoreByReducer() {
   };
 
   const updateGroups = (group: Group) => {
+    const nodes = dataState.nodes
+    const links = dataState.links
+    const groups = dataState.groups
     const index = groups.findIndex(item => item.id === group.id);
 
     const newGroups = [
@@ -167,6 +197,9 @@ export function useEditorStoreByReducer() {
   };
   // 保存最新的数据
   const handleSaveData = async () => {
+    const nodes = dataState.nodes
+    const links = dataState.links
+    const groups = dataState.groups
     setIsSave(true)
     const newNodes = nodes || [];
     const newGroups = groups || [];
@@ -242,9 +275,9 @@ export function useEditorStoreByReducer() {
   return {
     editorData,
     setEditorData,
-    nodes,
+    nodes:dataState.nodes,
     setNodes,
-    links,
+    links:dataState.links,
     setLinks,
     updateNodes,
     updateLinks,
@@ -261,7 +294,7 @@ export function useEditorStoreByReducer() {
     editorLocalData,
     setEditorLocalData,
     handleSaveData,
-    groups,
+    groups:dataState.groups,
     setGroups,
     updateGroups,
     selectedGroup,
