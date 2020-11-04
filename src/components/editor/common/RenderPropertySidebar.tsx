@@ -343,6 +343,31 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
             updateNodes(newNode)
         }
     }
+  // font-weight: bold;
+  // text-decoration: underline;
+  // font-style: italic;
+  // 设置文本对齐方式
+    const handleFontWeight = (align)=>{
+      const newNode = _.cloneDeep(node)
+      if(newNode.style) {
+        newNode.style.fontWeight = newNode.style.fontWeight==='bold'?'':'bold';
+        updateNodes(newNode)
+      }
+    }
+    const handleFontStyle = (align)=>{
+      const newNode = _.cloneDeep(node)
+      if(newNode.style) {
+        newNode.style.fontStyle = newNode.style.fontStyle === 'italic'?'':'italic';
+        updateNodes(newNode)
+      }
+    }
+    const handleFontDecoration = (align)=>{
+      const newNode = _.cloneDeep(node)
+      if(newNode.style) {
+        newNode.style.textDecoration = newNode.style.textDecoration === 'underline'?'':'underline';
+        updateNodes(newNode)
+      }
+    }
     // 设置显示日期
     const handleShowDate = (e)=>{
         const newNode = _.cloneDeep(node)
@@ -582,7 +607,7 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                             parser={value => value.replace('px', '')}
                             onChange={handleChangeGridSize}
                           />
-                          <ColorsPicker onSetColor={handleSetGridColor} defaultColor={canvasProps?.grid?.color}/>
+                          <ColorsPicker showCheckbox={false} onSetColor={handleSetGridColor} defaultColor={canvasProps?.grid?.color}/>
                         </li>
                       </ul>
                     </div>
@@ -784,21 +809,23 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                                             <div className="components-box-inner">
                                                 <label style={{visibility:'hidden'}}>对齐</label>
                                                 <ButtonGroup>
-                                                    <Button type="link"  icon="align-left"
+                                                    <Button type={node.style?.textAlign==='left'?'primary':'default'}  icon="align-left"
                                                             onClick={()=>handleFontTextAlign('left')} />
-                                                    <Button type="link"
+                                                    <Button type={node.style?.textAlign==='center'?'primary':'default'}
                                                             icon="align-center"
                                                             onClick={()=>handleFontTextAlign('center')} />
-                                                    <Button type="link"  icon="align-right"
+                                                    <Button type={node.style?.textAlign==='right'?'primary':'default'}  icon="align-right"
                                                         onClick={()=>handleFontTextAlign('right')}/>
-                                                  <Button type="link"  icon="bold"
-                                                          onClick={()=>handleFontTextAlign('left')} />
-                                                  <Button type="link"
-                                                          icon="align-center"
-                                                          onClick={()=>handleFontTextAlign('center')} />
-                                                  <Button type="link"  icon="align-right"
-                                                          onClick={()=>handleFontTextAlign('right')}/>
                                                 </ButtonGroup>
+                                              <ButtonGroup style={{marginLeft:10}}>
+                                              <Button type={node.style?.fontWeight?'primary':'default'} icon="bold"
+                                                      onClick={()=>handleFontWeight('left')} />
+                                              <Button type={node.style?.fontStyle?'primary':'default'}
+                                                      icon="italic"
+                                                      onClick={()=>handleFontStyle('center')} />
+                                              <Button type={node.style?.textDecoration?'primary':'default'}  icon="underline"
+                                                      onClick={()=>handleFontDecoration('right')}/>
+                                            </ButtonGroup>
 
                                             </div>
                                         </div>

@@ -31,6 +31,8 @@ const reducer = (state, action) => {
         future: newFuture
       };
     case "SET":
+      console.log("SET",action)
+      console.log(present)
       const { newPresent } = action;
       if (newPresent === present) {
         return state;

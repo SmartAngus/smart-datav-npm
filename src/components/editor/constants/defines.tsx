@@ -238,9 +238,10 @@ export class BaseCompStyle {
   fontSize?:number
   textAlign?:'left'|'center'|'right'|undefined;
   verticalAlign?:'top'|'middle'|'bottom'|'sub'|'super'|undefined;
-  fontWeight?:number;
+  fontWeight?:string;
   textDecoration?:string;
   backgroundColor?:string;
+  fontStyle?:string;
   opacity?:number;
   borderSize?:number;
   borderStyle?:'solid'|'dotted'|undefined;

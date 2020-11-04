@@ -77,6 +77,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
 
   const {isShiftKey,keydown,keyup}  =useShiftKey()
 
+  const [serverNodes,setServerNodes] = useState<Node[]>([])
 
   useEventListener(
     'keydown',
@@ -121,6 +122,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
             ref: React.createRef()
           }
         })
+        setServerNodes(newNodes)
         setNodes(newNodes)
         setGroups(editorData.groups)
         setLinks(editorData.links)
@@ -178,6 +180,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
 
   // 保存操作历史
   const handleSetUndoAndRedo  = ()=>{
+    console.log("handleSetUndoAndRedo",stateHistory)
     setHistory({
       nodes:nodes,
       links:links,
@@ -212,6 +215,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
     // 清空高亮状态
     setSelectedLinks([])
     setSelectedNodes([])
+    handleSetUndoAndRedo()
   }
 
   /** 删除连线 */
@@ -322,6 +326,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
         return null;
       })
       setNodes(newNodes)
+      handleSetUndoAndRedo()
     }
   }
   const handleBringDown = () => {
@@ -337,6 +342,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
         return newNodes;
       })
       setNodes(newNodes)
+      handleSetUndoAndRedo()
     }
   }
   const handleBringTop = () => {
@@ -351,6 +357,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
         return newNodes;
       })
       setNodes(newNodes)
+      handleSetUndoAndRedo()
     }
   }
   const handleBringBottom = () => {
@@ -365,6 +372,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
         return newNodes;
       })
       setNodes(newNodes)
+      handleSetUndoAndRedo()
     }
   }
 
@@ -388,6 +396,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
         }
         return currNode
       })
+      handleSetUndoAndRedo()
     }
   }
   // 水平居中
@@ -406,6 +415,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
         }
         return currNode
       })
+      handleSetUndoAndRedo()
     }
   }
   // 右侧对齐
@@ -422,6 +432,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
         }
         return currNode
       })
+      handleSetUndoAndRedo()
     }
   }
   // 顶部对齐
@@ -437,6 +448,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
         }
         return currNode
       })
+      handleSetUndoAndRedo()
     }
   }
   // 垂直居中
@@ -455,6 +467,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
         }
         return currNode
       })
+      handleSetUndoAndRedo()
     }
   }
   // 底部对齐
@@ -473,6 +486,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
         }
         return currNode
       })
+      handleSetUndoAndRedo()
     }
   }
 
@@ -679,6 +693,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
         setGroups(newGroups)
       }
     }
+    handleSetUndoAndRedo()
   }
 
   /** 成组 */
@@ -703,15 +718,21 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
     setGroups(newGroups)
   }
   const handleUndo = () => {
+    console.log("handleUndo",stateHistory)
     undo()
-    console.log(stateHistory)
-    stateHistory.present&&setNodes(stateHistory.present.nodes)
-
+    if(stateHistory.present==undefined){
+      setNodes(serverNodes)
+    }else{
+      setNodes(stateHistory.present.nodes)
+    }
   }
   const handleRedo = () => {
-      redo()
-    console.log(stateHistory)
-    stateHistory.present&&setNodes(stateHistory.present.nodes)
+    redo()
+    if(stateHistory.present==undefined){
+      setNodes(serverNodes)
+    }else{
+      setNodes(stateHistory.present.nodes)
+    }
   }
   // 渲染额外的node
   const handleExtraRender = () => {

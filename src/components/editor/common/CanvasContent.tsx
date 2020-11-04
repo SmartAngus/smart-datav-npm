@@ -612,6 +612,8 @@ export default class CanvasContent extends React.Component<
     event.stopPropagation();
 
     const { setGroups, groups, nodes, setNodes } = this.props;
+    const {onSetUndoAndRedo}=this.props
+    onSetUndoAndRedo&&onSetUndoAndRedo()
 
     const { k, x, y } = this.props.currTrans;
 
@@ -677,6 +679,7 @@ export default class CanvasContent extends React.Component<
     });
     setNodes(newNodes);
     setGroups(newGroups);
+    onSetUndoAndRedo&&onSetUndoAndRedo()
   };
 
   /** 放开组 */
@@ -712,7 +715,7 @@ export default class CanvasContent extends React.Component<
 
   // 添加节点到画布
   onDrop(event: React.DragEvent<HTMLDivElement>) {
-    const { setNodes, nodes, dragNode } = this.props;
+    const { setNodes, nodes, dragNode,onSetUndoAndRedo } = this.props;
     const { offsetTop, offsetLeft } = getOffset(this.container.current);
     // 计算滚动条的位置
     const scrollLeft =
@@ -749,6 +752,7 @@ export default class CanvasContent extends React.Component<
       };
       setNodes([...nodes, newNode]);
       nodes.push(newNode)
+      onSetUndoAndRedo&&onSetUndoAndRedo()
     }
   }
 

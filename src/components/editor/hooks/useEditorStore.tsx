@@ -80,13 +80,13 @@ export function useEditorStore() {
   }, [editorLocalData]);
 
   const updateNodes = (node: Node) => {
-    debouncedHistory.callback({
-      ...(editorData as any),
-      nodes:nodes,
-      links:links,
-      groups: groups,
-      canvasProps:canvasProps
-    })
+    // debouncedHistory.callback({
+    //   ...(editorData as any),
+    //   nodes:nodes,
+    //   links:links,
+    //   groups: groups,
+    //   canvasProps:canvasProps
+    // })
     const index = nodes.findIndex(item => item.id === node.id);
     const newNodes = [
       ...nodes.slice(0, index),

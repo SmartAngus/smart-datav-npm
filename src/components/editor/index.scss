@@ -102,7 +102,7 @@
     top: 0px;
     display: block;
     width: 3427px;
-    height: 1800px;
+    height: 2800px;
     position: absolute;
     background: rgb(230, 230, 230);
   }
@@ -169,5 +169,11 @@
     cursor: pointer;
     -webkit-transition: border-color 0.3s ease;
     transition: border-color 0.3s ease;
+  }
+  .alignment-operation-wrapper button{
+    padding: 0 10px;
+  }
+  .alignment-operation-wrapper button i {
+    font-size: 24px;
   }
 }

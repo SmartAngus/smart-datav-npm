@@ -9,6 +9,7 @@ import {Checkbox} from 'antd'
 class ColorsPickerProps{
     onSetColor?:(color:any)=>void;
     defaultColor?:string;
+    showCheckbox?:boolean;
 }
 interface ColorProps {
     r?:string|number;
@@ -24,8 +25,13 @@ class ColorsPickerState{
 }
 
 class ColorsPicker extends React.Component<ColorsPickerProps,ColorsPickerState> {
+    showCheckbox:boolean = true
     constructor(props) {
         super(props);
+        console.log(props.showCheckbox)
+        if(props.showCheckbox!=undefined){
+          this.showCheckbox = props.showCheckbox
+        }
     }
     componentWillReceiveProps(props,nextProps){
         // if(props.defaultColor!='transparent'&&props.defaultColor!=undefined){
@@ -71,69 +77,74 @@ class ColorsPicker extends React.Component<ColorsPickerProps,ColorsPickerState> 
             onSetColor("transparent")
         }
     }
+  getBackground=()=>{
+    if(this.props.defaultColor!='transparent'&&this.props.defaultColor!='undefined'){
+      // 类型断言
+      const color = (this.state.color as ColorProps)
 
-    getBackground=()=>{
-        if(this.props.defaultColor!='transparent'&&this.props.defaultColor!='undefined'){
-            // 类型断言
-            const color = (this.state.color as ColorProps)
-
-            return `rgba(${ color?.r }, ${ color?.g }, ${ color?.b }, ${ color?.a })`
-        }
-        return "transparent"
+      return `rgba(${ color?.r }, ${ color?.g }, ${ color?.b }, ${ color?.a })`
     }
-    render() {
-        const styles = reactCSS({
-            'default': {
-                color: {
-                    width: '36px',
-                    height: '14px',
-                    borderRadius: '2px',
-                    background: this.getBackground(),
-                },
-                swatch: {
-                    padding: '5px',
-                    background: '#fff',
-                    borderRadius: '1px',
-                    boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
-                    display: 'inline-block',
-                    cursor: 'pointer',
-                },
-                popover: {
-                    position: 'fixed',
-                    zIndex: '2',
-                    right:300,
-                    top:150,
-                },
-                cover: {
-                    position: 'fixed',
-                    top: '0px',
-                    right: '0px',
-                    bottom: '0px',
-                    left: '0px',
-                },
-                ck:{
-                    "verticalAlign": "super",
-                    "marginRight": "10px"
-                }
-            },
-        });
+    return "transparent"
+  }
 
-        return (
-            <div>
-                <Checkbox style={ styles.ck } defaultChecked={!this.state.isTransparent}
-                          onChange={this.handleChangeNotTransparent}></Checkbox>
-                <div style={ styles.swatch } onClick={ this.handleClick }>
-                    <div style={ styles.color } />
-                </div>
-                { this.state.displayColorPicker ? <div className="color-picker-container" style={ styles.popover }>
-                    <div style={ styles.cover } onClick={ this.handleClose }/>
-                    <SketchPicker color={ this.state.color } className="my-color-picker"  onChangeComplete={ this.handleChange } />
-                    <Button onClick={this.handleClose} style={{marginRight:20}}>取消</Button>
-                    <Button type="primary" onClick={this.handleSetColor}>确定</Button>
-                </div> : null }
+    render() {
+      const    styles = reactCSS({
+        'default': {
+          color: {
+            width: '36px',
+            height: '14px',
+            borderRadius: '2px',
+            background: this.getBackground(),
+          },
+          swatch: {
+            padding: '5px',
+            background: '#fff',
+            borderRadius: '1px',
+            boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
+            display: 'inline-block',
+            cursor: 'pointer',
+          },
+          popover: {
+            position: 'fixed',
+            zIndex: '2',
+            right:300,
+            top:150,
+          },
+          cover: {
+            position: 'fixed',
+            top: '0px',
+            right: '0px',
+            bottom: '0px',
+            left: '0px',
+          },
+          ck:{
+            "verticalAlign": "super",
+            "marginRight": "10px"
+          }
+        },
+      });
+      const renderCheckbox = ()=>(
+        <Checkbox
+          style={ styles.ck }
+          defaultChecked={!this.state.isTransparent}
+          onChange={this.handleChangeNotTransparent}></Checkbox>
+      )
+      return (
+        <div>
+          {this.showCheckbox&&renderCheckbox()}
+            <div style={ styles.swatch } onClick={ this.handleClick }>
+                <div style={ styles.color } />
             </div>
-        )
+            { this.state.displayColorPicker ? <div className="color-picker-container" style={ styles.popover }>
+                <div style={ styles.cover } onClick={ this.handleClose }/>
+                <SketchPicker color={ this.state.color } className="my-color-picker"  onChangeComplete={ this.handleChange } />
+                <Button onClick={this.handleClose} style={{marginRight:20}}>取消</Button>
+                <Button type="primary" onClick={this.handleSetColor}>确定</Button>
+            </div> : null }
+        </div>
+      )
     }
 }
+
 
 export default ColorsPicker;
