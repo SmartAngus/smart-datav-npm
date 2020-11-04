@@ -176,6 +176,10 @@ const Node = React.forwardRef((props: NodeProps, ref: any) => {
     "top-right",
     "bottom-left",
     "bottom-right",
+    "west",
+    "north",
+    "east",
+    "south",
     "rotate"
   ];
   let notLine = true
@@ -202,7 +206,7 @@ const Node = React.forwardRef((props: NodeProps, ref: any) => {
                     data-type="rotate"
                     data-position="top-rotate"
                     className={`node-selector-rotate`}
-                    style={{left: `${width / 2 - 14}px`,top:-25,color:'#000',cursor:"all-scroll",fontSize:16,fontWeight:800}}
+                    style={{left: `${width / 2 - 14}px`,top:-36,color:'#000',cursor:"all-scroll",fontSize:16,fontWeight:800}}
                 >
                   <Icon type="reload"/>
                   <span
@@ -264,7 +268,7 @@ const Node = React.forwardRef((props: NodeProps, ref: any) => {
       onMouseLeave={() => setShowSelector(false)}
       onContextMenu={handleContextMenu}
     >
-      {((interactive!==false)&&(isSelected || showSelector)&&notLine) && renderNodeSelector}
+      {/*{((interactive!==false)&&(isSelected || showSelector)&&notLine) && renderNodeSelector}*/}
       {isSelected && renderResize}
       {React.cloneElement(children as React.ReactElement<any>, {
         ref: containerRef

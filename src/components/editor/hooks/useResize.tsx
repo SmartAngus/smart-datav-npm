@@ -161,7 +161,30 @@ const useResize = (isResize: boolean, { width, height, x, y,rotate,...otherInfo 
             rotateDeg = rotateDeg*180/Math.PI+orotate
             setNodeRotate(rotateDeg)
 
-          } else {
+          }  else if (currentResizer.classList.contains('north')) {
+            newHeight = originHeight - (e.pageY - originMouseY);
+            if (newHeight > minSize) {
+              setNodeHeight(newHeight);
+              setNodeTop(nodeTop + (e.pageY - originMouseY));
+            }
+          } else if (currentResizer.classList.contains('south')) {
+            newHeight = originHeight + (e.pageY - originMouseY);
+            if (newHeight > minSize) {
+              setNodeHeight(newHeight);
+            }
+          }else if (currentResizer.classList.contains('east')) {
+            newWidth = originWidth + (e.pageX - originMouseX);
+            if (newWidth > minSize) {
+              setNodeWidth(newWidth);
+            }
+          } else if (currentResizer.classList.contains('west')) {
+            newWidth = originWidth - (e.pageX - originMouseX);
+            if (newWidth > minSize) {
+              setNodeWidth(newWidth);
+              setNodeLeft(nodeLeft + (e.pageX - originMouseX));
+            }
+
+          }else {
 
             newHeight = originHeight - (e.pageY - originMouseY);
             if (isShiftKey){

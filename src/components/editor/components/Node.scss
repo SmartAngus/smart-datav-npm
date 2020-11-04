@@ -28,6 +28,26 @@
           top: calc(50% - 4px);
           cursor: pointer;
         }
+        .west{
+          left: -4px;
+          top: calc(50% - 4px);
+          cursor: ew-resize;
+        }
+        .north{
+          left: calc(50% - 4px);
+          top: -4px;
+          cursor: ns-resize;
+        }
+        .east{
+          right: -4px;
+          top: calc(50% - 4px);
+          cursor: ew-resize;
+        }
+        .south{
+          left: calc(50% - 4px);
+          bottom: -4px;
+          cursor: ns-resize;
+        }
         .top-left {
           left: -4px;
           top: -4px;

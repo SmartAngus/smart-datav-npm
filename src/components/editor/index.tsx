@@ -124,13 +124,13 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
         //setGroups(editorData.groups)
         setLinks(editorData.links)
         setCanvasProps(editorData.editorConfig)
-        // 设置初始化就是最新数据，此时退出不需要提示
-        setIsSave(true)
       }
     }
     const timer = setTimeout(() => {
       initData()
-    }, 1000)
+      // 设置初始化就是最新数据，此时退出不需要提示
+      setIsSave(true)
+    }, 500)
     return () => {
       clearTimeout(timer)
     }
@@ -318,13 +318,6 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
   }
   const handleBringDown = () => {
     if (selectedNodes) {
-      // selectedNodes.map((nodeId) => {
-      //   const node = _.find(nodes, (item) => item.id === nodeId)
-      //   node.zIndex = node.zIndex ? node.zIndex - 1 : 1
-      //   updateNodes(node)
-      //   return node
-      // })
-
       const nodeIndexs = selectedNodes.map(nodeId=>{
         return _.findIndex(nodes,item=>item.id===nodeId)
       })
@@ -702,12 +695,16 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
     setGroups(newGroups)
   }
   const handleUndo = () => {
+    console.log("stateHistory1==",stateHistory)
     undo()
+    console.log("stateHistory2==",stateHistory)
     stateHistory.present&&setNodes(stateHistory.present.nodes)
 
   }
   const handleRedo = () => {
+    console.log("stateHistory3==",stateHistory)
     redo()
+    console.log("stateHistory4==",stateHistory)
     stateHistory.present&&setNodes(stateHistory.present.nodes)
   }
   // 渲染额外的node

@@ -54,8 +54,8 @@ export function useEditorStore() {
   );
 
   useEffect(() => {
-    console.log("setEditorData")
     setEditorData(editorLocalData);
+    clear()
 
     const newNodes = (editorLocalData?.nodes || []).map(item => {
       return {
@@ -74,6 +74,9 @@ export function useEditorStore() {
     setGroups(newGroups);
     setLinks(editorLocalData?.links || []);
     setCanvasProps(editorLocalData?.canvasProps || canvasConfig);
+    return ()=>{
+      window.sessionStorage.setItem("editorData", undefined);
+    }
   }, [editorLocalData]);
 
   const updateNodes = (node: Node) => {
