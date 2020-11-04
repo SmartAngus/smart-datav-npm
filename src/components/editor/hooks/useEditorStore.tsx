@@ -48,9 +48,9 @@ export function useEditorStore() {
     (value) => {
       setHistory(value);
     },
-    1000,
+    1500,
     // The maximum time func is allowed to be delayed before it's invoked:
-    { maxWait: 2000 }
+    { maxWait: 3000 }
   );
 
   useEffect(() => {
@@ -80,6 +80,13 @@ export function useEditorStore() {
   }, [editorLocalData]);
 
   const updateNodes = (node: Node) => {
+    debouncedHistory.callback({
+      ...(editorData as any),
+      nodes:nodes,
+      links:links,
+      groups: groups,
+      canvasProps:canvasProps
+    })
     const index = nodes.findIndex(item => item.id === node.id);
     const newNodes = [
       ...nodes.slice(0, index),
@@ -88,13 +95,6 @@ export function useEditorStore() {
     ];
     setNodes(newNodes);
     setIsSave(false);
-    debouncedHistory.callback({
-      ...(editorData as any),
-      nodes:nodes,
-      links:links,
-      groups: groups,
-      canvasProps:canvasProps
-    })
   };
 
   const updateLinks = (link: Link) => {
@@ -244,6 +244,7 @@ export function useEditorStore() {
     stateHistory:state,
     setHistory,
     undo,
-    redo
+    redo,
+    clear,
   };
 }

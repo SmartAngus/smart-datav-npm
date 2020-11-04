@@ -71,7 +71,8 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
     stateHistory,
     setHistory,
     undo,
-    redo
+    redo,
+    clear,
   } = useEditorStore()
 
   const {isShiftKey,keydown,keyup}  =useShiftKey()
@@ -121,7 +122,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
           }
         })
         setNodes(newNodes)
-        //setGroups(editorData.groups)
+        setGroups(editorData.groups)
         setLinks(editorData.links)
         setCanvasProps(editorData.editorConfig)
       }
@@ -130,6 +131,8 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
       initData()
       // 设置初始化就是最新数据，此时退出不需要提示
       setIsSave(true)
+      // 清除操作历史
+      clear()
     }, 500)
     return () => {
       clearTimeout(timer)
@@ -173,10 +176,15 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
 
   const canvasInstance = canvasRef.current
 
-
-
-
-
+  // 保存操作历史
+  const handleSetUndoAndRedo  = ()=>{
+    setHistory({
+      nodes:nodes,
+      links:links,
+      groups: groups,
+      canvasProps:canvasProps
+    })
+  }
   // 初始化的时候，将后端传过来的数据赋值给前端
 
   /** 删除组件 */
@@ -695,16 +703,14 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
     setGroups(newGroups)
   }
   const handleUndo = () => {
-    console.log("stateHistory1==",stateHistory)
     undo()
-    console.log("stateHistory2==",stateHistory)
+    console.log(stateHistory)
     stateHistory.present&&setNodes(stateHistory.present.nodes)
 
   }
   const handleRedo = () => {
-    console.log("stateHistory3==",stateHistory)
-    redo()
-    console.log("stateHistory4==",stateHistory)
+      redo()
+    console.log(stateHistory)
     stateHistory.present&&setNodes(stateHistory.present.nodes)
   }
   // 渲染额外的node
@@ -915,6 +921,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
         onEditNode={handleAutoSaveSettingInfo}
         setHistory={setHistory}
         isShiftKey={isShiftKey}
+        onSetUndoAndRedo={handleSetUndoAndRedo}
       />
     </div>
   )

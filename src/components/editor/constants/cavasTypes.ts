@@ -32,7 +32,8 @@ export class CanvasContentProps {
     canvasStyle?:any;
     onEditNode?:(node:Node,nodes:Node[],group:Group[],links:Link[])=>void;
     setHistory?:(editorData:any)=>void;
-    isShiftKey?:boolean
+    isShiftKey?:boolean;
+    onSetUndoAndRedo?:()=>void
 }
 
 export class CanvasContentState {

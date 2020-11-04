@@ -782,7 +782,7 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                                                     onSetColor={handleSetTextFontColor}/>
                                             </div>
                                             <div className="components-box-inner">
-                                                {/*<label>对齐</label>*/}
+                                                <label style={{visibility:'hidden'}}>对齐</label>
                                                 <ButtonGroup>
                                                     <Button type="link"  icon="align-left"
                                                             onClick={()=>handleFontTextAlign('left')} />

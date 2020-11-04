@@ -25,21 +25,14 @@ import {
   Stroke,
 } from "../constants/defines";
 import {
-  findUpstreamNode,
-  findAllUpstreamNodes,
-  findDownstreamNode,
-  findAllDownstreamNodes,
-  findAllDownstreamLinks,
   findNearbyNode
 } from "../utils/find";
 import { calcLinkPosition,getRotateAngle } from "../utils/calc";
-import { pointInPoly, checkNodeIsOverGroup } from "../utils/layout";
-import { getParent,addChildAt } from "../utils/dom";
+import { checkNodeIsOverGroup } from "../utils/layout";
 import { exitFullscreen, launchFullscreen, isFull, getOffset } from "./utils";
 import { CanvasContentProps, CanvasContentState } from '../constants/cavasTypes'
 import {Point} from "../utils/types";
 
-const {useEffect}=React
 
 
 
@@ -719,7 +712,7 @@ export default class CanvasContent extends React.Component<
 
   // 添加节点到画布
   onDrop(event: React.DragEvent<HTMLDivElement>) {
-    const { setNodes, nodes, dragNode,setHistory,links,groups,canvasStyle } = this.props;
+    const { setNodes, nodes, dragNode } = this.props;
     const { offsetTop, offsetLeft } = getOffset(this.container.current);
     // 计算滚动条的位置
     const scrollLeft =
@@ -756,12 +749,6 @@ export default class CanvasContent extends React.Component<
       };
       setNodes([...nodes, newNode]);
       nodes.push(newNode)
-      // setHistory({
-      //   nodes:nodes,
-      //   links:links,
-      //   groups: groups,
-      //   canvasProps:canvasStyle
-      // })
     }
   }
 
