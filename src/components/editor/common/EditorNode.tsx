@@ -19,6 +19,7 @@ import LineComp from '../components/charts/lineComp'
 import TextComp from '../components/charts/textComp'
 import TimeComp from '../components/charts/timeComp'
 import ImageComp from '../components/charts/imageComp'
+import { CSSProperties } from 'react'
 
 const { useState, useRef, useMemo, useCallback } = React;
 
@@ -253,10 +254,10 @@ export function EditorNode(props: EditorNodeProps) {
     >
       {currentNode.chart==undefined&&currentNode.url==undefined?(
         <div className="editorNode" ref={editorNodeRef}>
-          <div className={borderClass} style={ {
+          <div className={borderClass} style={{
             ...currentNode.style,
             transform: isDiamond?`rotateZ(45deg) skew(30deg,30deg)`: 'none'
-          }}>
+          } as CSSProperties}>
             <div className="editorNode-box-property">
               <div className="editorNode-name">{/*{currentNode.name}*/}</div>
             </div>
@@ -288,7 +289,7 @@ export function EditorNode(props: EditorNodeProps) {
           display:'table',
           position:"relative",
           width:"100%",
-          height:"100%"}}>
+          height:"100%"} as CSSProperties}>
           {dynamicLoadComp}
           <div className="editorNode-box-menu" ref={menuRef}>
             <ContextMenu

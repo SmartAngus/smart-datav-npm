@@ -252,6 +252,7 @@ export function getTwoDimen(a:number,b:number) {
 //     a: '1',
 // }
 export function getHexColor(color) {
+  if (color==="transparent") return "transparent";
   if(color==undefined){
     return color;
   }
@@ -271,9 +272,15 @@ export function getHexColor(color) {
  * @param alpha
  */
 export function decodeColor2Rgba(sHex, alpha = 1) {
-  if(alpha==0||sHex==undefined){
-    return "transparent"
+  if(alpha==0||sHex==undefined||sHex==="transparent"){
+    return {
+      r:0,
+      g:0,
+      b:0,
+      a:0
+    };
   }
+
   // 十六进制颜色值的正则表达式
   var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/
   /* 16进制颜色转为RGB格式 */

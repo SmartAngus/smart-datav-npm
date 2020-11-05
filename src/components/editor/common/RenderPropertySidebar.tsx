@@ -453,7 +453,9 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
     const parserInputValue = (value)=>{
         let reg = /(\D+)\s(\d+)\s(\D+)/
         let r = value.match(reg);
-        return r&&r[2]
+        let t = r&&r[2]
+        t=t?.replace("°","")
+        return t;
     }
     const handleRCSwitchStateChange = ()=>{
       setRcSwitchState(!rcSwitchState)
@@ -526,7 +528,7 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                           <InputNumber min={640} max={1920} value={canvasProps.width} onChange={onCanvasWChange} />
                       </span>
                       <span>
-                          <InputNumber min={480} max={1080} value={canvasProps.height} onChange={onCanvasHChange} />
+                          <InputNumber min={480} max={1920} value={canvasProps.height} onChange={onCanvasHChange} />
                       </span>
                       <span>
                         <ReactSwitch
@@ -604,7 +606,7 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                             min={10}
                             max={100}
                             formatter={value => `${value}px`}
-                            parser={value => value.replace('px', '')}
+                            parser={parserInputValue}
                             onChange={handleChangeGridSize}
                           />
                           <ColorsPicker showCheckbox={false} onSetColor={handleSetGridColor} defaultColor={canvasProps?.grid?.color}/>
@@ -636,12 +638,71 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                         min={0}
                         max={4}
                         formatter={value => `${value}px`}
-                        parser={value => value.replace('px', '')}
+                        parser={parserInputValue}
                         onChange={handleSetBoxBorderWidth}
                     />
                 </div>
             </div>)
         }
+    },[node?.style])
+    // 渲染文本外观属性
+    const renderTextProperty  = useMemo(()=>{
+      return ()=>{
+        return (
+          <div className="components-box">
+            <div className="components-box-inner">
+              <label>字体</label>
+              <Select value={node.style?.fontFamily}
+                      style={{ width: 120 }}
+                      onChange={handleSetTextFontFamily}>
+                {fontFamilies.map((item,key)=>{
+                  return <Option key={key} value={item.name}>{item.name}</Option>
+                })}
+              </Select>
+            </div>
+            <div className="components-box-inner">
+              <label>字号</label>
+              <InputNumber
+                style={{width:120}}
+                value={node.style?.fontSize}
+                min={12}
+                max={72}
+                formatter={value => `${value}px`}
+                parser={parserInputValue}
+                onChange={handleSetTextFontSize}
+              />
+            </div>
+            <div className="components-box-inner">
+              <label>颜色</label>
+              <ColorsPicker
+                defaultColor={node.style?.color}
+                onSetColor={handleSetTextFontColor}/>
+            </div>
+            <div className="components-box-inner">
+              <label style={{visibility:'hidden'}}>对齐</label>
+              <ButtonGroup>
+                <Button type={node.style?.textAlign==='left'?'primary':'default'}  icon="align-left"
+                        onClick={()=>handleFontTextAlign('left')} />
+                <Button type={node.style?.textAlign==='center'?'primary':'default'}
+                        icon="align-center"
+                        onClick={()=>handleFontTextAlign('center')} />
+                <Button type={node.style?.textAlign==='right'?'primary':'default'}  icon="align-right"
+                        onClick={()=>handleFontTextAlign('right')}/>
+              </ButtonGroup>
+              <ButtonGroup style={{marginLeft:10}}>
+                <Button type={node.style?.fontWeight?'primary':'default'} icon="bold"
+                        onClick={()=>handleFontWeight('left')} />
+                <Button type={node.style?.fontStyle?'primary':'default'}
+                        icon="italic"
+                        onClick={()=>handleFontStyle('center')} />
+                <Button type={node.style?.textDecoration?'primary':'default'}  icon="underline"
+                        onClick={()=>handleFontDecoration('right')}/>
+              </ButtonGroup>
+
+            </div>
+          </div>
+        )
+      }
     },[node?.style])
 
     // 渲染直线外观属性
@@ -770,65 +831,14 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                                                 value={node&&node.rotate}
                                                 min={-360}
                                                 max={360}
-                                                formatter={value => `旋转 ${value} deg`}
+                                                formatter={value => `旋转 ${value} °`}
                                                 parser={parserInputValue}
                                                 onChange={onInputRotateChange}
                                             />
                                         </div>
                                     </Panel>
                                     <Panel header="文本" key="2">
-                                        <div className="components-box">
-                                            <div className="components-box-inner">
-                                                <label>字体</label>
-                                                <Select defaultValue={node.style?.fontFamily}
-                                                        style={{ width: 120 }}
-                                                        onChange={handleSetTextFontFamily}>
-                                                    {fontFamilies.map((item,key)=>{
-                                                        return <Option key={key} value={item.name}>{item.name}</Option>
-                                                    })}
-                                                </Select>
-                                            </div>
-                                            <div className="components-box-inner">
-                                                <label>字号</label>
-                                                <InputNumber
-                                                    style={{width:120}}
-                                                    value={node.style?.fontSize}
-                                                    min={12}
-                                                    max={72}
-                                                    formatter={value => `${value}px`}
-                                                    parser={value => value.replace(/\[X|px]/g, '')}
-                                                    onChange={handleSetTextFontSize}
-                                                />
-                                            </div>
-                                            <div className="components-box-inner">
-                                                <label>颜色</label>
-                                                <ColorsPicker
-                                                    defaultColor={node.style?.color}
-                                                    onSetColor={handleSetTextFontColor}/>
-                                            </div>
-                                            <div className="components-box-inner">
-                                                <label style={{visibility:'hidden'}}>对齐</label>
-                                                <ButtonGroup>
-                                                    <Button type={node.style?.textAlign==='left'?'primary':'default'}  icon="align-left"
-                                                            onClick={()=>handleFontTextAlign('left')} />
-                                                    <Button type={node.style?.textAlign==='center'?'primary':'default'}
-                                                            icon="align-center"
-                                                            onClick={()=>handleFontTextAlign('center')} />
-                                                    <Button type={node.style?.textAlign==='right'?'primary':'default'}  icon="align-right"
-                                                        onClick={()=>handleFontTextAlign('right')}/>
-                                                </ButtonGroup>
-                                              <ButtonGroup style={{marginLeft:10}}>
-                                              <Button type={node.style?.fontWeight?'primary':'default'} icon="bold"
-                                                      onClick={()=>handleFontWeight('left')} />
-                                              <Button type={node.style?.fontStyle?'primary':'default'}
-                                                      icon="italic"
-                                                      onClick={()=>handleFontStyle('center')} />
-                                              <Button type={node.style?.textDecoration?'primary':'default'}  icon="underline"
-                                                      onClick={()=>handleFontDecoration('right')}/>
-                                            </ButtonGroup>
-
-                                            </div>
-                                        </div>
+                                      {renderTextProperty()}
                                     </Panel>
                                     <Panel header="外观" key="3">
                                         {isCommonComp&&renderCommonOutward()}

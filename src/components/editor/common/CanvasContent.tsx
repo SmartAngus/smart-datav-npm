@@ -398,6 +398,7 @@ export default class CanvasContent extends React.Component<
     const cy = node&&(node.y+Math.round(node.height/2))
     this.setState({
       isDraggingRotate: true,
+      dragNode:node,
       dragRotate: {
         originId: node.id,
         center: [cx,cy],
@@ -441,20 +442,30 @@ export default class CanvasContent extends React.Component<
       return;
     }
     deg=Math.round(deg)
-    const {updateNodes,nodes}=this.props
-    this.state.dragNode.rotate=deg;
+    const {updateNodes}=this.props
     this.setState({
       dragNode:{
-          ...this.state.dragNode,
+        ...this.state.dragNode,
+        rotate:deg
       }
     })
-    updateNodes(this.state.dragNode)
+    const {nodes,setNodes}=this.props
+    setNodes(
+      nodes.map(c => {
+        return c.id === this.state.dragNode.id
+          ? {
+            ...c,
+            rotate:deg
+          }
+          : c;
+      })
+    );
   }
   /** 鼠标抬起，旋转结束 */
   onDragRotateMouseUp = (event: any) => {
     this.setState({
       isDraggingRotate: false,
-      dragRotate: null,
+      dragNode:null,
       sourcePos: ""
     });
   }
@@ -541,7 +552,7 @@ export default class CanvasContent extends React.Component<
           ? {
               ...c,
               x: (screenX - x) / k - dragNodeOffset.x,
-              y: (screenY - y) / k - dragNodeOffset.y
+              y: (screenY - y) / k - dragNodeOffset.y,
             }
           : c;
       })
