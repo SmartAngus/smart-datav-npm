@@ -9,6 +9,7 @@ import {Icon} from 'antd'
 import { useResize } from "../hooks/useResize";
 import "./Node.scss";
 import {BaseCompStyle, EChart,Stroke} from '../constants/defines'
+import { CSSProperties } from 'react'
 const { useRef, useState, useEffect } = React;
 
 class NodeProps {
@@ -188,15 +189,18 @@ const Node = React.forwardRef((props: NodeProps, ref: any) => {
     RESIZE_SELECTOR = ["left","right"]
   }
   let isShowRotate = true;
-  if(chart?.type==='time'||chart?.type==='text'){// 文本和时间不显示旋转
-    isShowRotate=false
-    RESIZE_SELECTOR.pop()
-  }
+  // if(chart?.type==='time'||chart?.type==='text'){// 文本和时间不显示旋转
+  //   isShowRotate=false
+  //   RESIZE_SELECTOR.pop()
+  // }
 
 
   // 伸缩器
   const renderResize = (
-    <div className="resizable">
+    <div className="resizable" style={{
+      transform:`rotate(${rotate}deg)`,
+      zIndex:1,
+    } as CSSProperties}>
       <div className="resizers">
         {RESIZE_SELECTOR.map(item => {
           if (item === 'rotate' && notLine) {
@@ -248,7 +252,10 @@ const Node = React.forwardRef((props: NodeProps, ref: any) => {
   useEffect(()=>{
     onChangeZIndex && onChangeZIndex(zIndex)
   },[zIndex])
-
+  // width,
+  //   height,
+  //   transform: `rotate(${rotate}deg)`,
+  //   transformOrigin:type=='line'?`${chart.stroke.transformOrigin}`:`center`
   return (
     <div
       className="editor-node"
@@ -257,9 +264,7 @@ const Node = React.forwardRef((props: NodeProps, ref: any) => {
         left: x,
         top: y,
         width,
-        height,
-        transform: `rotate(${rotate}deg)`,
-        transformOrigin:type=='line'?`${chart.stroke.transformOrigin}`:`center`
+        height
       }}
       ref={ref}
       onClick={onClick}

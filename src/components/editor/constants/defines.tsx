@@ -278,6 +278,7 @@ const COMMON_COMPONENT: Node[] = [
       color:'#111',
       textAlign:'center'
     },
+    rotate:0,
     disabled: false
   },
   /** 矩形 */
@@ -374,6 +375,7 @@ const COMMON_COMPONENT: Node[] = [
       color:'#111',
       textAlign:'center'
     },
+    rotate:0,
     disabled: false
   }
 ];
@@ -404,6 +406,7 @@ const SELF_COMPONENT: Node[] = [
       type: 'pieChart',
       component: 'PieChart',
     },
+    rotate:0,
     disabled: false
   },
   /** 饼图 */
@@ -427,6 +430,7 @@ const SELF_COMPONENT: Node[] = [
         <div className="controls-title">饼图</div>
       </div>
     ),
+    rotate:0,
     disabled: false,
     chart:{
       type: 'capsuleChart',

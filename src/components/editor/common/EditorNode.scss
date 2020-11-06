@@ -1,4 +1,7 @@
 :global{
+  .line-border{
+    border: 0!important;
+  }
   .editorNode {
     display: flex;
     width: 100%;
@@ -12,6 +15,7 @@
     .rect-border {
       border-color: #6ca0f5;
     }
+
 
     .rectRadius-border {
       border-color: #65ca92;
@@ -107,8 +111,16 @@
       background: #fff;
 
     }
-  }
 
+  }
+  .contextMenu-layer {
+    width: 200px;
+    padding: 10px 0 10px 10px;
+    box-sizing: initial;
+    background: white;
+    border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 1px, rgba(0, 0, 0, 0.15) 0px 8px 16px;
+  }
   .editorNode-circle {
     border-radius: 50%;
   }

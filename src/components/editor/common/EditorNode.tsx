@@ -204,6 +204,7 @@ export function EditorNode(props: EditorNodeProps) {
   /** 点击组件 */
   const handleClickNode = useCallback(
     event => {
+      setMenuShow(false);
       if (interactive && onClick) {
         onClick(currentNode, event);
       }
@@ -226,7 +227,8 @@ export function EditorNode(props: EditorNodeProps) {
       return <CapsuleChart node={currentNode} ></CapsuleChart>
     if (currentNode.type=='image')
       return <ImageComp node={currentNode} ></ImageComp>
-  },[currentNode.chart?.format,currentNode.chart?.stroke,currentNode.width])// 只有时间控件和直线才会重新加载
+  },[currentNode])// 只有时间控件和直线才会重新加载
+  // currentNode.chart?.format,currentNode.chart?.stroke,currentNode.width
 
   return (
     <NodeContainer
@@ -237,7 +239,6 @@ export function EditorNode(props: EditorNodeProps) {
       height={currentNode.height}
       chart={currentNode.chart}
       url={currentNode.url}
-      style={currentNode.style}
       rotate={currentNode.rotate}
       zIndex={currentNode.zIndex}
       type = {currentNode.key}
@@ -253,45 +254,66 @@ export function EditorNode(props: EditorNodeProps) {
       isShiftKey={isShiftKey}
     >
       {currentNode.chart==undefined&&currentNode.url==undefined?(
-        <div className="editorNode" ref={editorNodeRef}>
-          <div className={borderClass} style={{
-            ...currentNode.style,
-            transform: isDiamond?`rotateZ(45deg) skew(30deg,30deg)`: 'none'
+        <div  ref={editorNodeRef}>
+        <div className="editorNode">
+          <div className={borderClass}  style={{
+            ...currentNode.style ,
+            width:currentNode.width,
+            height:currentNode.height,
+            transform:`rotate(${currentNode.rotate}deg)`
           } as CSSProperties}>
             <div className="editorNode-box-property">
               <div className="editorNode-name">{/*{currentNode.name}*/}</div>
             </div>
-            <div className="editorNode-box-menu" ref={menuRef}>
-              <ContextMenu
-                id={currentNode.id}
-                visible={menuShow}
-                left={menuPos.left}
-                top={menuPos.top}
-              >
-                <Menu
-                  getPopupContainer={(triggerNode: any) => triggerNode.parentNode}
-                >
-                  {menuList.map(child => {
-                    return (
-                      <Menu.Item key={child.key} onClick={handleClickMenu}>
-                        {child.name}
-                      </Menu.Item>
-                    );
-                  })}
-                </Menu>
-              </ContextMenu>
-            </div>
           </div>
+        </div>
+        <div className="editorNode-box-menu"
+             style={{
+               position:'fixed',
+               left: currentNode.x+currentNode.width
+             }}
+             ref={menuRef}>
+          <ContextMenu
+            id={currentNode.id}
+            visible={menuShow}
+            left={menuPos.left+100}
+            top={menuPos.top+200}
+          >
+            <Menu
+              getPopupContainer={(triggerNode: any) => triggerNode.parentNode}
+            >
+              {menuList.map(child => {
+                return (
+                  <Menu.Item key={child.key} onClick={handleClickMenu}>
+                    {child.name}
+                  </Menu.Item>
+                );
+              })}
+            </Menu>
+          </ContextMenu>
+        </div>
         </div>
       ):(
         <div style={{
-          ...currentNode.style,
           display:'table',
           position:"relative",
           width:"100%",
           height:"100%"} as CSSProperties}>
+          <div className={borderClass}  style={{
+            ...currentNode.style ,
+            width:currentNode.width,
+            height:currentNode.height,
+            display:"table",
+            transform:`rotate(${currentNode.rotate}deg)`
+          } as CSSProperties}>
           {dynamicLoadComp}
-          <div className="editorNode-box-menu" ref={menuRef}>
+          </div>
+          <div className="editorNode-box-menu"
+               style={{
+                 position:'fixed',
+                 left: currentNode.x+currentNode.width
+               }}
+               ref={menuRef}>
             <ContextMenu
               id={currentNode.id}
               visible={menuShow}

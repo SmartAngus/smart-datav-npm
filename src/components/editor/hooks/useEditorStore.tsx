@@ -75,7 +75,7 @@ export function useEditorStore() {
     setLinks(editorLocalData?.links || []);
     setCanvasProps(editorLocalData?.canvasProps || canvasConfig);
     return ()=>{
-      window.sessionStorage.setItem("editorData", undefined);
+    //  window.sessionStorage.setItem("editorData", undefined);
     }
   }, [editorLocalData]);
 

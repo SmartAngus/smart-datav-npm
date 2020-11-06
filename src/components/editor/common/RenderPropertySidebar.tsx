@@ -279,7 +279,7 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
     const handleSetBoxBorderColor = (color)=>{
         // 深度复制，防止改变一个颜色而使整个颜色都改变了
         const newNode = _.cloneDeep(node)
-        if(newNode.style) {
+        if(newNode?.style) {
             newNode.style.borderColor = color;
             updateNodes(newNode)
         }
@@ -287,7 +287,7 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
     // 边框的填充色
     const handleSetBoxBgColor = (color)=>{
         const newNode = _.cloneDeep(node)
-        if(newNode.style){
+        if(newNode?.style){
             newNode.style.backgroundColor = color;
             updateNodes(newNode)
         }
@@ -295,7 +295,7 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
     // 边框的粗细
     const handleSetBoxBorderWidth = (size)=>{
         const newNode = _.cloneDeep(node)
-        if(newNode.style){
+        if(newNode?.style){
             newNode.style.borderWidth = size;
             updateNodes(newNode)
         }
@@ -314,7 +314,7 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
     // 设置文本组件字体
     const handleSetTextFontFamily = (fontFamily)=>{
         const newNode = _.cloneDeep(node)
-        if(newNode.style) {
+        if(newNode?.style) {
             newNode.style.fontFamily = fontFamily;
             updateNodes(newNode)
         }
@@ -322,7 +322,7 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
     // 设置文本组件字体大小
     const handleSetTextFontSize = (fontSize)=>{
         const newNode = _.cloneDeep(node)
-        if(newNode.style) {
+        if(newNode?.style) {
             newNode.style.fontSize = fontSize;
             updateNodes(newNode)
         }
@@ -330,7 +330,7 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
     // 设置字体颜色
     const handleSetTextFontColor = (fontColor)=>{
         const newNode = _.cloneDeep(node)
-        if(newNode.style) {
+        if(newNode?.style) {
             newNode.style.color = fontColor;
             updateNodes(newNode)
         }
@@ -338,7 +338,7 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
     // 设置文本对齐方式
     const handleFontTextAlign = (align)=>{
         const newNode = _.cloneDeep(node)
-        if(newNode.style) {
+        if(newNode?.style) {
             newNode.style.textAlign = align;
             updateNodes(newNode)
         }
@@ -349,21 +349,21 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
   // 设置文本对齐方式
     const handleFontWeight = (align)=>{
       const newNode = _.cloneDeep(node)
-      if(newNode.style) {
+      if(newNode?.style) {
         newNode.style.fontWeight = newNode.style.fontWeight==='bold'?'':'bold';
         updateNodes(newNode)
       }
     }
     const handleFontStyle = (align)=>{
       const newNode = _.cloneDeep(node)
-      if(newNode.style) {
+      if(newNode?.style) {
         newNode.style.fontStyle = newNode.style.fontStyle === 'italic'?'':'italic';
         updateNodes(newNode)
       }
     }
     const handleFontDecoration = (align)=>{
       const newNode = _.cloneDeep(node)
-      if(newNode.style) {
+      if(newNode?.style) {
         newNode.style.textDecoration = newNode.style.textDecoration === 'underline'?'':'underline';
         updateNodes(newNode)
       }
@@ -439,8 +439,18 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
         }
     }
     // 位置和尺寸改变
-    const onInputPositionXChange = (value)=>{node.x = value;updateNodes(node)}
-    const onInputPositionYChange = (value)=>{node.y = value;updateNodes(node)}
+    const onInputPositionXChange = (value)=>{
+      const newNode = _.cloneDeep(node)
+      node.x = value;
+      newNode.x = value;
+      updateNodes(newNode)
+    }
+    const onInputPositionYChange = (value)=>{
+      const newNode = _.cloneDeep(node)
+      node.y = value;
+      newNode.y = value;
+      updateNodes(newNode)
+    }
     const onInputSizeWChange = (value)=>{
         node.width = value;updateNodes(node)
     }
@@ -603,8 +613,8 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                           <Checkbox  checked={showGrid} onChange={handleChangeGrid} >网格</Checkbox>
                           <InputNumber
                             value={gridSize}
-                            min={10}
-                            max={100}
+                            min={1}
+                            max={30}
                             formatter={value => `${value}px`}
                             parser={parserInputValue}
                             onChange={handleChangeGridSize}
@@ -647,12 +657,18 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
     },[node?.style])
     // 渲染文本外观属性
     const renderTextProperty  = useMemo(()=>{
+      if(node?.key!='text'&&node?.key!='time'){
+        return ()=>{
+          return ""
+        }
+      }
       return ()=>{
         return (
+          <Panel header="文本" key="2">
           <div className="components-box">
             <div className="components-box-inner">
               <label>字体</label>
-              <Select value={node.style?.fontFamily}
+              <Select value={node?.style?.fontFamily}
                       style={{ width: 120 }}
                       onChange={handleSetTextFontFamily}>
                 {fontFamilies.map((item,key)=>{
@@ -664,7 +680,7 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
               <label>字号</label>
               <InputNumber
                 style={{width:120}}
-                value={node.style?.fontSize}
+                value={node?.style?.fontSize}
                 min={12}
                 max={72}
                 formatter={value => `${value}px`}
@@ -675,32 +691,33 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
             <div className="components-box-inner">
               <label>颜色</label>
               <ColorsPicker
-                defaultColor={node.style?.color}
+                defaultColor={node?.style?.color}
                 onSetColor={handleSetTextFontColor}/>
             </div>
             <div className="components-box-inner">
               <label style={{visibility:'hidden'}}>对齐</label>
               <ButtonGroup>
-                <Button type={node.style?.textAlign==='left'?'primary':'default'}  icon="align-left"
+                <Button type={node?.style?.textAlign==='left'?'primary':'default'}  icon="align-left"
                         onClick={()=>handleFontTextAlign('left')} />
-                <Button type={node.style?.textAlign==='center'?'primary':'default'}
+                <Button type={node?.style?.textAlign==='center'?'primary':'default'}
                         icon="align-center"
                         onClick={()=>handleFontTextAlign('center')} />
-                <Button type={node.style?.textAlign==='right'?'primary':'default'}  icon="align-right"
+                <Button type={node?.style?.textAlign==='right'?'primary':'default'}  icon="align-right"
                         onClick={()=>handleFontTextAlign('right')}/>
               </ButtonGroup>
               <ButtonGroup style={{marginLeft:10}}>
-                <Button type={node.style?.fontWeight?'primary':'default'} icon="bold"
+                <Button type={node?.style?.fontWeight?'primary':'default'} icon="bold"
                         onClick={()=>handleFontWeight('left')} />
-                <Button type={node.style?.fontStyle?'primary':'default'}
+                <Button type={node?.style?.fontStyle?'primary':'default'}
                         icon="italic"
                         onClick={()=>handleFontStyle('center')} />
-                <Button type={node.style?.textDecoration?'primary':'default'}  icon="underline"
+                <Button type={node?.style?.textDecoration?'primary':'default'}  icon="underline"
                         onClick={()=>handleFontDecoration('right')}/>
               </ButtonGroup>
 
             </div>
           </div>
+          </Panel>
         )
       }
     },[node?.style])
@@ -837,9 +854,8 @@ const RenderPropertySidebar = React.forwardRef((props:OptionsProperty, ref)=>{
                                             />
                                         </div>
                                     </Panel>
-                                    <Panel header="文本" key="2">
-                                      {renderTextProperty()}
-                                    </Panel>
+                                          {renderTextProperty()}
+
                                     <Panel header="外观" key="3">
                                         {isCommonComp&&renderCommonOutward()}
                                         {isLineComp&&renderLineOutward()}

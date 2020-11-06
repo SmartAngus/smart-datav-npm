@@ -274,9 +274,9 @@ export function getHexColor(color) {
 export function decodeColor2Rgba(sHex, alpha = 1) {
   if(alpha==0||sHex==undefined||sHex==="transparent"){
     return {
-      r:0,
-      g:0,
-      b:0,
+      r:255,
+      g:255,
+      b:255,
       a:0
     };
   }

@@ -649,6 +649,8 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
     type = 'merge' as 'merge' | 'new', // 区分是合并还是新组
     deleteGroupId?: string
   ) => {
+    console.log("---updateGroupsInfo---")
+    console.log(currentNodes)
     const newGroup = handleGroupInfo(currentNodes)
     if (newGroup) {
       // 更新节点
@@ -682,7 +684,7 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
         newGroups.push(newGroup)
       }
 
-      // let newGroups = _.uniqBy(_.compact([...groups, newGroup]), "id");
+      // newGroups = _.uniqBy(_.compact([...groups, newGroup]), "id");
       if (deleteGroupId) {
         newGroups = newGroups.filter((group) => group.id !== deleteGroupId)
       }
