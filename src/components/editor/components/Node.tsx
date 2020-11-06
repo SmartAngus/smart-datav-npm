@@ -198,8 +198,9 @@ const Node = React.forwardRef((props: NodeProps, ref: any) => {
   // 伸缩器
   const renderResize = (
     <div className="resizable" style={{
-      transform:`rotate(${rotate}deg)`,
-      zIndex:1,
+      transform:`rotate(${rotate}deg) translate(-5px, -5px)`,
+      width:width+10,
+      height:height+10
     } as CSSProperties}>
       <div className="resizers">
         {RESIZE_SELECTOR.map(item => {
@@ -210,7 +211,8 @@ const Node = React.forwardRef((props: NodeProps, ref: any) => {
                     data-type="rotate"
                     data-position="top-rotate"
                     className={`node-selector-rotate`}
-                    style={{left: `${width / 2 - 14}px`,top:-36,color:'#000',cursor:"all-scroll",fontSize:16,fontWeight:800}}
+                    style={{left: `${width / 2 - 14}px`,top:-36,color:'#000',cursor:"all-scroll",fontSize:16,fontWeight:800,
+                      transform: "translate(5px, 0px)"} as CSSProperties}
                 >
                   <Icon type="reload"/>
                   <span

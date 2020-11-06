@@ -227,7 +227,7 @@ export function EditorNode(props: EditorNodeProps) {
       return <CapsuleChart node={currentNode} ></CapsuleChart>
     if (currentNode.type=='image')
       return <ImageComp node={currentNode} ></ImageComp>
-  },[currentNode])// 只有时间控件和直线才会重新加载
+  },[currentNode.chart?.format,currentNode.chart?.stroke,currentNode.width])// 只有时间控件和直线才会重新加载
   // currentNode.chart?.format,currentNode.chart?.stroke,currentNode.width
 
   return (

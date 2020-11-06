@@ -6,6 +6,8 @@ import * as React from "react";
 import * as _ from "lodash";
 import {BarChartOutlined, RadarChartOutlined} from "@ant-design/icons"
 import {TextOfRectIcon,HourTimeIcon,RectangleIcon,LineIcon,CircleIcon} from '../icons/editorIcons'
+import TextComp from '../components/charts/textComp/index'
+import { FunctionComponent } from 'react'
 
 
 // 组件卡片宽度高度
@@ -152,7 +154,7 @@ export class Node {
   /**定义旋转*/
   rotate?:number;
   /** 图片组件才有的URL属性 */
-  url?:string
+  url?:string;
 }
 
 export class NodePanel {

@@ -24,6 +24,8 @@ import { useShiftKey } from './hooks/useShiftKey'
 
 const { useState, useRef, useEffect, useImperativeHandle } = React
 
+
+
 const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
   const {
     onEditorSaveCb,
@@ -180,7 +182,6 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
 
   // 保存操作历史
   const handleSetUndoAndRedo  = ()=>{
-    console.log("handleSetUndoAndRedo",stateHistory)
     setHistory({
       nodes:nodes,
       links:links,
@@ -563,6 +564,16 @@ const DataVEditor = React.forwardRef((props: DataVEditorProps, ref) => {
 
   /** 保存 */
   const handleSave = async () => {
+    message.config({
+      top: 100,
+      duration: 2,
+      maxCount: 3,
+      getContainer: ()=>document.querySelector(".editor-demo")
+    });
+    if(isSave) {
+      message.info('已经保存无需再保存！')
+      return;
+    };
     const data = await handleSaveData()
     const editorData = {
       nodes,

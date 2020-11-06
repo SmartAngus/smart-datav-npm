@@ -75,7 +75,7 @@ export function useEditorStore() {
     setLinks(editorLocalData?.links || []);
     setCanvasProps(editorLocalData?.canvasProps || canvasConfig);
     return ()=>{
-    //  window.sessionStorage.setItem("editorData", undefined);
+      window.sessionStorage.setItem("editorData", undefined);
     }
   }, [editorLocalData]);
 
@@ -136,8 +136,8 @@ export function useEditorStore() {
     })
   };
   // 保存最新的数据
-  const handleSaveData = async () => {
-    setIsSave(true)
+  const handleSaveData = async (isSave=true) => {
+    setIsSave(isSave)
     const newNodes = nodes || [];
     const newGroups = groups || [];
 
@@ -162,7 +162,7 @@ export function useEditorStore() {
   // 自动保存面板属性设置，比如更改了页面尺寸，背景图片，网格信息，以便在用户浏览器刷新后恢复原样
   const handleAutoSaveSettingInfo = async (canvasProps,nodes,groups,links)=>{
     const newCanvasProps = canvasProps || {};
-    handleSaveData()
+    handleSaveData(false)
     const result = await setEditorLocalData({
       ...(editorData as any),
       nodes:nodes,

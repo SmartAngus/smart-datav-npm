@@ -138,6 +138,8 @@ export class ToolbarProps {
   showIsSave?:boolean;
 }
 
+const {useState}=React;
+
 const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
   const {
     screenScale,
@@ -242,6 +244,8 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
 
   const fullscreenStatus = isFull();
 
+  const [screenText,setScreenText]=useState("全屏")
+
   /** 缩放操作 */
   const handleResize = (isLager?: boolean) => {
     let value = screenScale;
@@ -268,9 +272,11 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
   const handleFullScreen = () => {
     const isfull = isFull();
     if (isfull) {
+      setScreenText("全屏")
       exitFullscreen();
     } else {
       launchFullscreen(ref.current);
+      setScreenText("退出全屏")
     }
   };
 
@@ -494,7 +500,7 @@ const Toolbar = React.forwardRef((props: ToolbarProps, ref: any) => {
           <div className="toolbar-btn" onClick={handleFullScreen}>
             <Tooltip title="全屏">
               <Icon type={fullScreenClassName} />
-              <span className="toolbar-btn-text">全屏</span>
+              <span className="toolbar-btn-text">{screenText}</span>
             </Tooltip>
           </div>
         )}
